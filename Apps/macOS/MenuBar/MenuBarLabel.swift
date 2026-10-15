@@ -15,6 +15,7 @@ struct MenuBarLabel: View {
                     openWindow(id: id)
                     NSApp.activate()
                 }
+                model.settings.applyAppearance()
                 model.settings.applyActivationPolicy()
                 if model.settings.menuBarOnly {
                     await closeLaunchWindow()

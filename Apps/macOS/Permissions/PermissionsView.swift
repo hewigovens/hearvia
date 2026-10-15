@@ -47,6 +47,5 @@ struct PermissionsView: View {
         .background(Color.hvGround)
         .foregroundStyle(Color.hvText)
         .tint(.hvAccent)
-        .preferredColorScheme(settings.appearance.colorScheme)
     }
 }

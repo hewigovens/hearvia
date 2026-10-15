@@ -20,7 +20,10 @@ final class AppSettings {
     static let overlayFontSizeRange: ClosedRange<Double> = 16 ... 64
 
     var appearance: Appearance {
-        didSet { defaults.set(appearance.rawValue, forKey: Keys.appearance) }
+        didSet {
+            defaults.set(appearance.rawValue, forKey: Keys.appearance)
+            applyAppearance()
+        }
     }
 
     var overlayVisible: Bool {
@@ -72,6 +75,16 @@ final class AppSettings {
         overlayOpacity = defaults.object(forKey: Keys.overlayOpacity) as? Double ?? 0.65
         menuBarOnly = defaults.bool(forKey: Keys.menuBarOnly)
         hasExplainedPermissions = defaults.bool(forKey: Keys.hasExplainedPermissions)
+    }
+
+    /// App-wide, so the menu bar popover and the overlay panel match the windows: the palette's dynamic colors
+    /// resolve against each window's AppKit appearance, which `preferredColorScheme` doesn't reach in the popover.
+    func applyAppearance() {
+        NSApp.appearance = switch appearance {
+        case .dark: NSAppearance(named: .darkAqua)
+        case .light: NSAppearance(named: .aqua)
+        case .system: nil
+        }
     }
 
     func applyActivationPolicy() {

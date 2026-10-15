@@ -6,7 +6,6 @@ import SwiftUI
 struct ControlPanel: View {
     let model: AppModel
     let inMenuBar: Bool
-    @Environment(AppSettings.self) private var settings
     @Environment(\.openWindow) private var openWindow
 
     var body: some View {
@@ -39,7 +38,6 @@ struct ControlPanel: View {
         .background(Color.hvGround)
         .foregroundStyle(Color.hvText)
         .tint(.hvAccent)
-        .preferredColorScheme(settings.appearance.colorScheme)
         .onAppear { model.refreshProcesses() }
     }
 
