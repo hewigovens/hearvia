@@ -8,7 +8,7 @@ struct LanguageCard: View {
     let translator: LiveTranslator
 
     private var autoDetects: Bool {
-        translator.engine == .realtime
+        translator.engine.detectsSpokenLanguage
     }
 
     var body: some View {

@@ -3,19 +3,23 @@ import HearviaCore
 @testable import HearviaEngines
 import Testing
 
-/// A Realtime socket the test drives by hand.
-final class FakeSocket: RealtimeSocket, @unchecked Sendable {
-    let configuration: RealtimeConfiguration
-    let events: AsyncStream<RealtimeEvent>
-    private let continuation: AsyncStream<RealtimeEvent>.Continuation
+/// A translation socket the test drives by hand.
+final class FakeSocket: TranslationSocket, @unchecked Sendable {
+    let targetLanguage: String
+    let transcribesSource: Bool
+    let events: AsyncStream<SocketEvent>
+    private let continuation: AsyncStream<SocketEvent>.Continuation
     private let lock = NSLock()
     private let failsToConnect: Bool
+    private let switchesLanguage: Bool
     private var sent: [Data] = []
     private var isClosed = false
 
-    init(configuration: RealtimeConfiguration, failsToConnect: Bool) {
-        self.configuration = configuration
+    init(targetLanguage: String, transcribesSource: Bool, failsToConnect: Bool, switchesLanguage: Bool) {
+        self.targetLanguage = targetLanguage
+        self.transcribesSource = transcribesSource
         self.failsToConnect = failsToConnect
+        self.switchesLanguage = switchesLanguage
         (events, continuation) = AsyncStream.makeStream()
     }
 
@@ -27,7 +31,7 @@ final class FakeSocket: RealtimeSocket, @unchecked Sendable {
         lock.withLock { isClosed }
     }
 
-    func send(_ event: RealtimeEvent) {
+    func send(_ event: SocketEvent) {
         continuation.yield(event)
     }
 
@@ -41,7 +45,9 @@ final class FakeSocket: RealtimeSocket, @unchecked Sendable {
         lock.withLock { sent.append(chunk) }
     }
 
-    func setTargetLanguage(_: String) async throws {}
+    func setTargetLanguage(_: String) async throws -> Bool {
+        switchesLanguage
+    }
 
     func close() async {
         lock.withLock { isClosed = true }
@@ -66,10 +72,12 @@ final class TestClock: @unchecked Sendable {
 }
 
 @MainActor
-final class RealtimeHarness {
+final class CloudHarness {
     let clock = TestClock()
     var sockets: [FakeSocket] = []
     var failsToConnect = false
+    /// OpenAI switches language within a session; Gemini needs a new one.
+    var switchesLanguage = true
     var updates: [EngineUpdate] = []
     let audio: AsyncStream<Data>
     private let input: AsyncStream<Data>.Continuation
@@ -79,8 +87,8 @@ final class RealtimeHarness {
         (audio, input) = AsyncStream.makeStream()
     }
 
-    func makeEngine(transcribesSource: Bool) -> RealtimeEngine {
-        var timing = RealtimeTiming()
+    func makeEngine(transcribesSource: Bool) -> CloudEngine {
+        var timing = CloudTiming()
         timing.silenceChunks = 5
         timing.preRollChunks = 2
         timing.connectingChunks = 10
@@ -88,8 +96,10 @@ final class RealtimeHarness {
         timing.closeGrace = .seconds(5)
         timing.backoff = { _ in .milliseconds(1) }
         timing.now = { [clock] in clock.now }
-        let engine = RealtimeEngine(targetLanguage: "zh", transcribesSource: transcribesSource, timing: timing) { [unowned self] configuration in
-            let socket = FakeSocket(configuration: configuration, failsToConnect: failsToConnect)
+        let engine = CloudEngine(provider: "OpenAI", targetLanguage: "zh", transcribesSource: transcribesSource,
+                                 timing: timing) { [unowned self] target, transcribes in
+            let socket = FakeSocket(targetLanguage: target, transcribesSource: transcribes, failsToConnect: failsToConnect,
+                                    switchesLanguage: switchesLanguage)
             sockets.append(socket)
             return socket
         }
@@ -137,8 +147,8 @@ func eventually(_ condition: @MainActor () -> Bool) async throws {
 }
 
 @MainActor
-struct RealtimeEngineTests {
-    let harness = RealtimeHarness()
+struct CloudEngineTests {
+    let harness = CloudHarness()
 
     @Test func reconnectsWithBackoffThenGivesUp() async throws {
         harness.failsToConnect = true
@@ -157,7 +167,7 @@ struct RealtimeEngineTests {
     @Test func fatalErrorStopsWithoutReconnecting() async throws {
         await harness.start()
         let socket = try #require(harness.sockets.first)
-        socket.send(.serverError(type: "invalid_request_error", code: "invalid_api_key", message: "Incorrect API key"))
+        socket.send(.serverError(code: "invalid_api_key", message: "Incorrect API key", fatal: true))
         socket.send(.closed(reason: nil))
         try await eventually { self.harness.updates.last == .failed("invalid_api_key: Incorrect API key") }
         #expect(harness.sockets.count == 1)
@@ -165,7 +175,7 @@ struct RealtimeEngineTests {
 
     @Test func reconnectAfterADroppedSessionCountsAsAnAttempt() async throws {
         await harness.start()
-        harness.sockets[0].send(.sessionCreated(id: "s1", expiresAt: nil))
+        harness.sockets[0].send(.sessionStarted(id: "s1", expiresAt: nil))
         harness.sockets[0].send(.closed(reason: "network"))
         try await eventually { self.harness.sockets.count == 2 }
         try await eventually { self.harness.statuses.contains(.connecting(attempt: 1)) }
@@ -174,7 +184,7 @@ struct RealtimeEngineTests {
     @Test func pausesOnSilenceAndResumesWithPreRoll() async throws {
         await harness.start()
         let first = try #require(harness.sockets.first)
-        first.send(.sessionCreated(id: "s1", expiresAt: nil))
+        first.send(.sessionStarted(id: "s1", expiresAt: nil))
         try await eventually { self.harness.engine.socketReady }
         try await harness.feed(chunk(1000))
         for _ in 0 ..< 5 {
@@ -207,7 +217,7 @@ struct RealtimeEngineTests {
         await harness.start()
         let first = try #require(harness.sockets.first)
         let expiry = harness.clock.now.addingTimeInterval(3600)
-        first.send(.sessionCreated(id: "s1", expiresAt: expiry))
+        first.send(.sessionStarted(id: "s1", expiresAt: expiry))
         try await eventually { self.harness.engine.expiresAt == expiry && self.harness.engine.socketReady }
 
         harness.clock.advance(to: expiry.addingTimeInterval(-170)) // inside the 180 s lead
@@ -234,7 +244,7 @@ struct RealtimeEngineTests {
     @Test func rotatesAtTheDeadlineEvenWhileSpeaking() async throws {
         await harness.start()
         let expiry = harness.clock.now.addingTimeInterval(3600)
-        harness.sockets[0].send(.sessionCreated(id: "s1", expiresAt: expiry))
+        harness.sockets[0].send(.sessionStarted(id: "s1", expiresAt: expiry))
         try await eventually { self.harness.engine.expiresAt == expiry && self.harness.engine.socketReady }
         harness.clock.advance(to: expiry.addingTimeInterval(-30))
         try await harness.feed(chunk(1000))
@@ -244,16 +254,45 @@ struct RealtimeEngineTests {
     @Test func skipsSourceTranscriptionWhenAsked() async {
         let engine = harness.makeEngine(transcribesSource: false)
         await engine.start(audio: harness.audio)
-        #expect(harness.sockets.last?.configuration.sourceTranscriptionModel == nil)
+        #expect(harness.sockets.last?.transcribesSource == false)
         await engine.stop()
 
         let transcribing = harness.makeEngine(transcribesSource: true)
         await transcribing.start(audio: AsyncStream { $0.finish() })
-        #expect(harness.sockets.last?.configuration.sourceTranscriptionModel == RealtimeConfiguration.defaultTranscriptionModel)
+        #expect(harness.sockets.last?.transcribesSource == true)
+    }
+
+    @Test func switchesLanguageInPlaceWhenTheProviderCan() async throws {
+        await harness.start()
+        harness.sockets[0].send(.sessionStarted(id: "s1", expiresAt: nil))
+        try await eventually { self.harness.engine.socketReady }
+        #expect(await harness.engine.setTargetLanguage("ja"))
+        #expect(harness.sockets.count == 1)
+    }
+
+    @Test func opensANewSessionForALanguageTheProviderFixesPerSession() async throws {
+        harness.switchesLanguage = false
+        await harness.start()
+        let first = try #require(harness.sockets.first)
+        first.send(.sessionStarted(id: "s1", expiresAt: nil))
+        try await eventually { self.harness.engine.socketReady }
+        #expect(await harness.engine.setTargetLanguage("ja"))
+        try await eventually { self.harness.sockets.count == 2 }
+        #expect(first.closed && harness.sockets[1].targetLanguage == "ja")
+    }
+
+    @Test func rotatesWhenTheServerAnnouncesItWillClose() async throws {
+        await harness.start()
+        harness.sockets[0].send(.sessionStarted(id: "s1", expiresAt: nil))
+        try await eventually { self.harness.engine.socketReady }
+        harness.sockets[0].send(.expiring(at: harness.clock.now.addingTimeInterval(30)))
+        try await eventually { self.harness.engine.expiresAt != nil }
+        try await harness.feed(chunk(1000))
+        try await eventually { self.harness.sockets.count == 2 }
     }
 
     @Test func measuresChunkPeaks() {
-        #expect(RealtimeEngine.peak(of: chunk(-1200)) == 1200)
-        #expect(RealtimeEngine.peak(of: Data()) == 0)
+        #expect(CloudEngine.peak(of: chunk(-1200)) == 1200)
+        #expect(CloudEngine.peak(of: Data()) == 0)
     }
 }

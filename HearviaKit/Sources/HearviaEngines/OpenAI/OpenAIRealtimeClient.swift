@@ -2,17 +2,17 @@ import Foundation
 
 /// WebSocket client for OpenAI's `/v1/realtime/translations` endpoint.
 /// `credential` is an API key (development) or an ephemeral client secret (production).
-public actor RealtimeTranslationClient: RealtimeSocket {
-    public nonisolated let events: AsyncStream<RealtimeEvent>
-    private let continuation: AsyncStream<RealtimeEvent>.Continuation
-    private let configuration: RealtimeConfiguration
+public actor OpenAIRealtimeClient: TranslationSocket {
+    public nonisolated let events: AsyncStream<SocketEvent>
+    private let continuation: AsyncStream<SocketEvent>.Continuation
+    private let configuration: OpenAIRealtimeConfiguration
     private let credential: String
     private let session: URLSession
     private var task: URLSessionWebSocketTask?
     private var finished = false
     private var closeReason: String?
 
-    public init(configuration: RealtimeConfiguration, credential: String, session: URLSession = .shared) {
+    public init(configuration: OpenAIRealtimeConfiguration, credential: String, session: URLSession = .shared) {
         self.configuration = configuration
         self.credential = credential
         self.session = session
@@ -37,8 +37,9 @@ public actor RealtimeTranslationClient: RealtimeSocket {
         try await send(["type": "session.input_audio_buffer.append", "audio": chunk.base64EncodedString()])
     }
 
-    public func setTargetLanguage(_ language: String) async throws {
+    public func setTargetLanguage(_ language: String) async throws -> Bool {
         try await send(["type": "session.update", "session": ["audio": ["output": ["language": language]]]])
+        return true
     }
 
     /// Graceful close: the server flushes pending output, then sends `session.closed`.
@@ -102,7 +103,7 @@ public actor RealtimeTranslationClient: RealtimeSocket {
         continuation.finish()
     }
 
-    static func parse(_ data: Data) -> RealtimeEvent? {
+    static func parse(_ data: Data) -> SocketEvent? {
         guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let type = json["type"] as? String else { return nil }
         let elapsed = json["elapsed_ms"] as? Int
@@ -110,8 +111,7 @@ public actor RealtimeTranslationClient: RealtimeSocket {
         case "session.created":
             let session = json["session"] as? [String: Any]
             let expires = (session?["expires_at"] as? Double).map { Date(timeIntervalSince1970: $0) }
-            return .sessionCreated(id: session?["id"] as? String ?? "?", expiresAt: expires)
-        case "session.updated": return .sessionUpdated
+            return .sessionStarted(id: session?["id"] as? String ?? "?", expiresAt: expires)
         case "session.input_transcript.delta": return .sourceDelta(json["delta"] as? String ?? "", elapsedMs: elapsed)
         case "session.output_transcript.delta": return .translationDelta(json["delta"] as? String ?? "", elapsedMs: elapsed)
         case "session.output_audio.delta":
@@ -119,8 +119,9 @@ public actor RealtimeTranslationClient: RealtimeSocket {
         case "session.closed": return .closed(reason: nil)
         case "error":
             let e = json["error"] as? [String: Any]
-            return .serverError(type: e?["type"] as? String ?? "error", code: e?["code"] as? String,
-                                message: e?["message"] as? String ?? String(decoding: data, as: UTF8.self))
+            let code = e?["code"] as? String ?? e?["type"] as? String ?? "error"
+            return .serverError(code: code, message: e?["message"] as? String ?? String(decoding: data, as: UTF8.self),
+                                fatal: ["invalid_api_key", "insufficient_quota"].contains(code))
         default: return nil
         }
     }

@@ -1,5 +1,6 @@
 import AppKit
 import HearviaAudio
+import HearviaCore
 import HearviaSession
 import Observation
 
@@ -7,7 +8,7 @@ import Observation
 @MainActor @Observable
 final class AppModel {
     let settings: AppSettings
-    let translator = LiveTranslator(fallbackKey: AppModel.developmentKey)
+    let translator = LiveTranslator(fallbackKeys: AppModel.developmentKeys)
     var source = CaptureSource.allApps
     var processes: [AudioProcess] = []
     var capturing = false
@@ -67,12 +68,14 @@ final class AppModel {
         Task { await translator.setTranscribesSource(shows) }
     }
 
-    /// Debug builds may take the key from the environment or `.env`; Release users paste their own.
-    private static var developmentKey: String {
+    /// Debug builds may take keys from the environment or `.env`; Release users paste their own.
+    private static var developmentKeys: [EngineKind: String] {
         #if DEBUG
-            ProcessInfo.processInfo.environment["OPENAI_API_KEY"] ?? DevSecrets.openAIKey
+            let environment = ProcessInfo.processInfo.environment
+            return [.realtime: environment["OPENAI_API_KEY"] ?? DevSecrets.openAIKey,
+                    .gemini: environment["GEMINI_API_KEY"] ?? DevSecrets.geminiKey]
         #else
-            ""
+            [:]
         #endif
     }
 

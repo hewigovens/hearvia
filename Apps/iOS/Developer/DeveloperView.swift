@@ -77,7 +77,7 @@
                                                              set: { language in Task { await model.translation.setTargetLanguage(language) } })) {
                     ForEach(Languages.supported, id: \.self) { Text($0).tag($0) }
                 }
-                SecureField("OpenAI API key", text: Bindable(model.translation).apiKey)
+                SecureField("OpenAI API key", text: Bindable(model.translation).openAIKey)
                     .textInputAutocapitalization(.never).autocorrectionDisabled()
                 HStack {
                     Button("Connect") { Task { await model.translation.start() } }

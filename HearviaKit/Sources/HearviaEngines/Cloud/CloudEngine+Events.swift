@@ -2,8 +2,8 @@ import Foundation
 import HearviaCore
 
 /// Server events: text, errors, and what to do when a socket closes.
-extension RealtimeEngine {
-    func handle(_ event: RealtimeEvent, from sender: any RealtimeSocket) {
+extension CloudEngine {
+    func handle(_ event: SocketEvent, from sender: any TranslationSocket) {
         guard running else { return }
         if sender === retiring {
             handleRetiring(event)
@@ -11,19 +11,23 @@ extension RealtimeEngine {
         }
         guard sender === socket else { return }
         switch event {
-        case let .sessionCreated(id, expires):
+        case let .sessionStarted(id, expires):
             lastProblem = ""
             failures = 0
             expiresAt = expires
             continuation.yield(.status(.translating(onDevice: false)))
-            continuation.yield(.log("translation_session", ["id": id, "expires": expires.map { "\($0)" } ?? ""]))
-        case .sessionUpdated, .audioDelta: break
+            continuation.yield(.log("translation_session", ["provider": provider, "id": id, "expires": expires.map { "\($0)" } ?? ""]))
+        case let .expiring(at):
+            expiresAt = at
+            continuation.yield(.log("translation_expiring", ["seconds_left": "\(Int(at.timeIntervalSince(timing.now())))"]))
+        case .audioDelta: break
         case let .sourceDelta(delta, _): appendSource(delta)
         case let .translationDelta(delta, _): appendTranslation(delta)
-        case let .serverError(type, code, message):
-            lastProblem = "\(code ?? type): \(message)"
+        case let .serverError(code, message, fatal):
+            lastProblem = "\(code): \(message)"
+            fatalProblem = fatalProblem || fatal
             continuation.yield(.problem(lastProblem))
-            continuation.yield(.log("translation_error", ["type": type, "code": code ?? "", "message": message]))
+            continuation.yield(.log("translation_error", ["code": code, "message": message, "fatal": "\(fatal)"]))
         case let .closed(reason):
             continuation.yield(.log("translation_closed", ["reason": reason ?? "session.closed", "chunks": "\(chunksSent)", "deltas": "\(deltas)"]))
             socket = nil
@@ -34,7 +38,7 @@ extension RealtimeEngine {
     }
 
     /// A socket closed for a pause or rotation still flushes the translation of its last words.
-    private func handleRetiring(_ event: RealtimeEvent) {
+    private func handleRetiring(_ event: SocketEvent) {
         switch event {
         case let .sourceDelta(delta, _): appendSource(delta)
         case let .translationDelta(delta, _): appendTranslation(delta)
@@ -60,11 +64,11 @@ extension RealtimeEngine {
 
     private func reconnectOrFail() {
         // Fatal auth/quota errors would loop forever; give up instead.
-        if lastProblem.contains("invalid_api_key") || lastProblem.contains("insufficient_quota") || failures >= timing.maxFailures {
+        if fatalProblem || failures >= timing.maxFailures {
             running = false
             pump?.cancel()
             pump = nil
-            continuation.yield(.failed(lastProblem.isEmpty ? "Lost the connection to OpenAI." : lastProblem))
+            continuation.yield(.failed(lastProblem.isEmpty ? "Lost the connection to \(provider)." : lastProblem))
             continuation.finish()
             return
         }

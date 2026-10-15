@@ -42,17 +42,17 @@ final class FakeEngine: TranslationEngine {
 }
 
 final class MemorySecrets: SecretStore, @unchecked Sendable {
-    var value: String?
-    init(_ value: String?) {
-        self.value = value
+    var values: [String: String]
+    init(_ values: [String: String]) {
+        self.values = values
     }
 
-    func read() -> String? {
-        value
+    func read(account: String) -> String? {
+        values[account]
     }
 
-    func write(_ value: String) {
-        self.value = value
+    func write(_ value: String, account: String) {
+        values[account] = value
     }
 }
 
@@ -67,11 +67,11 @@ final class Harness {
         return engine
     }
 
-    init(apiKey: String? = "sk-test") {
+    init(apiKey: String? = "sk-test", geminiKey: String? = nil) {
         let suite = "hearvia.tests.\(UUID().uuidString)"
         defaults = UserDefaults(suiteName: suite)!
         defaults.removePersistentDomain(forName: suite)
-        secrets = MemorySecrets(apiKey)
+        secrets = MemorySecrets(["openai-api-key": apiKey, "gemini-api-key": geminiKey].compactMapValues { $0 })
     }
 
     /// Lets the translator's listener task apply what the engine sent.
@@ -177,9 +177,30 @@ struct LiveTranslatorTests {
         let harness = Harness()
         await harness.translator.setTargetLanguage("ja")
         await harness.translator.setEngine(.onDevice)
-        harness.translator.apiKey = "sk-new"
+        harness.translator.openAIKey = "sk-new"
+        harness.translator.geminiKey = "AIza-new"
         let reloaded = LiveTranslator(defaults: harness.defaults, secrets: harness.secrets)
-        #expect(reloaded.targetLanguage == "ja" && reloaded.engine == .onDevice && reloaded.apiKey == "sk-new")
+        #expect(reloaded.targetLanguage == "ja" && reloaded.engine == .onDevice)
+        #expect(reloaded.openAIKey == "sk-new" && reloaded.geminiKey == "AIza-new")
+    }
+
+    @Test func eachCloudEngineUsesItsOwnKey() async throws {
+        let harness = Harness(apiKey: "sk-test", geminiKey: nil)
+        let translator = harness.translator
+        await translator.setEngine(.gemini)
+        await translator.start()
+        #expect(translator.status == .needsAPIKey && harness.engines.isEmpty)
+
+        translator.geminiKey = "AIza-test"
+        await translator.start()
+        let engine = try #require(harness.engines.first)
+        #expect(engine.kind == .gemini && engine.request.apiKey == "AIza-test")
+    }
+
+    @Test func fallbackKeysFillInUnsavedKeys() {
+        let harness = Harness(apiKey: nil)
+        let translator = LiveTranslator(fallbackKeys: [.gemini: "AIza-dev"], defaults: harness.defaults, secrets: harness.secrets)
+        #expect(translator.geminiKey == "AIza-dev" && translator.openAIKey.isEmpty)
     }
 
     @Test func stopStopsTheEngine() async throws {

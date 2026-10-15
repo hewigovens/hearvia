@@ -6,9 +6,9 @@ import HearviaEngines
 public extension LiveTranslator {
     func start() async {
         guard !isActive else { return }
-        guard engine == .onDevice || !apiKey.isEmpty else {
+        guard !engine.isCloud || !apiKey.isEmpty else {
             status = .needsAPIKey
-            error = "Add an OpenAI API key, or switch to on-device translation."
+            error = "Add an API key for \(engine.title) in Settings, or switch to on-device translation."
             return
         }
         isActive = true

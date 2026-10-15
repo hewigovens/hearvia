@@ -50,7 +50,7 @@ final class AppModel {
         session = AudioSessionController(log: log)
         capture = CaptureController(log: log, session: session)
         pip = PiPController(log: log, session: session)
-        translation = LiveTranslator(fallbackKey: DevSecrets.openAIKey)
+        translation = LiveTranslator(fallbackKeys: [.realtime: DevSecrets.openAIKey, .gemini: DevSecrets.geminiKey])
         capture.probe.translationFeed = translation.feed
         capture.probe.levelMeter = meter
         if let label = ProcessInfo.processInfo.environment["HEARVIA_EXPERIMENT"] {

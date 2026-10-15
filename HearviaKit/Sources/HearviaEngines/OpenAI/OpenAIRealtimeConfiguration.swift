@@ -1,7 +1,7 @@
 import Foundation
 
-/// Session settings for the Realtime translation socket.
-public struct RealtimeConfiguration: Sendable {
+/// Session settings for OpenAI's Realtime translation socket.
+public struct OpenAIRealtimeConfiguration: Sendable {
     public var targetLanguage: String
     public var sourceTranscriptionModel: String?
     public var noiseReduction: String? // "near_field", "far_field" or nil
@@ -10,10 +10,10 @@ public struct RealtimeConfiguration: Sendable {
 
     public static let defaultTranscriptionModel = "gpt-realtime-whisper"
 
-    /// `sourceTranscriptionModel: nil` turns off the original-language text, which is billed separately.
-    public init(targetLanguage: String, sourceTranscriptionModel: String? = defaultTranscriptionModel, noiseReduction: String? = nil) {
+    /// `transcribesSource: false` turns off the original-language text, which is billed separately.
+    public init(targetLanguage: String, transcribesSource: Bool = true, noiseReduction: String? = nil) {
         self.targetLanguage = targetLanguage
-        self.sourceTranscriptionModel = sourceTranscriptionModel
+        sourceTranscriptionModel = transcribesSource ? Self.defaultTranscriptionModel : nil
         self.noiseReduction = noiseReduction
     }
 }

@@ -3,12 +3,9 @@ import HearviaEngines
 
 /// What the setup tiles show about the current preferences.
 public extension LiveTranslator {
-    /// Whether Start translates right away: Realtime needs an API key, on-device needs its models.
+    /// Whether Start translates right away: a cloud engine needs its API key, on-device needs its models.
     func isReady() async -> Bool {
-        switch engine {
-        case .realtime: !apiKey.isEmpty
-        case .onDevice: await OnDeviceModels.isReady(from: sourceLanguage, to: targetLanguage)
-        }
+        engine.isCloud ? !apiKey.isEmpty : await OnDeviceModels.isReady(from: sourceLanguage, to: targetLanguage)
     }
 
     /// Changes whenever `isReady()` might; use it as a `.task(id:)`.

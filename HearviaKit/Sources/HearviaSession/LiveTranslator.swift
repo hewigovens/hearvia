@@ -5,7 +5,7 @@ import HearviaEngines
 import Observation
 
 /// The live subtitle pipeline both apps share: captured PCM → `feed` → engine → observable text and transcript.
-/// Owns the translation preferences (languages, engine, API key) and one engine run at a time.
+/// Owns the translation preferences (languages, engine, API keys) and one engine run at a time.
 @MainActor @Observable
 public final class LiveTranslator {
     public typealias EngineFactory = @MainActor (_ kind: EngineKind, _ request: EngineRequest) -> any TranslationEngine
@@ -13,17 +13,28 @@ public final class LiveTranslator {
     public private(set) var engine: EngineKind {
         didSet { defaults.set(engine.rawValue, forKey: Keys.engine) }
     }
-    /// Spoken language; only the on-device engine uses it (Realtime detects it).
+    /// Spoken language; only the on-device engine uses it (the cloud engines detect it).
     public private(set) var sourceLanguage: String {
         didSet { defaults.set(sourceLanguage, forKey: Keys.sourceLanguage) }
     }
     public private(set) var targetLanguage: String {
         didSet { defaults.set(targetLanguage, forKey: Keys.targetLanguage) }
     }
-    public var apiKey: String {
-        didSet { secrets.write(apiKey) }
+    public var openAIKey: String {
+        didSet { secrets.write(openAIKey, account: EngineKind.realtime.keyAccount!) }
     }
-    /// Whether the Realtime engine also returns the original-language text, which is billed separately.
+    public var geminiKey: String {
+        didSet { secrets.write(geminiKey, account: EngineKind.gemini.keyAccount!) }
+    }
+    /// The chosen engine's key; empty for on-device.
+    public var apiKey: String {
+        switch engine {
+        case .onDevice: ""
+        case .realtime: openAIKey
+        case .gemini: geminiKey
+        }
+    }
+    /// Whether a cloud engine also returns the original-language text, which OpenAI bills separately.
     /// The apps follow their "show original speech" setting. Not persisted.
     public private(set) var transcribesSource = true
 
@@ -47,22 +58,29 @@ public final class LiveTranslator {
     @ObservationIgnored private let secrets: any SecretStore
     @ObservationIgnored let makeEngine: EngineFactory
 
-    public init(fallbackKey: String = "", defaults: UserDefaults = .standard, secrets: any SecretStore = KeychainStore(),
+    /// `fallbackKeys` stand in for keys not saved yet (Debug builds pass the ones from `.env`).
+    public init(fallbackKeys: [EngineKind: String] = [:], defaults: UserDefaults = .standard, secrets: any SecretStore = KeychainStore(),
                 makeEngine: @escaping EngineFactory = LiveTranslator.makeEngine) {
         self.defaults = defaults
         self.secrets = secrets
         self.makeEngine = makeEngine
-        let key = secrets.read() ?? fallbackKey
-        apiKey = key
-        engine = defaults.string(forKey: Keys.engine).flatMap(EngineKind.init) ?? (key.isEmpty ? .onDevice : .realtime)
+        func key(_ engine: EngineKind) -> String {
+            secrets.read(account: engine.keyAccount!) ?? fallbackKeys[engine] ?? ""
+        }
+        let openAIKey = key(.realtime)
+        self.openAIKey = openAIKey
+        geminiKey = key(.gemini)
+        engine = defaults.string(forKey: Keys.engine).flatMap(EngineKind.init) ?? (openAIKey.isEmpty ? .onDevice : .realtime)
         sourceLanguage = defaults.string(forKey: Keys.sourceLanguage) ?? "en"
         targetLanguage = defaults.string(forKey: Keys.targetLanguage) ?? "zh"
     }
 
     public static func makeEngine(_ kind: EngineKind, _ request: EngineRequest) -> any TranslationEngine {
         switch kind {
-        case .realtime: RealtimeEngine(targetLanguage: request.targetLanguage, apiKey: request.apiKey,
-                                       transcribesSource: request.transcribesSource)
+        case .realtime: CloudEngine.openAI(targetLanguage: request.targetLanguage, apiKey: request.apiKey,
+                                           transcribesSource: request.transcribesSource)
+        case .gemini: CloudEngine.gemini(targetLanguage: request.targetLanguage, apiKey: request.apiKey,
+                                         transcribesSource: request.transcribesSource)
         case .onDevice: OnDeviceEngine(sourceLanguage: request.sourceLanguage, targetLanguage: request.targetLanguage)
         }
     }
@@ -87,18 +105,18 @@ public final class LiveTranslator {
     public func setEngine(_ engine: EngineKind) async {
         guard engine != self.engine else { return }
         self.engine = engine
-        if engine == .realtime {
-            targetLanguage = Languages.realtimeTarget(for: targetLanguage) // On-device offers more languages.
+        if engine.isCloud {
+            targetLanguage = Languages.cloudTarget(for: targetLanguage) // On-device offers more languages.
         }
         await restartIfActive()
     }
 
-    /// Restarts a running Realtime engine so the change applies right away: turning the original on should show it
+    /// Restarts a running cloud engine so the change applies right away: turning the original on should show it
     /// now, and turning it off should stop paying for it now. The on-device engine always has the original.
     public func setTranscribesSource(_ transcribes: Bool) async {
         guard transcribes != transcribesSource else { return }
         transcribesSource = transcribes
-        if engine == .realtime {
+        if engine.isCloud {
             await restartIfActive()
         }
     }

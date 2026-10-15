@@ -1,7 +1,7 @@
 import Foundation
 
 /// Audio routing: sending, buffering while (re)connecting, pausing on silence and rotating the session.
-extension RealtimeEngine {
+extension CloudEngine {
     func consume(_ chunk: Data) async {
         guard running else { return }
         chunksReceived += 1
@@ -70,15 +70,10 @@ extension RealtimeEngine {
 
     /// Replaces the socket before the session expires: early at a silent moment, or at the deadline regardless.
     func rotateIfDue() {
-        guard let expiresAt, let socket else { return }
+        guard let expiresAt else { return }
         let left = expiresAt.timeIntervalSince(timing.now())
         guard left <= timing.rotationDeadline || (left <= timing.rotationLead && silentChunks >= timing.pauseChunks) else { return }
-        self.socket = nil
-        socketReady = false
-        self.expiresAt = nil
-        retire(socket)
-        continuation.yield(.log("translation_rotated", ["seconds_left": "\(Int(left))"]))
-        Task { await connect(announce: false) }
+        rotate(reason: "expiry")
     }
 
     nonisolated static func peak(of chunk: Data) -> Int {

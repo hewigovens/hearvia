@@ -1,6 +1,6 @@
 /// Language codes ("en", "zh", "yue") for spoken and subtitle languages.
 public enum Languages {
-    /// What the Realtime engine supports, most used first. Also the default list before on-device languages load.
+    /// What every engine offers, most used first: the cloud engines' list, and the on-device default until its languages load.
     public static let supported = ["zh", "en", "ja", "ko", "es", "fr", "de", "pt", "it", "ru", "hi", "id", "vi"]
 
     /// Languages written without spaces between words.
@@ -18,8 +18,8 @@ public enum Languages {
         return choices.contains(selected) ? choices : [selected] + choices
     }
 
-    /// `code` when Realtime can show subtitles in it, otherwise English.
-    public static func realtimeTarget(for code: String) -> String {
+    /// `code` when the cloud engines can show subtitles in it, otherwise English.
+    public static func cloudTarget(for code: String) -> String {
         supported.contains(code) ? code : "en"
     }
 }

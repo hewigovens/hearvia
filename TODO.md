@@ -32,12 +32,18 @@ Open work, roughly by priority. State as of 2026-10-15.
 - [ ] Session rotation in a real session close to 60 minutes (log event `translation_rotated`).
 - [ ] Overlay: the faded top edge of the translation can leave a faint trace of a clipped line; check at other font sizes.
 
+## Gemini Live (preview)
+
+- [x] CLI end to end with a free-tier key: en → zh and en → ja stream about 0.2 s behind the source transcript; a rejected key stops without reconnecting.
+- [ ] en → ja dropped the clip's last clause ("…smaller than expected") on every run, even with more speech after it; recheck when the model leaves preview, and compare other targets.
+- [ ] Try it in the apps on device: rotation every ~7–9 minutes, silence pause and resume, a language change mid-session.
+
 ## Cost and reliability (OpenAI Realtime)
 
 - [x] Close the session after 25 s of silence and reconnect when sound returns, with 1.6 s of pre-roll.
 - [x] Rotate the session before the 60-minute expiry (unit-tested).
 - [x] Skip input transcription when "show original" is off.
-- [ ] Tune the silence threshold (about −40 dBFS peak, `RealtimeTiming.silencePeak`): videos with background music may never pause.
+- [ ] Tune the silence threshold (about −40 dBFS peak, `CloudTiming.silencePeak`): videos with background music may never pause.
 - [ ] Transcript lines are cut at sentence punctuation in the translation, so original/translation pairing is approximate.
 - [ ] Source text from consecutive sessions (after a pause or rotation) is joined without a space ("…than expected Good evening").
 
@@ -61,7 +67,7 @@ Open work, roughly by priority. State as of 2026-10-15.
 ## Code health
 
 - [ ] UI tests (`Apps/iOS/UITests`) still target the PoC screens; rewrite for the new UI (needs an iOS 27 simulator or a device).
-- [x] Unit tests for RealtimeEngine reconnect/backoff, pause and rotation (fake socket).
+- [x] Unit tests for the cloud engine's reconnect/backoff, pause and rotation (fake socket).
 - [x] Moved off the deprecated `installTap` to `installAudioTap`.
 - [ ] `TranslationSession` is still not Sendable in the 27 SDK, so `OnDeviceTextTranslator` and `OnDeviceModelsView` keep `nonisolated(unsafe)`; revisit with a later SDK.
 - [ ] `Apps/iOS/Developer/DeveloperView.swift` still offers only `Languages.supported`.

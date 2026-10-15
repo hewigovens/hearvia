@@ -4,18 +4,19 @@ import HearviaAudio
 import HearviaEngines
 
 // Streams an audio file through an engine at real-time pace and prints the text as it arrives.
-// Usage: hearvia-translate <audio-file> [target-lang=zh] [--fast] [--on-device=<spoken-lang>]
-// The Realtime engine also reports lag; --fast sends the audio as quickly as possible.
+// Usage: hearvia-translate <audio-file> [target-lang=zh] [--fast] [--gemini | --on-device=<spoken-lang>]
+// OpenAI Realtime by default (it also reports lag); --fast sends the audio as quickly as possible.
 
-func apiKey() -> String? {
-    if let key = ProcessInfo.processInfo.environment["OPENAI_API_KEY"], !key.isEmpty {
+/// `name` from the environment, else from the nearest `.env` up to four directories above.
+func secret(_ name: String) -> String? {
+    if let key = ProcessInfo.processInfo.environment[name], !key.isEmpty {
         return key
     }
     var dir = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     for _ in 0 ..< 4 {
         if let text = try? String(contentsOf: dir.appending(path: ".env"), encoding: .utf8) {
-            for line in text.split(separator: "\n") where line.hasPrefix("OPENAI_API_KEY=") {
-                return String(line.dropFirst("OPENAI_API_KEY=".count)).trimmingCharacters(in: .init(charactersIn: "\"' "))
+            for line in text.split(separator: "\n") where line.hasPrefix("\(name)=") {
+                return String(line.dropFirst(name.count + 1)).trimmingCharacters(in: .init(charactersIn: "\"' "))
             }
         }
         dir.deleteLastPathComponent()
@@ -24,7 +25,7 @@ func apiKey() -> String? {
 }
 
 let args = CommandLine.arguments.dropFirst().filter { !$0.hasPrefix("--") }
-guard let path = args.first else { print("usage: hearvia-translate <audio-file> [lang] [--fast] [--on-device=<spoken-lang>]")
+guard let path = args.first else { print("usage: hearvia-translate <audio-file> [lang] [--fast] [--gemini | --on-device=<spoken-lang>]")
     exit(2)
 }
 let language = args.dropFirst().first ?? "zh"
@@ -35,7 +36,9 @@ if let flag = CommandLine.arguments.first(where: { $0.hasPrefix("--on-device") }
     try await runOnDevice(path: path, spoken: spoken, target: language)
     exit(0)
 }
-guard let key = apiKey() else { print("OPENAI_API_KEY not set and no .env found")
+let gemini = CommandLine.arguments.contains("--gemini")
+let keyName = gemini ? "GEMINI_API_KEY" : "OPENAI_API_KEY"
+guard let key = secret(keyName) else { print("\(keyName) not set and no .env found")
     exit(2)
 }
 
@@ -51,7 +54,9 @@ while file.framePosition < file.length {
 chunks += Array(repeating: PCM16Resampler.silenceChunk, count: 15) // 3 s tail so the model can finish
 print("audio: \(file.fileFormat.sampleRate) Hz × \(file.fileFormat.channelCount) ch → \(chunks.count) chunks of 200 ms, target=\(language)")
 
-let client = RealtimeTranslationClient(configuration: .init(targetLanguage: language), credential: key)
+let client: any TranslationSocket = gemini
+    ? GeminiLiveClient(configuration: GeminiLiveConfiguration(targetLanguage: language), apiKey: key)
+    : OpenAIRealtimeClient(configuration: OpenAIRealtimeConfiguration(targetLanguage: language), credential: key)
 let start = Date()
 nonisolated(unsafe) var streamStart = Date.distantFuture
 func stamp() -> String {
@@ -65,8 +70,8 @@ let receiver = Task {
     for await event in client.events {
         let now = Date().timeIntervalSince(start)
         switch event {
-        case let .sessionCreated(id, expires): print("[\(stamp())] session.created \(id) expires=\(expires.map { "\($0)" } ?? "-")")
-        case .sessionUpdated: print("[\(stamp())] session.updated")
+        case let .sessionStarted(id, expires): print("[\(stamp())] session started \(id) expires=\(expires.map { "\($0)" } ?? "-")")
+        case let .expiring(at): print("[\(stamp())] expiring in \(Int(at.timeIntervalSinceNow)) s")
         case let .sourceDelta(d, _):
             if firstSource == nil {
                 firstSource = now
@@ -83,7 +88,7 @@ let receiver = Task {
             translation += d
             print("[\(stamp())] TR   \(d.debugDescription) elapsed_ms=\(ms.map(String.init) ?? "-")")
         case let .audioDelta(bytes, _): audioBytes += bytes
-        case let .serverError(type, code, message): print("[\(stamp())] ERROR \(type) \(code ?? "") \(message)")
+        case let .serverError(code, message, fatal): print("[\(stamp())] ERROR \(code) \(message)\(fatal ? " (fatal)" : "")")
         case let .closed(reason): print("[\(stamp())] closed \(reason ?? "session.closed")")
         }
     }

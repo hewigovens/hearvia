@@ -9,8 +9,8 @@ struct EngineStatusLine: View {
 
     var body: some View {
         Group {
-            if translator.engine == .realtime, translator.apiKey.isEmpty {
-                SettingsLink { Label("Add an OpenAI API key in Settings", systemImage: "key") }
+            if translator.engine.isCloud, translator.apiKey.isEmpty {
+                SettingsLink { Label("Add a \(translator.engine.title) key in Settings", systemImage: "key") }
                     .buttonStyle(.link).font(.caption)
             } else if translator.engine == .onDevice, modelsMissing {
                 VStack(alignment: .leading, spacing: 6) {

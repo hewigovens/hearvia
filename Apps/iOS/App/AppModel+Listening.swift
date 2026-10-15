@@ -22,14 +22,14 @@ extension AppModel {
         }
     }
 
-    /// Capture and translator errors, with the common Realtime failures reworded.
+    /// Capture and translator errors, with the common cloud failures reworded.
     var errorMessage: String {
         let message = [translation.error, capture.error, micError].filter { !$0.isEmpty }.joined(separator: "\n")
-        if message.contains("invalid_api_key") {
-            return "The OpenAI key was rejected. Check it in Settings."
+        if message.contains("invalid_api_key") || message.contains("API key not valid") {
+            return "The \(translation.engine.title) key was rejected. Check it in Settings."
         }
-        if message.contains("insufficient_quota") {
-            return "The OpenAI account has no remaining credit. Try the on-device translator."
+        if message.contains("insufficient_quota") || message.contains("RESOURCE_EXHAUSTED") {
+            return "\(translation.engine.title) has no remaining quota for this key. Try the on-device translator."
         }
         return message
     }

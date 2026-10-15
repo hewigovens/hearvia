@@ -9,8 +9,13 @@ struct SettingsView: View {
         @Bindable var settings = settings
         Form {
             Section("OpenAI Realtime") {
-                SecureField("API key", text: Bindable(model.translator).apiKey)
+                SecureField("API key", text: Bindable(model.translator).openAIKey)
                 Text("Only used by the OpenAI Realtime translator. Kept in your Keychain.").font(.caption).foregroundStyle(Color.hvMuted)
+            }
+            Section("Gemini Live") {
+                SecureField("API key", text: Bindable(model.translator).geminiKey)
+                Text("Only used by the Gemini Live translator. Get a free key at [aistudio.google.com](https://aistudio.google.com/apikey). Kept in your Keychain.")
+                    .font(.caption).foregroundStyle(Color.hvMuted)
             }
             Section("On-device models") {
                 OnDeviceModelsView(source: model.translator.sourceLanguage, target: model.translator.targetLanguage)

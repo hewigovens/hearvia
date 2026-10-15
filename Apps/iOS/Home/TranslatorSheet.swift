@@ -11,9 +11,7 @@ struct TranslatorSheet: View {
     var body: some View {
         TileSheet(title: "Translator") {
             ForEach(EngineKind.allCases) { engine in
-                ChoiceRow(symbol: engine.symbol, title: engine.title,
-                          detail: engine == .onDevice ? "Free · private · works offline" : "Fastest · best quality · ~$2/hour",
-                          selected: translator.engine == engine) {
+                ChoiceRow(symbol: engine.symbol, title: engine.title, detail: engine.tagline, selected: translator.engine == engine) {
                     Task { await translator.setEngine(engine) }
                 }
             }

@@ -1,7 +1,7 @@
 import Foundation
 
-/// Thresholds and delays for `RealtimeEngine`. Audio durations are counted in 200 ms chunks; tests shrink everything.
-struct RealtimeTiming: Sendable {
+/// Thresholds and delays for `CloudEngine`. Audio durations are counted in 200 ms chunks; tests shrink everything.
+struct CloudTiming: Sendable {
     /// Silence before the socket is closed to stop billing (25 s).
     var silenceChunks = 125
     /// Peak sample below which a chunk counts as silent (about -40 dBFS).

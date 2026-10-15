@@ -79,8 +79,7 @@ struct ControlTiles: View {
 
     @ViewBuilder private var engineChoices: some View {
         Picker("Translator", selection: Binding(get: { translator.engine }, set: { engine in Task { await translator.setEngine(engine) } })) {
-            Text("On-device — free and private").tag(EngineKind.onDevice)
-            Text("OpenAI Realtime — fastest, ~$2/hour").tag(EngineKind.realtime)
+            ForEach(EngineKind.allCases) { Text("\($0.title) — \($0.tagline)").tag($0) }
         }
         .pickerStyle(.inline)
         Divider()

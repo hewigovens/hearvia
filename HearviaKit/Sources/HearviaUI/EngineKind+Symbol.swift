@@ -2,6 +2,10 @@ import HearviaCore
 
 public extension EngineKind {
     var symbol: String {
-        self == .onDevice ? "cpu" : "cloud"
+        switch self {
+        case .onDevice: "cpu"
+        case .realtime: "cloud"
+        case .gemini: "sparkle"
+        }
     }
 }

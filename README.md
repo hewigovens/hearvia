@@ -47,12 +47,13 @@ The signing team in `project.yml` is this workspace's; replace `DEVELOPMENT_TEAM
 
 ### Development API key
 
-Put `OPENAI_API_KEY=sk-…` in `.env` (gitignored). The pre-build script `scripts/gen_dev_secrets.sh` writes it into `Apps/Shared/DevSecrets.generated.swift` for **Debug builds only**, as a fallback when no key is saved in the Keychain. Never ship a build with it.
+Put `OPENAI_API_KEY=sk-…` and/or `GEMINI_API_KEY=AIza…` (free from [Google AI Studio](https://aistudio.google.com/apikey)) in `.env` (gitignored). The pre-build script `scripts/gen_dev_secrets.sh` writes them into `Apps/Shared/DevSecrets.generated.swift` for **Debug builds only**, as fallbacks when no key is saved in the Keychain. Never ship a build with them.
 
 ### Try the engines without the apps
 
 ```sh
 just translate TestMedia/speech/en.aiff zh                  # OpenAI Realtime (needs .env)
+just translate TestMedia/speech/en.aiff zh --gemini         # Gemini Live (needs GEMINI_API_KEY)
 just translate TestMedia/speech/ja.aiff en --on-device=ja   # on-device
 ```
 

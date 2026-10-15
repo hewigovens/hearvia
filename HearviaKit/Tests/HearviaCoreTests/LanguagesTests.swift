@@ -20,9 +20,9 @@ import Testing
     #expect(Languages.choices(for: .onDevice, onDevice: ["en"], including: "ko") == ["ko", "en"])
 }
 
-@Test func realtimeTargetFallsBackToEnglish() {
-    #expect(Languages.realtimeTarget(for: "ja") == "ja")
-    #expect(Languages.realtimeTarget(for: "nl") == "en")
+@Test func cloudTargetFallsBackToEnglish() {
+    #expect(Languages.cloudTarget(for: "ja") == "ja")
+    #expect(Languages.cloudTarget(for: "nl") == "en")
 }
 
 @Test func thaiJoinsWithoutSpaces() {

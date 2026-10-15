@@ -11,14 +11,14 @@ struct EngineStatus: View {
 
     var body: some View {
         Group {
-            if translator.engine == .realtime {
+            if translator.engine.isCloud {
                 if translator.apiKey.isEmpty {
                     Button(action: openSettings) {
-                        Label("Add an OpenAI API key in Settings", systemImage: "key")
+                        Label("Add a \(translator.engine.title) key in Settings", systemImage: "key")
                     }
                     .font(.footnote)
                 } else {
-                    readyLine("Connected with your OpenAI API key")
+                    readyLine("Using your \(translator.engine.title) key")
                 }
             } else if ready == true {
                 readyLine("Speech and translation models ready")

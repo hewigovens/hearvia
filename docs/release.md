@@ -6,13 +6,13 @@ What a distributable Hearvia build needs, and what is already in place. State as
 
 | Concern | Debug | Release |
 |---|---|---|
-| OpenAI key from `.env` (`DevSecrets`) | Baked in when `.env` exists | Empty: `scripts/gen_dev_secrets.sh` writes `""` for non-Debug configurations, and the generated file compiles the key out under `#if DEBUG` |
+| OpenAI and Gemini keys from `.env` (`DevSecrets`) | Baked in when `.env` exists | Empty: `scripts/gen_dev_secrets.sh` writes `""` for non-Debug configurations, and the generated file compiles the keys out under `#if DEBUG` |
 | iOS developer tools (Settings → Developer tools, `Apps/iOS/Developer`) | Present | Compiled out (`#if DEBUG`) |
 | iOS diagnostic JSONL in Documents/Evidence | Written | Not written; events go to unified logging with field values redacted (`privacy: .private`) |
 | iOS `UIFileSharingEnabled`, `LSSupportsOpeningDocumentsInPlace` | Present | Removed from the built Info.plist by `scripts/strip_release_plist.sh` |
 | Mac hardened runtime | On | On |
 
-The Mac app also reads `OPENAI_API_KEY` from the process environment as a fallback. That only works when someone launches the binary with that variable set, so it never ships a key, but drop it if a release should only use the Keychain.
+The Mac app also reads `OPENAI_API_KEY` and `GEMINI_API_KEY` from the process environment as fallbacks. That only works when someone launches the binary with that variable set, so it never ships a key, but drop it if a release should only use the Keychain.
 
 ## Privacy manifest
 

@@ -58,4 +58,4 @@ This repo uses **Jujutsu (jj)**, not git. Load [Version Control](agents/version-
 
 ## Secrets
 
-`.env` holds `OPENAI_API_KEY` for Debug builds only (`scripts/gen_dev_secrets.sh` → `Apps/Shared/DevSecrets.generated.swift`, both gitignored). Never print, log, commit or paste a key. `~/.config/hearvia/` holds ChatGPT OAuth tokens from `scripts/chatgpt_plan_probe.py`; same rule.
+`.env` holds `OPENAI_API_KEY` and `GEMINI_API_KEY` for Debug builds only (`scripts/gen_dev_secrets.sh` → `Apps/Shared/DevSecrets.generated.swift`, both gitignored). Never print, log, commit or paste a key. `~/.config/hearvia/` holds ChatGPT OAuth tokens from `scripts/chatgpt_plan_probe.py`; same rule.
