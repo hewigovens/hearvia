@@ -14,13 +14,8 @@ struct HomeTiles: View {
     }
 
     var body: some View {
-        @Bindable var settings = settings
         HStack(spacing: 10) {
-            Menu {
-                Picker("Listen to", selection: $settings.input) {
-                    ForEach(InputSource.allCases) { Label($0.title, systemImage: $0.symbol).tag($0) }
-                }
-            } label: {
+            Button { present(.source) } label: {
                 ControlTile(symbol: settings.input.symbol, caption: "Listen to", value: settings.input.title)
             }
             .disabled(model.busy)

@@ -8,8 +8,8 @@ Load before changing app file layout, models, settings, or presentation.
 Apps/iOS/
 ├── App/          HearviaApp, AppModel (+Listening, +Subtitles, +Diagnostics), AppSettings, InputSource
 ├── Home/         HomeView, HomePresentation, HomeHeader, StartPrompt, HomeTiles, ListeningSummary,
-│                 TranscriptCard, LanguagesSheet (LanguageCard), TranslatorSheet (EngineCard, EngineStatus),
-│                 CircleButton
+│                 TileSheet + SourceSheet, LanguagesSheet (LanguageCard), TranslatorSheet (EngineStatus),
+│                 ChoiceRow, TranscriptSheet, CircleButton
 ├── Onboarding/   OnboardingView, OnboardingPage, FeatureCard, Bullet, MicrophonePermissionRow
 ├── Settings/     SettingsView
 ├── Capture/      CaptureController (ScreenCaptureKit), AudioProbe, ProbeSnapshot, AudioAnalysis,
@@ -44,6 +44,7 @@ Apps/Shared/      DevSecrets.generated.swift (generated, optional in project.yml
 
 - **Inline state**: missing models, missing API key, waiting for the iOS picker, errors under the main button.
 - **Sheet / full-screen cover**: driven by one optional enum per screen (`HomePresentation`), not by several booleans.
+  Each home tile opens a `TileSheet` (title over its choices, detent fitted to the content), so the three behave alike.
 - **Floating window**: PiP on iOS (`PiPController`, 1.8:1 sample-buffer layer that must stay on screen inline; its ✕ stops listening, Back to app does not), overlay `NSPanel` on macOS (non-activating, all Spaces, compact while idle and full-size while listening, hover ✕ and Start/Stop, `WindowDragGesture` elsewhere unless click-through).
 
 ## Platform notes

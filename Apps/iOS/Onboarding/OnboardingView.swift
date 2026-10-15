@@ -1,4 +1,3 @@
-import HearviaCore
 import HearviaSession
 import HearviaUI
 import SwiftUI
@@ -83,41 +82,19 @@ struct OnboardingView: View {
 
     private var languageChoice: some View {
         OnboardingPage(symbol: "globe", title: "Your languages",
-                       message: "Pick the language you want to read. OpenAI Realtime detects the spoken language by itself; the on-device translator needs to know it. Change either any time.") {
-            HStack {
-                Text("Spoken language")
-                Spacer()
-                Picker("Spoken language", selection: Binding(get: { translator.sourceLanguage },
-                                                             set: { l in Task { await translator.setSourceLanguage(l) } })) {
-                    ForEach(OnDeviceLanguages.shared.spokenChoices(for: translator.engine, including: translator.sourceLanguage), id: \.self) { Text(LanguageName.of($0)).tag($0) }
-                }
-                .labelsHidden()
-            }
-            .padding(.horizontal, 16).frame(minHeight: 52)
-            .background(Color.hvSurface, in: .rect(cornerRadius: 14, style: .continuous))
-            Text("Subtitles in").font(.subheadline.weight(.semibold)).padding(.top, 4)
-            Picker("Subtitle language", selection: Binding(get: { translator.targetLanguage },
-                                                           set: { l in Task { await translator.setTargetLanguage(l) } })) {
-                ForEach(OnDeviceLanguages.shared.subtitleChoices(for: translator.engine, including: translator.targetLanguage), id: \.self) { Text(LanguageName.of($0)).tag($0) }
-            }
-            .pickerStyle(.wheel)
-            .frame(height: 150)
+                       message: "Pick the language you want to read. Change it any time from the home screen.") {
+            LanguageCard(translator: translator)
         }
     }
 
     private var getReady: some View {
         OnboardingPage(symbol: "checkmark.seal", title: "Get ready",
-                       message: "Two optional steps that save waiting later. If you skip them, Hearvia asks when they are first needed.") {
+                       message: "Both optional. Hearvia asks again when they're needed.") {
             MicrophonePermissionRow()
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Free on-device translator").font(.subheadline.weight(.semibold))
+            FeatureCard("cpu", "On-device translator", "Downloads once, then works offline.", footer: {
                 OnDeviceModelsView(source: translator.sourceLanguage, target: translator.targetLanguage)
-                    .font(.subheadline)
-                Text("Downloads once over Wi-Fi, then works offline.").font(.footnote).foregroundStyle(Color.hvMuted)
-            }
-            .padding(16)
-            .background(Color.hvSurface, in: .rect(cornerRadius: 16, style: .continuous))
-            Bullet("rectangle.dashed.badge.record", "Listening to other apps asks to share your screen each time you start. iOS doesn't allow asking ahead.")
+                    .font(.footnote)
+            })
         }
     }
 }

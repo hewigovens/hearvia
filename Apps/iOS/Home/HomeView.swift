@@ -2,7 +2,7 @@ import HearviaUI
 import SwiftUI
 
 /// Ready: subtitle preview, a centred listen button and the setup tiles. Listening: the button shrinks to the
-/// bottom, the preview grows and the transcript takes the tiles' place.
+/// bottom and the tiles give way to a status line; the transcript is one tap away in the header.
 struct HomeView: View {
     let model: AppModel
     @Environment(AppSettings.self) private var settings
@@ -15,20 +15,14 @@ struct HomeView: View {
             HomeHeader(model: model) { presentation = $0 }
             // The inline layer must stay on screen: PiP starts from it when the user leaves the app.
             SubtitlePreview(pip: model.pip)
-                .aspectRatio(listening ? 1.5 : SubtitleRenderer.aspectRatio, contentMode: .fit)
+                .aspectRatio(SubtitleRenderer.aspectRatio, contentMode: .fit)
                 .clipShape(.rect(cornerRadius: 22, style: .continuous))
                 .accessibilityLabel(listening ? "Live subtitles" : "Subtitle preview")
             if listening {
                 ListeningSummary(model: model)
-                    .transition(.opacity)
+                    .transition(.offset(y: 12).combined(with: .opacity))
             }
-            // One slot either way, so the button keeps its identity and animates to the bottom.
-            if listening {
-                TranscriptCard(model: model)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-            } else {
-                Spacer(minLength: 0)
-            }
+            Spacer(minLength: 0)
             ListenButton(listening: listening, busy: model.busy, size: listening ? 56 : 96) {
                 Task { await model.toggleListening() }
             }
@@ -66,8 +60,10 @@ struct HomeView: View {
         .sheet(item: sheet) { kind in
             switch kind {
             case .settings: SettingsView(model: model) { presentation = .onboarding }
+            case .source: SourceSheet()
             case .languages: LanguagesSheet(translator: model.translation)
             case .translator: TranslatorSheet(translator: model.translation) { presentation = .settings }
+            case .transcript: TranscriptSheet(translator: model.translation)
             case .onboarding: EmptyView()
             }
         }

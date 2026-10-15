@@ -165,13 +165,15 @@ final class CaptureController: NSObject, SCContentSharingPickerObserver, SCStrea
 
     nonisolated func stream(_ stream: SCStream, didStopWithError error: any Error) {
         let message = String(describing: error)
+        // Tapping the red status-bar indicator ends the stream this way; that is a normal stop, not a failure.
+        let userStopped = (error as NSError).domain == SCStreamErrorDomain && (error as NSError).code == SCStreamError.Code.userStopped.rawValue
         Task { @MainActor in
             guard self.stream === stream else { return }
             self.generation += 1
             self.running = false
             self.pending = false
-            self.state = "Stream ended"
-            self.error = message
+            self.state = userStopped ? "Stopped by user" : "Stream ended"
+            self.error = userStopped ? "" : message
             self.stream = nil
             self.picker.isActive = false
             self.probe.unbind()
