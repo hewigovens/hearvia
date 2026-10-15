@@ -6,7 +6,7 @@ Load before changing app file layout, models, settings, or presentation.
 
 ```text
 Apps/iOS/
-├── App/          HearviaApp, AppModel (+Listening, +Subtitles, +Diagnostics), AppSettings, InputSource
+├── App/          HearviaApp, AppModel (+Listening, +Subtitles, +Diagnostics, +QuickStart), AppSettings, InputSource
 ├── Home/         HomeView, HomePresentation, HomeHeader, StartPrompt, HomeTiles, ListeningSummary,
 │                 TileSheet + SourceSheet, LanguagesSheet (LanguageCard), TranslatorSheet (EngineStatus),
 │                 ChoiceRow, TranscriptSheet, CircleButton
@@ -16,7 +16,10 @@ Apps/iOS/
 │                 AudioSessionController, SessionMode
 ├── Subtitles/    PiPController, SubtitleRenderer, SubtitlePreview
 ├── Developer/    DeveloperView, DiagnosticsPanel, DiagnosticLog (PoC diagnostics)
+├── QuickStart/   StartListeningIntent (+ QuickStart request, InputSource as AppEnum), HearviaShortcuts
 ├── Tests/, UITests/
+Apps/iOSWidgets/  HearviaWidgets extension: QuickStartWidget (Home/Lock Screen), QuickStartControl (Control Center).
+                  Also compiles QuickStart/StartListeningIntent.swift and App/InputSource.swift; the intent runs in the app
 Apps/macOS/
 ├── App/          HearviaMacApp (scenes), AppModel (+Capture), AppSettings, CaptureSource
 ├── Capture/      ProcessTapCapture, AudioProcesses, AudioProcess, CoreAudioProperty, CoreAudioError

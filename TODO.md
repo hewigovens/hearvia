@@ -41,6 +41,8 @@ Goal: internal testers first (no review), then an external group. Keys are bring
 - [ ] A Release build on the phone: no Developer tools in Settings, no Files sharing, no diagnostics log file.
 - [ ] Bundle ID is `dev.hewig.hearvia` on both platforms: delete the old "Hearvia PoC" install; Keychain key and settings start fresh. Translation preferences also moved to `hearvia.engine` / `hearvia.sourceLanguage` / `hearvia.targetLanguage`, so languages reset once.
 
+- [ ] Quick start: add the Hearvia widget (small and medium), the Control Center control and "Start Hearvia" in Shortcuts; each opens the app and starts listening (other apps still show the iOS sharing sheet). Check a cold launch, and that onboarding comes first on a fresh install.
+
 ## Verify on Mac
 
 - [x] Realtime with system audio under the hardened runtime; silence pause after 25 s and resume with pre-roll; on-device ja → en; Dock vs menu-bar-only launch (5 launches); permission explainer; overlay keeps two original lines.

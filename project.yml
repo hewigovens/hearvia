@@ -28,6 +28,7 @@ targets:
     dependencies:
       - package: HearviaKit
         product: HearviaKit
+      - target: HearviaWidgets
     preBuildScripts:
       - name: Generate dev secrets
         script: sh "$SRCROOT/scripts/gen_dev_secrets.sh"
@@ -58,6 +59,29 @@ targets:
       SystemCapabilities:
         com.apple.BackgroundModes:
           enabled: 1
+  HearviaWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Apps/iOSWidgets
+      # The intent and its source enum are shared with the app, where the intent runs.
+      - path: Apps/iOS/QuickStart/StartListeningIntent.swift
+      - path: Apps/iOS/App/InputSource.swift
+    dependencies:
+      - package: HearviaKit
+        product: HearviaKit
+    info:
+      path: Apps/iOSWidgets/Info.plist
+      properties:
+        CFBundleDisplayName: Hearvia
+        CFBundleShortVersionString: "0.1"
+        CFBundleVersion: "1"
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.hewig.hearvia.widgets
+        GENERATE_INFOPLIST_FILE: NO
   HearviaMac:
     type: application
     platform: macOS

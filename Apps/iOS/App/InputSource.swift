@@ -1,4 +1,4 @@
-enum InputSource: String, CaseIterable, Identifiable {
+enum InputSource: String, CaseIterable, Identifiable, Sendable {
     case otherApps, microphone
     var id: String {
         rawValue

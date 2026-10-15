@@ -46,7 +46,11 @@ struct HomeView: View {
                 presentation = .onboarding
             }
         }
-        .onChange(of: phase) { _, value in model.sceneChanged(value) }
+        .onChange(of: phase) { _, value in
+            model.sceneChanged(value)
+            startIfRequested()
+        }
+        .onChange(of: QuickStart.shared.request, initial: true) { startIfRequested() }
         .onChange(of: settings.floatsWhenLeaving) { Task { await model.updateFloating() } }
         .onChange(of: settings.subtitleScale) { model.scheduleRender() }
         .onChange(of: settings.showsOriginal) { model.scheduleRender() }
@@ -73,6 +77,14 @@ struct HomeView: View {
                 presentation = nil
             }
         }
+    }
+
+    /// A widget, control or Shortcut asked to start; wait until the app is in front. Before onboarding is done the
+    /// request is dropped rather than kept, so it can't start listening at some later, unexpected moment.
+    private func startIfRequested() {
+        guard phase == .active, let request = QuickStart.shared.take(), settings.hasCompletedOnboarding else { return }
+        presentation = nil
+        model.quickStart(request.source)
     }
 
     private var sheet: Binding<HomePresentation?> {
