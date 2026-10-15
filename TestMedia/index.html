@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hearvia Safari Audio Test</title>
+<body style="font-family:system-ui;padding:24px;background:#f5f5f5">
+<h1>Safari audio source</h1><p>Controlled 440 Hz / 880 Hz tones alternate every second. Microphone must be OFF in Hearvia.</p>
+<video id="source" src="test.mp4" controls loop playsinline style="width:100%"></video>
+<button id="play" style="font-size:24px;padding:16px" onclick="document.getElementById('source').play();this.textContent='Playing test video'">Play test video</button>
+<p id="time">Waiting</p>
+<script>setInterval(()=>{document.getElementById('time').textContent='Video time '+document.getElementById('source').currentTime.toFixed(1)+' s'},1000)</script>
+</body></html>

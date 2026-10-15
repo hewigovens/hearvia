@@ -1,0 +1,18 @@
+# Build output
+DerivedData/
+.build/
+*.xcodeproj/
+*.xcuserstate
+xcuserdata/
+
+# Secrets (see scripts/gen_dev_secrets.sh)
+.env
+.env.*
+Apps/Shared/DevSecrets.generated.swift
+
+# Local-only material: PoC device logs, recordings and screenshots
+Archive/
+TestMedia/test.mp4
+
+.DS_Store
+__pycache__/

@@ -1,0 +1,118 @@
+# Generate the Xcode project with `xcodegen generate` (Hearvia.xcodeproj is not checked in).
+name: Hearvia
+options:
+  bundleIdPrefix: dev.hewig
+  deploymentTarget:
+    iOS: "27.0"
+    macOS: "27.0"
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    IPHONEOS_DEPLOYMENT_TARGET: "27.0"
+    TARGETED_DEVICE_FAMILY: "1,2"
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: V28VJH6B6S
+packages:
+  HearviaKit:
+    path: HearviaKit
+targets:
+  Hearvia:
+    type: application
+    platform: iOS
+    sources:
+      - path: Apps/iOS
+        excludes: ["Tests/**", "UITests/**"]
+      - path: Apps/Shared
+    dependencies:
+      - package: HearviaKit
+        product: HearviaKit
+    preBuildScripts:
+      - name: Generate dev secrets
+        script: sh "$SRCROOT/scripts/gen_dev_secrets.sh"
+        basedOnDependencyAnalysis: false
+    info:
+      path: Apps/iOS/Info.plist
+      properties:
+        CFBundleDisplayName: Hearvia
+        CFBundleShortVersionString: "0.1"
+        CFBundleVersion: "1"
+        NSMicrophoneUsageDescription: Hearvia listens to the microphone to show live translated subtitles of speech around you.
+        NSSpeechRecognitionUsageDescription: Hearvia turns speech into text on this device to show subtitles.
+        UIBackgroundModes: [screen-capture, audio]
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UIFileSharingEnabled: true
+        LSSupportsOpeningDocumentsInPlace: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.hewig.hearvia
+        GENERATE_INFOPLIST_FILE: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    attributes:
+      SystemCapabilities:
+        com.apple.BackgroundModes:
+          enabled: 1
+  HearviaMac:
+    type: application
+    platform: macOS
+    sources:
+      - path: Apps/macOS
+      - path: Apps/Shared
+    dependencies:
+      - package: HearviaKit
+        product: HearviaKit
+    preBuildScripts:
+      - name: Generate dev secrets
+        script: sh "$SRCROOT/scripts/gen_dev_secrets.sh"
+        basedOnDependencyAnalysis: false
+    info:
+      path: Apps/macOS/Info.plist
+      properties:
+        CFBundleDisplayName: Hearvia
+        CFBundleShortVersionString: "0.1"
+        CFBundleVersion: "1"
+        LSApplicationCategoryType: public.app-category.productivity
+        NSAudioCaptureUsageDescription: Hearvia listens to other apps' audio to show live translated subtitles.
+        NSMicrophoneUsageDescription: Hearvia listens to the microphone to show live translated subtitles.
+        NSSpeechRecognitionUsageDescription: Hearvia turns speech into text on this Mac to show subtitles.
+    settings:
+      base:
+        PRODUCT_NAME: Hearvia
+        PRODUCT_BUNDLE_IDENTIFIER: dev.hewig.hearvia.mac
+        GENERATE_INFOPLIST_FILE: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ENABLE_HARDENED_RUNTIME: NO
+        CODE_SIGN_IDENTITY: "Apple Development"
+  HearviaTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [Apps/iOS/Tests]
+    dependencies:
+      - target: Hearvia
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+  HearviaUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [Apps/iOS/UITests]
+    dependencies:
+      - target: Hearvia
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  HearviaMac:
+    build:
+      targets:
+        HearviaMac: all
+    run:
+      commandLineArguments:
+        "--verbose": true
+  Hearvia:
+    build:
+      targets:
+        Hearvia: all
+    test:
+      targets: [HearviaTests, HearviaUITests]
