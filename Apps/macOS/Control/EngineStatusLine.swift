@@ -1,4 +1,6 @@
-import HearviaKit
+import HearviaEngines
+import HearviaSession
+import HearviaUI
 import SwiftUI
 
 /// One line when the translator is ready; otherwise the missing model or key, with the fix inline.

@@ -13,12 +13,12 @@ Requires iOS 27 / macOS 27 and Xcode 27.
 ## Layout
 
 ```
-HearviaKit/    Swift package shared by both apps (the "core")
-  Translation/ LiveTranslator (+Realtime, +OnDevice, +Transcript), feed, engine, transcript lines
-  Realtime/    gpt-realtime-translate WebSocket client
-  OnDevice/    SpeechAnalyzer + Translation framework engine, model availability and downloads
-  Audio/       resampler, microphone capture, level meter
-  Design/      colors, appearance, icon mark, buttons, segmented control, transcript list
+HearviaKit/      Swift package shared by both apps, one product with five modules
+  HearviaCore    languages, engine kinds, status, transcript and sentence segmentation, Keychain
+  HearviaAudio   capture feed, resampler, microphone capture, level meter
+  HearviaEngines TranslationEngine protocol; Realtime (WebSocket) and on-device (SpeechAnalyzer + Translation)
+  HearviaSession LiveTranslator: preferences and the running engine, observable text and transcript
+  HearviaUI      colors, appearance, icon mark, buttons, segmented control, transcript list, model downloads
   hearvia-translate: CLI that streams an audio file through either engine
 Apps/iOS/      App, Home, Onboarding, Settings, Capture (ScreenCaptureKit), Subtitles (PiP), Developer (PoC tools)
 Apps/macOS/    App, Control, Overlay, Transcript, Settings, MenuBar, Capture (Core Audio process tap)
@@ -58,7 +58,7 @@ just translate TestMedia/speech/ja.aiff en --on-device=ja   # on-device
 
 ### App icon
 
-`just icons` renders the iOS (default, dark, tinted) and macOS icon sets from the same geometry as `HearviaMark` in `HearviaKit/Sources/HearviaKit/Theme.swift`.
+`just icons` renders the iOS (default, dark, tinted) and macOS icon sets from the same geometry as `HearviaMark` in `HearviaKit/Sources/HearviaUI/HearviaMark.swift`.
 
 ## Background
 

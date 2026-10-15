@@ -1,4 +1,5 @@
-import HearviaKit
+import HearviaAudio
+import HearviaSession
 import SwiftUI
 
 /// Owns capture, the PiP subtitle window and the translator, and keeps them in step while listening.
@@ -26,7 +27,8 @@ final class AppModel {
         levels.last ?? 0
     }
 
-    // Developer tools
+    // MARK: Developer tools
+
     var translationEnabled = true
     var diagnosticsInPiP = false
     var statusLineInPiP = false
@@ -67,6 +69,17 @@ final class AppModel {
         RunLoop.main.add(timer, forMode: .common)
         translation.onTextChange = { [weak self] in self?.scheduleRender() }
         translation.onLog = { [log] name, fields in log.event(name, fields) }
+        followShowsOriginal()
+    }
+
+    /// The original-language text is billed separately by Realtime, so it is only requested while shown.
+    private func followShowsOriginal() {
+        let shows = withObservationTracking {
+            settings.showsOriginal
+        } onChange: { [weak self] in
+            Task { @MainActor in self?.followShowsOriginal() }
+        }
+        Task { await translation.setTranscribesSource(shows) }
     }
 
     /// Once a second: refresh audio stats, follow listening start/stop, and repaint the subtitle frame.

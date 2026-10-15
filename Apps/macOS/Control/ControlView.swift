@@ -1,4 +1,6 @@
-import HearviaKit
+import HearviaCore
+import HearviaSession
+import HearviaUI
 import SwiftUI
 
 /// Compact control window from the design canvas: source, languages and translator, overlay, Start/Stop.
@@ -78,19 +80,19 @@ struct ControlView: View {
                     if translator.engine == .realtime {
                         Text("Auto-detect").tag("auto")
                     }
-                    ForEach(LiveTranslator.languages, id: \.self) { Text(LanguageName.localized($0)).tag($0) }
+                    ForEach(OnDeviceLanguages.shared.spokenChoices(for: translator.engine, including: translator.sourceLanguage), id: \.self) { Text(LanguageName.localized($0)).tag($0) }
                 }
                 .labelsHidden()
                 .disabled(translator.engine == .realtime)
                 Image(systemName: "arrow.right").foregroundStyle(Color.hvMuted)
                 Picker("Subtitles", selection: Binding(get: { translator.targetLanguage },
                                                        set: { l in Task { await translator.setTargetLanguage(l) } })) {
-                    ForEach(LiveTranslator.languages, id: \.self) { Text(LanguageName.localized($0)).tag($0) }
+                    ForEach(OnDeviceLanguages.shared.subtitleChoices(for: translator.engine, including: translator.targetLanguage), id: \.self) { Text(LanguageName.localized($0)).tag($0) }
                 }
                 .labelsHidden()
             }
             SegmentedChoice(selection: Binding(get: { translator.engine }, set: { e in Task { await translator.setEngine(e) } }),
-                            options: TranslationEngine.allCases, title: \.shortTitle, height: 28) { $0 == .onDevice ? "cpu" : "cloud" }
+                            options: EngineKind.allCases, title: \.shortTitle, height: 28) { $0 == .onDevice ? "cpu" : "cloud" }
             EngineStatusLine(translator: translator)
         }
     }
@@ -115,7 +117,7 @@ struct ControlView: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 12) {
                 Button {
-                    Task { model.capturing ? await model.stop() : await model.start() }
+                    Task { await model.toggleListening { openWindow(id: "permissions") } }
                 } label: {
                     Label(model.capturing ? "Stop" : "Start Listening", systemImage: model.capturing ? "stop.fill" : "play.fill")
                 }
@@ -143,7 +145,7 @@ private extension Int {
     }
 }
 
-private extension TranslationEngine {
+private extension EngineKind {
     var shortTitle: String {
         self == .onDevice ? "On-device · free" : "OpenAI Realtime"
     }

@@ -1,4 +1,6 @@
-import HearviaKit
+import HearviaCore
+import HearviaSession
+import HearviaUI
 import SwiftUI
 
 /// Live state while listening: input level, language pair, transcript, floating-window shortcut.

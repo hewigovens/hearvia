@@ -1,4 +1,4 @@
-import HearviaKit
+import HearviaCore
 import SwiftUI
 
 /// Start, stop and show the overlay without bringing the control window forward.
@@ -10,7 +10,12 @@ struct MenuBarContent: View {
     var body: some View {
         @Bindable var settings = settings
         Button(model.capturing ? "Stop Listening" : "Start Listening") {
-            Task { model.capturing ? await model.stop() : await model.start() }
+            Task {
+                await model.toggleListening {
+                    openWindow(id: "permissions")
+                    NSApp.activate()
+                }
+            }
         }
         Text("\(model.source.label) → \(LanguageName.localized(model.translator.targetLanguage)) · \(model.translator.engine.title)")
         Divider()

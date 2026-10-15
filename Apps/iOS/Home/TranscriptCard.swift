@@ -1,4 +1,5 @@
-import HearviaKit
+import HearviaSession
+import HearviaUI
 import SwiftUI
 
 struct TranscriptCard: View {
@@ -10,10 +11,10 @@ struct TranscriptCard: View {
                 Text("TRANSCRIPT").font(.caption.weight(.semibold)).tracking(0.6).foregroundStyle(Color.hvMuted)
                 Spacer()
                 if !translator.transcript.isEmpty {
-                    ShareLink(item: translator.transcriptText) { Text("Share").font(.subheadline) }
+                    ShareLink(item: translator.transcript.text) { Text("Share").font(.subheadline) }
                 }
             }
-            TranscriptList(lines: translator.transcript)
+            TranscriptList(lines: translator.transcript.lines)
         }
         .padding(16)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)

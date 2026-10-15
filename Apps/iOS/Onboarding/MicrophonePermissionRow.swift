@@ -1,5 +1,5 @@
 import AVFoundation
-import HearviaKit
+import HearviaUI
 import SwiftUI
 
 /// Microphone access: ask in context, or send the user to Settings after a denial.

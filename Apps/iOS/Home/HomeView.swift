@@ -1,4 +1,4 @@
-import HearviaKit
+import HearviaUI
 import SwiftUI
 
 struct HomeView: View {

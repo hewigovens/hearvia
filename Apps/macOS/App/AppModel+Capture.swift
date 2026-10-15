@@ -1,5 +1,4 @@
 import AVFoundation
-import HearviaKit
 
 extension AppModel {
     func start() async {

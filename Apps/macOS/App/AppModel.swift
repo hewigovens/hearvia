@@ -1,12 +1,13 @@
 import AppKit
-import HearviaKit
+import HearviaAudio
+import HearviaSession
 import Observation
 
 /// Owns capture and the translator; drives the overlay panel from `AppSettings`.
 @MainActor @Observable
 final class AppModel {
     let settings: AppSettings
-    let translator = LiveTranslator(fallbackKey: ProcessInfo.processInfo.environment["OPENAI_API_KEY"] ?? DevSecrets.openAIKey)
+    let translator = LiveTranslator(fallbackKey: AppModel.developmentKey)
     var source = CaptureSource.allApps
     var processes: [AudioProcess] = []
     var capturing = false
@@ -23,6 +24,7 @@ final class AppModel {
     init(settings: AppSettings) {
         self.settings = settings
         refreshProcesses()
+        followShowsOriginal()
         translator.onLog = { [verbose] name, fields in
             guard verbose else { return }
             Self.emit(name, fields)
@@ -50,6 +52,25 @@ final class AppModel {
         } onChange: { [weak self] in
             Task { @MainActor in self?.applyOverlaySettings() }
         }
+    }
+
+    /// The original-language text is billed separately by Realtime, so it is only requested while shown.
+    private func followShowsOriginal() {
+        let shows = withObservationTracking {
+            settings.showsOriginal
+        } onChange: { [weak self] in
+            Task { @MainActor in self?.followShowsOriginal() }
+        }
+        Task { await translator.setTranscribesSource(shows) }
+    }
+
+    /// Debug builds may take the key from the environment or `.env`; Release users paste their own.
+    private static var developmentKey: String {
+        #if DEBUG
+            ProcessInfo.processInfo.environment["OPENAI_API_KEY"] ?? DevSecrets.openAIKey
+        #else
+            ""
+        #endif
     }
 
     func refreshProcesses() {

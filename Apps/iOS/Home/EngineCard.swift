@@ -1,8 +1,9 @@
-import HearviaKit
+import HearviaCore
+import HearviaUI
 import SwiftUI
 
 struct EngineCard: View {
-    let engine: TranslationEngine
+    let engine: EngineKind
     let selected: Bool
     let action: () -> Void
     var body: some View {

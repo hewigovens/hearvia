@@ -40,16 +40,16 @@ Run `just format` and `just lint`, rebuild what changed (`just build`), run `jus
 
 ## Principles
 
-1. **Core in the kit** - Audio conversion, engines, transcript segmentation, model availability and shared UI pieces live in `HearviaKit`. App shells capture audio, present state and dispatch actions.
+1. **Core in the kit** - Audio conversion, engines, transcript segmentation, model availability and shared UI pieces live in `HearviaKit`, split into Core, Audio, Engines, Session and UI modules (see the architecture guide). App shells capture audio, present state and dispatch actions.
 2. **Behavior belongs to types** - Prefer methods, extensions and computed properties over free functions.
 3. **Comments explain the why** - Default to no comment. One line, never restating the code.
 4. **Test behavior, essentials only** - Smallest layer that proves it; see [Testing](agents/testing.md).
-5. **Supersession guards** - Every async result that lands after a restart is checked against the current generation (`LiveTranslator.generation`, capture generations) before it is applied.
+5. **Supersession guards** - An async result that lands after a restart must not be applied: `LiveTranslator` ignores updates from engines other than the running one, engines ignore their own results once stopped, and capture uses generations.
 
 ## Code Organization
 
 - One primary type per file, named after the type. Small private helpers used only by that type stay with it; a type plus its request/result vocabulary may share a file.
-- Split by responsibility, not line count: a type that picks up a second job gets `Type+Responsibility.swift` extension files (`LiveTranslator+OnDevice`, `AppModel+Listening`).
+- Split by responsibility, not line count: a type that picks up a second job gets `Type+Responsibility.swift` extension files (`LiveTranslator+Run`, `AppModel+Listening`).
 - Group files into responsibility folders; no folders for singletons.
 
 ## Version Control

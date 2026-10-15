@@ -1,4 +1,6 @@
-import HearviaKit
+import HearviaCore
+import HearviaSession
+import HearviaUI
 import SwiftUI
 
 /// Everything chosen before listening: source, languages, translator, original-speech toggle.
@@ -27,7 +29,7 @@ struct ReadyPanel: View {
             .disabled(model.capture.pending || model.micStarting)
             LanguageCard(translator: translator)
             HStack(spacing: 10) {
-                ForEach(TranslationEngine.allCases) { engine in
+                ForEach(EngineKind.allCases) { engine in
                     EngineCard(engine: engine, selected: translator.engine == engine) {
                         Task { await translator.setEngine(engine) }
                     }

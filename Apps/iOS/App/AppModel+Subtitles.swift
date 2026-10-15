@@ -1,5 +1,4 @@
 import Foundation
-import HearviaKit
 
 extension AppModel {
     /// Coalesce translation deltas into at most ~5 PiP frames per second.
@@ -21,7 +20,7 @@ extension AppModel {
         } else if !translated.isEmpty {
             translated
         } else {
-            translation.active ? "Listening…" : listening ? "Connecting…" : "Subtitles appear here"
+            translation.isActive ? "Listening…" : listening ? "Connecting…" : "Subtitles appear here"
         }
         let original = settings.showsOriginal && !diagnosticsInPiP && !translated.isEmpty ? translation.source : nil
         await pip.render(subtitle: subtitle, original: original, detail: statusLineInPiP ? statusLine : nil)
@@ -38,8 +37,8 @@ extension AppModel {
 
     private var statusLine: String {
         let now = ProcessInfo.processInfo.systemUptime
-        let lag = translation.lastDeltaUptime.map { String(format: "text %.0fs ago", now - $0) } ?? "no text"
+        let lag = translation.stats.lastDeltaUptime.map { String(format: "text %.0fs ago", now - $0) } ?? "no text"
         let pcm = audio.system.age.map { String(format: "%.1fs", $0) } ?? "none"
-        return "#\(tickCount) · \(scene) · PCM \(pcm) · \(translation.state) · \(lag)"
+        return "#\(tickCount) · \(scene) · PCM \(pcm) · \(translation.status.label) · \(lag)"
     }
 }

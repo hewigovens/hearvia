@@ -1,4 +1,6 @@
-import HearviaKit
+import HearviaEngines
+import HearviaSession
+import HearviaUI
 import SwiftUI
 
 /// One line when the chosen translator is ready; otherwise what's missing, with the fix inline.

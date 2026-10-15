@@ -1,10 +1,11 @@
 import AVFoundation
 import Foundation
-import HearviaKit
+import HearviaAudio
+import HearviaEngines
 
-// Streams an audio file to gpt-realtime-translate at real-time pace and prints
-// source/translated text with lag measurements.
-// Usage: hearvia-translate <audio-file> [target-lang=zh] [--fast]
+// Streams an audio file through an engine at real-time pace and prints the text as it arrives.
+// Usage: hearvia-translate <audio-file> [target-lang=zh] [--fast] [--on-device=<spoken-lang>]
+// The Realtime engine also reports lag; --fast sends the audio as quickly as possible.
 
 func apiKey() -> String? {
     if let key = ProcessInfo.processInfo.environment["OPENAI_API_KEY"], !key.isEmpty {
@@ -119,32 +120,62 @@ let timeout = Task { try await Task.sleep(for: .seconds(20))
 await receiver.value
 timeout.cancel()
 
-/// Feeds the file through LiveTranslator's on-device engine at real-time pace, printing each text change.
+/// Feeds the file through the on-device engine at real-time pace, printing each subtitle change.
 @MainActor func runOnDevice(path: String, spoken: String, target: String) async throws {
-    let translator = LiveTranslator()
-    await translator.setEngine(.onDevice)
-    await translator.setSourceLanguage(spoken)
-    await translator.setTargetLanguage(target)
+    let engine = OnDeviceEngine(sourceLanguage: spoken, targetLanguage: target)
+    let feed = AudioFeed()
     let start = Date()
     func stamp() -> String {
         String(format: "%6.2fs", Date().timeIntervalSince(start))
     }
-    var last = ""
-    translator.onTextChange = {
-        guard translator.translation != last else { return }
-        last = translator.translation
-        print("[\(stamp())] SRC \(translator.source.suffix(70).debugDescription)\n          TR  \(translator.translation.suffix(70).debugDescription)")
+    var source = "", translation = "", failure = ""
+    var ready: CheckedContinuation<Bool, Never>?
+    let printer = Task {
+        for await update in engine.updates {
+            switch update {
+            case let .status(status):
+                print("[\(stamp())] \(status.label)")
+                if case .translating = status {
+                    ready?.resume(returning: true)
+                    ready = nil
+                }
+            case let .text(newSource, newTranslation):
+                source = newSource
+                guard newTranslation != translation else { continue }
+                translation = newTranslation
+                print("[\(stamp())] SRC \(source.suffix(70).debugDescription)\n          TR  \(translation.suffix(70).debugDescription)")
+            case let .failed(message):
+                failure = message
+                print("[\(stamp())] failed: \(message)")
+                ready?.resume(returning: false)
+                ready = nil
+            case let .log(name, fields): print("[\(stamp())] \(name) \(fields)")
+            case .sentence, .audioConsumed, .problem: break
+            }
+        }
     }
-    translator.onLog = { name, fields in print("[\(stamp())] \(name) \(fields)") }
-    await translator.start()
-    print("[\(stamp())] \(translator.state) \(translator.error)")
-    guard translator.active else { return }
+    let started = await withCheckedContinuation { continuation in
+        ready = continuation
+        Task { await engine.start(audio: feed.open()) }
+    }
+    guard started else { return }
+    let sent = try await stream(path, into: feed)
+    print("[\(stamp())] audio ended (\(String(format: "%.1f", sent)) s)")
+    try await Task.sleep(for: .seconds(2))
+    feed.close()
+    await engine.stop()
+    await printer.value
+    print("\n--- source ---\n\(source)\n--- translation ---\n\(translation)\nerror: \(failure)")
+}
+
+/// Pushes the file and 3 s of silence (so the last segment finalizes) into `feed` at real-time pace; returns the seconds sent.
+func stream(_ path: String, into feed: AudioFeed) async throws -> Double {
     let file = try AVAudioFile(forReading: URL(fileURLWithPath: path))
     let block: AVAudioFrameCount = 4800
     let streamStart = Date()
     var sent = 0.0
-    func feed(_ buffer: AVAudioPCMBuffer) async throws {
-        translator.feed.push(buffer)
+    func push(_ buffer: AVAudioPCMBuffer) async throws {
+        feed.push(buffer)
         sent += Double(buffer.frameLength) / buffer.format.sampleRate
         let wait = streamStart.addingTimeInterval(sent).timeIntervalSinceNow
         if wait > 0 {
@@ -154,15 +185,12 @@ timeout.cancel()
     while file.framePosition < file.length {
         let buffer = AVAudioPCMBuffer(pcmFormat: file.processingFormat, frameCapacity: block)!
         try file.read(into: buffer, frameCount: block)
-        try await feed(buffer)
+        try await push(buffer)
     }
-    print("[\(stamp())] audio ended (\(String(format: "%.1f", sent)) s)")
-    for _ in 0 ..< 15 { // 3 s of silence so the last segment finalizes
+    for _ in 0 ..< 15 {
         let silence = AVAudioPCMBuffer(pcmFormat: file.processingFormat, frameCapacity: block)!
         silence.frameLength = block
-        try await feed(silence)
+        try await push(silence)
     }
-    try await Task.sleep(for: .seconds(2))
-    print("\n--- source ---\n\(translator.source)\n--- translation ---\n\(translator.translation)\nerror: \(translator.error)")
-    await translator.stop()
+    return sent
 }

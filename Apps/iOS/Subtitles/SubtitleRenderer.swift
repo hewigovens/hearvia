@@ -32,7 +32,7 @@ final class SubtitleRenderer {
         synchronizer.setRate(playing ? 1 : 0, time: .invalid)
     }
 
-    /// A new rasterized frame and valid timed sample are generated every tick; no prerecorded media.
+    /// Enqueues a freshly drawn frame; returns false when the layer flushed it.
     @discardableResult
     func render(subtitle: String, original: String? = nil, detail: String?) async throws -> Bool {
         let pixel = try makePixelBuffer()

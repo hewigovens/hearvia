@@ -32,6 +32,10 @@ targets:
       - name: Generate dev secrets
         script: sh "$SRCROOT/scripts/gen_dev_secrets.sh"
         basedOnDependencyAnalysis: false
+    postBuildScripts:
+      - name: Strip developer Info.plist keys from Release
+        script: sh "$SRCROOT/scripts/strip_release_plist.sh"
+        basedOnDependencyAnalysis: false
     info:
       path: Apps/iOS/Info.plist
       properties:
@@ -84,7 +88,8 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: dev.hewig.hearvia.mac
         GENERATE_INFOPLIST_FILE: NO
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        ENABLE_HARDENED_RUNTIME: NO
+        ENABLE_HARDENED_RUNTIME: YES
+        CODE_SIGN_ENTITLEMENTS: Apps/macOS/Hearvia.entitlements
         CODE_SIGN_IDENTITY: "Apple Development"
   HearviaTests:
     type: bundle.unit-test

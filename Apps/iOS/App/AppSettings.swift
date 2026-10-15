@@ -1,5 +1,6 @@
 import Foundation
-import HearviaKit
+import HearviaSession
+import HearviaUI
 import Observation
 
 /// User preferences owned by the app shell; translation languages and engine live on `LiveTranslator`.

@@ -1,4 +1,6 @@
-import HearviaKit
+import HearviaCore
+import HearviaSession
+import HearviaUI
 import SwiftUI
 
 /// Spoken → Subtitles pickers with a swap button; the spoken side is auto-detected by OpenAI Realtime.
@@ -14,7 +16,7 @@ struct LanguageCard: View {
             Menu {
                 Picker("Spoken language", selection: Binding(get: { translator.sourceLanguage },
                                                              set: { language in Task { await translator.setSourceLanguage(language) } })) {
-                    ForEach(LiveTranslator.languages, id: \.self) { Text(LanguageName.of($0)).tag($0) }
+                    ForEach(OnDeviceLanguages.shared.spokenChoices(for: translator.engine, including: translator.sourceLanguage), id: \.self) { Text(LanguageName.of($0)).tag($0) }
                 }
             } label: {
                 LanguageField(caption: "Spoken", value: autoDetects ? "Auto-detect" : LanguageName.short(translator.sourceLanguage), alignment: .leading)
@@ -32,7 +34,7 @@ struct LanguageCard: View {
             Menu {
                 Picker("Subtitles in", selection: Binding(get: { translator.targetLanguage },
                                                           set: { language in Task { await translator.setTargetLanguage(language) } })) {
-                    ForEach(LiveTranslator.languages, id: \.self) { Text(LanguageName.of($0)).tag($0) }
+                    ForEach(OnDeviceLanguages.shared.subtitleChoices(for: translator.engine, including: translator.targetLanguage), id: \.self) { Text(LanguageName.of($0)).tag($0) }
                 }
             } label: {
                 LanguageField(caption: "Subtitles", value: LanguageName.short(translator.targetLanguage), alignment: .trailing)

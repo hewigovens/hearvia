@@ -1,8 +1,9 @@
-import HearviaKit
+import HearviaCore
 import SwiftUI
 
 @main
 struct HearviaMacApp: App {
+    @NSApplicationDelegateAdaptor private var delegate: AppDelegate
     @State private var settings: AppSettings
     @State private var model: AppModel
 
@@ -16,12 +17,6 @@ struct HearviaMacApp: App {
         Window("Hearvia", id: "main") {
             ControlView(model: model)
                 .environment(settings)
-                .task {
-                    model.showOverlay()
-                    if CommandLine.arguments.contains("--autostart") {
-                        await model.start()
-                    }
-                }
         }
         .windowResizability(.contentSize)
 
@@ -30,6 +25,14 @@ struct HearviaMacApp: App {
                 .environment(settings)
         }
         .defaultSize(width: 520, height: 560)
+
+        Window("Before You Start", id: "permissions") {
+            PermissionsView(model: model)
+                .environment(settings)
+        }
+        .windowResizability(.contentSize)
+        .windowStyle(.hiddenTitleBar)
+        .restorationBehavior(.disabled)
 
         Settings {
             SettingsView(model: model)
@@ -40,8 +43,7 @@ struct HearviaMacApp: App {
             MenuBarContent(model: model)
                 .environment(settings)
         } label: {
-            Image(systemName: model.capturing ? "captions.bubble.fill" : "captions.bubble")
-                .accessibilityLabel("Hearvia")
+            MenuBarLabel(model: model, delegate: delegate)
         }
     }
 }

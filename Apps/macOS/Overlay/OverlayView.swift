@@ -1,4 +1,4 @@
-import HearviaKit
+import AppKit
 import SwiftUI
 
 struct OverlayView: View {
@@ -7,16 +7,21 @@ struct OverlayView: View {
 
     var body: some View {
         let translator = model.translator
-        VStack(spacing: 6) {
+        let originalSize = settings.overlayFontSize * 0.55
+        VStack(spacing: 2) {
+            Spacer(minLength: 0)
             if settings.showsOriginal, !translator.source.isEmpty {
-                bottomAligned(Text(Self.tail(translator.source, 300))
-                    .font(.system(size: settings.overlayFontSize * 0.55))
-                    .foregroundStyle(.white.opacity(0.7)))
-                    .frame(height: ceil(settings.overlayFontSize * 0.55 * 1.25 * 2)) // two full lines of original speech
+                // Two whole lines: a fraction of a line more would show a sliver of the line above.
+                tail(Text(Self.tail(translator.source, 300))
+                    .font(.system(size: originalSize))
+                    .foregroundStyle(.white.opacity(0.7)), fade: 0)
+                    .frame(maxHeight: 2 * Self.lineHeight(ofSystemFontSize: originalSize))
+                    .layoutPriority(2) // Keeps its two lines when the translation overflows.
             }
-            bottomAligned(Text(translator.translation.isEmpty ? placeholder : Self.tail(translator.translation, 400))
+            tail(Text(translator.translation.isEmpty ? placeholder : Self.tail(translator.translation, 400))
                 .font(.system(size: settings.overlayFontSize, weight: .semibold))
-                .foregroundStyle(.white))
+                .foregroundStyle(.white), fade: 0.4 * Self.lineHeight(ofSystemFontSize: settings.overlayFontSize))
+                .layoutPriority(1)
         }
         .padding(.horizontal, 20).padding(.vertical, 12)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -28,20 +33,35 @@ struct OverlayView: View {
         if !model.translator.error.isEmpty {
             return model.translator.error
         }
-        return model.capturing ? "Listening… (\(model.translator.state))" : "Hearvia — start capture in the main window"
+        return model.capturing ? "Listening… (\(model.translator.status.label))" : "Hearvia — start capture in the main window"
     }
 
-    /// Newest lines stay pinned to the bottom; older lines scroll off the top.
-    /// A non-scrollable ScrollView gives the text unlimited height but clips it to the panel.
-    private func bottomAligned(_ text: some View) -> some View {
-        ScrollView {
-            text.multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
+    /// Text at its natural height when it fits, so original and translation sit together at the bottom;
+    /// otherwise the newest lines pinned to the bottom of the space offered, older lines clipped off the top.
+    /// The non-scrollable ScrollView gives the text unlimited height but clips it; `fade` hides the part-line
+    /// clipped at the top, since the space offered isn't a whole number of lines.
+    private func tail(_ text: some View, fade: CGFloat) -> some View {
+        let centered = text.multilineTextAlignment(.center).frame(maxWidth: .infinity)
+        return ViewThatFits(in: .vertical) {
+            centered.fixedSize(horizontal: false, vertical: true)
+            ScrollView {
+                centered
+            }
+            .scrollDisabled(true)
+            .scrollIndicators(.hidden)
+            .defaultScrollAnchor(.bottom)
+            .defaultScrollAnchor(.bottom, for: .sizeChanges)
+            .mask {
+                VStack(spacing: 0) {
+                    LinearGradient(colors: [.clear, .black], startPoint: .top, endPoint: .bottom).frame(height: fade)
+                    Color.black
+                }
+            }
         }
-        .scrollDisabled(true)
-        .scrollIndicators(.hidden)
-        .defaultScrollAnchor(.bottom)
-        .defaultScrollAnchor(.bottom, for: .sizeChanges)
+    }
+
+    static func lineHeight(ofSystemFontSize size: CGFloat) -> CGFloat {
+        NSLayoutManager().defaultLineHeight(for: .systemFont(ofSize: size))
     }
 
     static func tail(_ text: String, _ limit: Int) -> String {

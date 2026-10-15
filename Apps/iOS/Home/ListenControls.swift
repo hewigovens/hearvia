@@ -1,4 +1,4 @@
-import HearviaKit
+import HearviaUI
 import SwiftUI
 
 /// Pinned bottom bar: Start, Cancel (while the iOS picker or mic is starting) or Stop, plus errors.

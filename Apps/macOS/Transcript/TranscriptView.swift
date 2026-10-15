@@ -1,4 +1,5 @@
-import HearviaKit
+import HearviaSession
+import HearviaUI
 import SwiftUI
 
 struct TranscriptView: View {
@@ -6,17 +7,17 @@ struct TranscriptView: View {
     @Environment(AppSettings.self) private var settings
 
     var body: some View {
-        TranscriptList(lines: translator.transcript, originalFont: .callout, translationFont: .title3)
+        TranscriptList(lines: translator.transcript.lines, originalFont: .callout, translationFont: .title3)
             .padding(20)
             .background(Color.hvGround)
             .foregroundStyle(Color.hvText)
             .preferredColorScheme(settings.appearance.colorScheme)
             .toolbar {
                 if !translator.transcript.isEmpty {
-                    ShareLink(item: translator.transcriptText)
+                    ShareLink(item: translator.transcript.text)
                     Button("Copy", systemImage: "doc.on.doc") {
                         NSPasteboard.general.clearContents()
-                        NSPasteboard.general.setString(translator.transcriptText, forType: .string)
+                        NSPasteboard.general.setString(translator.transcript.text, forType: .string)
                     }
                 }
             }

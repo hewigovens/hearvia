@@ -1,4 +1,4 @@
-// Renders the "wave to words" app icon PNGs (same geometry as HearviaMark in HearviaKit/Theme.swift).
+// Renders the "wave to words" app icon PNGs (same geometry as HearviaMark in HearviaKit/Sources/HearviaUI/HearviaMark.swift).
 // Usage: swift scripts/make_icons.swift   (run from the repo root)
 import AppKit
 import CoreGraphics

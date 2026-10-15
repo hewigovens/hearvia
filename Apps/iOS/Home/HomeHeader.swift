@@ -1,4 +1,4 @@
-import HearviaKit
+import HearviaUI
 import SwiftUI
 
 /// The wordmark when ready; a live "Listening" pill with elapsed time while listening.

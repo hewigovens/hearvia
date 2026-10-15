@@ -1,9 +1,9 @@
-import HearviaKit
+import HearviaCore
+import HearviaSession
+import HearviaUI
 import SwiftUI
 
-/// Explains what iOS will show (screen-sharing sheet, red indicator, floating window)
-/// before the user meets it, and promises the one thing that matters: Hearvia never
-/// interrupts what they are watching or listening to.
+/// Explains what iOS will show (screen-sharing sheet, red indicator, floating window) before the user meets it.
 struct OnboardingView: View {
     let translator: LiveTranslator
     var done: () -> Void
@@ -89,7 +89,7 @@ struct OnboardingView: View {
                 Spacer()
                 Picker("Spoken language", selection: Binding(get: { translator.sourceLanguage },
                                                              set: { l in Task { await translator.setSourceLanguage(l) } })) {
-                    ForEach(LiveTranslator.languages, id: \.self) { Text(LanguageName.of($0)).tag($0) }
+                    ForEach(OnDeviceLanguages.shared.spokenChoices(for: translator.engine, including: translator.sourceLanguage), id: \.self) { Text(LanguageName.of($0)).tag($0) }
                 }
                 .labelsHidden()
             }
@@ -98,7 +98,7 @@ struct OnboardingView: View {
             Text("Subtitles in").font(.subheadline.weight(.semibold)).padding(.top, 4)
             Picker("Subtitle language", selection: Binding(get: { translator.targetLanguage },
                                                            set: { l in Task { await translator.setTargetLanguage(l) } })) {
-                ForEach(LiveTranslator.languages, id: \.self) { Text(LanguageName.of($0)).tag($0) }
+                ForEach(OnDeviceLanguages.shared.subtitleChoices(for: translator.engine, including: translator.targetLanguage), id: \.self) { Text(LanguageName.of($0)).tag($0) }
             }
             .pickerStyle(.wheel)
             .frame(height: 150)

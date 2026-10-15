@@ -1,4 +1,4 @@
-import HearviaKit
+import HearviaUI
 import SwiftUI
 
 struct SettingsView: View {
@@ -49,10 +49,12 @@ struct SettingsView: View {
 
                 Section {
                     Button("How Hearvia works", action: showOnboarding)
-                    NavigationLink { DeveloperView(model: model) } label: {
-                        Label("Developer tools", systemImage: "wrench.and.screwdriver")
-                    }
-                    .accessibilityIdentifier("developerTools")
+                    #if DEBUG
+                        NavigationLink { DeveloperView(model: model) } label: {
+                            Label("Developer tools", systemImage: "wrench.and.screwdriver")
+                        }
+                        .accessibilityIdentifier("developerTools")
+                    #endif
                 } footer: {
                     Text("Hearvia \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") (\(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? ""))")
                         .frame(maxWidth: .infinity)

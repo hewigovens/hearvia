@@ -1,5 +1,6 @@
-import Foundation
-import HearviaKit
+import AppKit
+import HearviaSession
+import HearviaUI
 import Observation
 
 /// User preferences owned by the Mac shell; translation languages and engine live on `LiveTranslator`.
@@ -12,6 +13,8 @@ final class AppSettings {
         static let showsOriginal = "hearvia.showsOriginal"
         static let overlayFontSize = "hearvia.overlayFontSize"
         static let overlayOpacity = "hearvia.overlayOpacity"
+        static let menuBarOnly = "hearvia.menuBarOnly"
+        static let hasExplainedPermissions = "hearvia.hasExplainedPermissions"
     }
 
     static let overlayFontSizeRange: ClosedRange<Double> = 16 ... 64
@@ -41,6 +44,22 @@ final class AppSettings {
         didSet { defaults.set(overlayOpacity, forKey: Keys.overlayOpacity) }
     }
 
+    /// No Dock icon or app menu; Hearvia lives in the menu bar extra.
+    var menuBarOnly: Bool {
+        didSet {
+            defaults.set(menuBarOnly, forKey: Keys.menuBarOnly)
+            applyActivationPolicy()
+            if !menuBarOnly {
+                NSApp.activate() // Puts the returning Dock icon and menu bar in front.
+            }
+        }
+    }
+
+    /// The permission explainer was shown, so Start goes straight to the system prompts.
+    var hasExplainedPermissions: Bool {
+        didSet { defaults.set(hasExplainedPermissions, forKey: Keys.hasExplainedPermissions) }
+    }
+
     @ObservationIgnored private let defaults: UserDefaults
 
     init(defaults: UserDefaults = .standard) {
@@ -51,5 +70,11 @@ final class AppSettings {
         showsOriginal = defaults.object(forKey: Keys.showsOriginal) as? Bool ?? true
         overlayFontSize = defaults.object(forKey: Keys.overlayFontSize) as? Double ?? 30
         overlayOpacity = defaults.object(forKey: Keys.overlayOpacity) as? Double ?? 0.65
+        menuBarOnly = defaults.bool(forKey: Keys.menuBarOnly)
+        hasExplainedPermissions = defaults.bool(forKey: Keys.hasExplainedPermissions)
+    }
+
+    func applyActivationPolicy() {
+        NSApp.setActivationPolicy(menuBarOnly ? .accessory : .regular)
     }
 }

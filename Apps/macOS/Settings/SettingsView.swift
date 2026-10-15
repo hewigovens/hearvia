@@ -1,4 +1,4 @@
-import HearviaKit
+import HearviaUI
 import SwiftUI
 
 struct SettingsView: View {
@@ -21,9 +21,13 @@ struct SettingsView: View {
                 }
                 .pickerStyle(.segmented)
                 Slider(value: $settings.overlayOpacity, in: 0 ... 1) { Text("Overlay background") }
+                Toggle(isOn: $settings.menuBarOnly) {
+                    Text("Show in menu bar only")
+                    Text("Hides the Dock icon. Open Hearvia from the captions icon in the menu bar.")
+                }
             }
             Section("Diagnostics") {
-                Text("\(model.translator.state) · sent \(model.translator.chunksSent) × 200 ms · \(model.translator.deltas) deltas · \(model.translator.reconnects) reconnects")
+                Text("\(model.translator.status.label) · sent \(model.translator.stats.chunksSent) × 200 ms · \(model.translator.stats.deltas) deltas · \(model.translator.stats.reconnects) reconnects")
                     .font(.caption).monospacedDigit().textSelection(.enabled)
                 Text("Launch with --verbose to log JSON events to stdout.").font(.caption).foregroundStyle(Color.hvMuted)
             }

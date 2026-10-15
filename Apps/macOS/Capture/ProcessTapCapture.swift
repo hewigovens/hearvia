@@ -1,9 +1,8 @@
 import AVFoundation
 import CoreAudio
 
-/// Captures other apps' output with a Core Audio process tap (macOS 14.2+), read
-/// through a private aggregate device. Needs NSAudioCaptureUsageDescription; the
-/// first start shows the system "audio recording" permission prompt.
+/// Captures other apps' output with a Core Audio process tap read through a private aggregate device.
+/// The first start shows the system "audio recording" permission prompt.
 final class ProcessTapCapture: @unchecked Sendable {
     private let queue = DispatchQueue(label: "dev.hewig.Hearvia.tap", qos: .userInitiated)
     private var tapID = AudioObjectID(kAudioObjectUnknown)

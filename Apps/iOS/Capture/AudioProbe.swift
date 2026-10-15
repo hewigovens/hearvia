@@ -1,12 +1,12 @@
 import AVFoundation
-import HearviaKit
+import HearviaAudio
 import ScreenCaptureKit
 
 /// All mutable state belongs to this serial queue, including the SCStreamOutput callback.
 final class AudioProbe: NSObject, SCStreamOutput, @unchecked Sendable {
     let queue = DispatchQueue(label: "dev.hewig.hearvia.pcm", qos: .userInitiated)
     /// Set once at launch, before any capture callback.
-    var translationFeed: TranslationFeed?
+    var translationFeed: AudioFeed?
     var levelMeter: LevelMeter?
     private let log: DiagnosticLog
     private var snapshot = ProbeSnapshot()
