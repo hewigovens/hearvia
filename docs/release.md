@@ -14,6 +14,10 @@ What a distributable Hearvia build needs, and what is already in place. State as
 
 The Mac app also reads `OPENAI_API_KEY` and `GEMINI_API_KEY` from the process environment as fallbacks. That only works when someone launches the binary with that variable set, so it never ships a key, but drop it if a release should only use the Keychain.
 
+## API keys in TestFlight builds
+
+Decided 2026-10-15: TestFlight builds ship with no key and rely on bring-your-own-key. Release builds compile `DevSecrets` out, so a fresh install starts on the on-device translator; testers who want a cloud translator paste their own OpenAI or Gemini key in Settings → Translators (Keychain, this device only). Never hand out the team's keys. A Gemini free-tier key works for testing, but Google may use free-tier traffic to improve its products, so testers should know that. A paid tier (token server plus In-App Purchase) is deferred; see `TODO.md`.
+
 ## Privacy manifest
 
 `Apps/iOS/PrivacyInfo.xcprivacy` and `Apps/macOS/PrivacyInfo.xcprivacy` (identical) declare:
