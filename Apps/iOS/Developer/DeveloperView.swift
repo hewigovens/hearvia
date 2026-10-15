@@ -6,39 +6,41 @@ struct DeveloperView: View {
     @State private var recordMicrophone = false
 
     var body: some View {
-            ScrollViewReader { proxy in
-                Form {
-                    controlsSection
-                    translationSection
-                    pipSection.id("pip")
-                    captureSection
-                    Section("Microphone input (home screen source)") {
-                        Text(model.micRunning ? String(format: "Running · peak %.3f", model.level) : model.micStarting ? "Starting" : "Off")
-                            .monospacedDigit()
-                        if !model.micError.isEmpty { Text(model.micError).foregroundStyle(.red) }
-                        Text("AVAudioEngine input, no voice processing, play & record + mix with others.").font(.caption)
+        ScrollViewReader { proxy in
+            Form {
+                controlsSection
+                translationSection
+                pipSection.id("pip")
+                captureSection
+                Section("Microphone input (home screen source)") {
+                    Text(model.micRunning ? String(format: "Running · peak %.3f", model.level) : model.micStarting ? "Starting" : "Off")
+                        .monospacedDigit()
+                    if !model.micError.isEmpty {
+                        Text(model.micError).foregroundStyle(.red)
                     }
-                    Section("System playback PCM") { DiagnosticsPanel(stats: model.audio.system) }
-                    Section("Microphone PCM — separate output") {
-                        Text(model.capture.microphoneEnabled ? "Enabled by system picker" : "Off")
-                        DiagnosticsPanel(stats: model.audio.microphone)
-                    }
-                    sessionSection
-                    recordingSection
-                    evidenceSection
+                    Text("AVAudioEngine input, no voice processing, play & record + mix with others.").font(.caption)
                 }
-                .onChange(of: model.pip.restoreRequested) { _, requested in
-                    if requested {
-                        proxy.scrollTo("pip", anchor: .top)
-                        Task { @MainActor in
-                            await Task.yield()
-                            model.pip.finishRestore()
-                        }
+                Section("System playback PCM") { DiagnosticsPanel(stats: model.audio.system) }
+                Section("Microphone PCM — separate output") {
+                    Text(model.capture.microphoneEnabled ? "Enabled by system picker" : "Off")
+                    DiagnosticsPanel(stats: model.audio.microphone)
+                }
+                sessionSection
+                recordingSection
+                evidenceSection
+            }
+            .onChange(of: model.pip.restoreRequested) { _, requested in
+                if requested {
+                    proxy.scrollTo("pip", anchor: .top)
+                    Task { @MainActor in
+                        await Task.yield()
+                        model.pip.finishRestore()
                     }
                 }
             }
-            .navigationTitle("Developer")
-            .navigationBarTitleDisplayMode(.inline)
+        }
+        .navigationTitle("Developer")
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     private var controlsSection: some View {
@@ -58,7 +60,11 @@ struct DeveloperView: View {
                     .accessibilityIdentifier("pipStop").disabled(!model.pip.active)
             }.buttonStyle(.bordered)
             Button(model.session.tonePlaying ? "Stop 1 kHz Tone" : "Play 1 kHz Tone") {
-                if model.session.tonePlaying { model.session.stopTone() } else { Task { await model.session.startTone() } }
+                if model.session.tonePlaying {
+                    model.session.stopTone()
+                } else {
+                    Task { await model.session.startTone() }
+                }
             }.accessibilityIdentifier("toneToggle").disabled(model.session.toneStarting)
         }
     }
@@ -79,9 +85,15 @@ struct DeveloperView: View {
             }.buttonStyle(.bordered)
             Text("\(model.translation.state) · sent \(model.translation.chunksSent) × 200 ms · \(model.translation.deltas) deltas · \(model.translation.reconnects) reconnects")
                 .font(.caption).accessibilityIdentifier("translationState")
-            if !model.translation.source.isEmpty { Text(model.translation.source.suffix(200)).font(.caption).foregroundStyle(.secondary) }
-            if !model.translation.translation.isEmpty { Text(model.translation.translation.suffix(200)) }
-            if !model.translation.error.isEmpty { Text(model.translation.error).foregroundStyle(.red) }
+            if !model.translation.source.isEmpty {
+                Text(model.translation.source.suffix(200)).font(.caption).foregroundStyle(.secondary)
+            }
+            if !model.translation.translation.isEmpty {
+                Text(model.translation.translation.suffix(200))
+            }
+            if !model.translation.error.isEmpty {
+                Text(model.translation.error).foregroundStyle(.red)
+            }
             Text("Starts with capture or mic input. Engine and languages are chosen on the home screen. The app plays no translated audio: own-audio exclusion is unreliable on iOS 27.0.1.").font(.caption)
         }
     }
@@ -93,7 +105,9 @@ struct DeveloperView: View {
             Text("PiP render size: \(model.pip.renderSize)")
             Toggle("Show system RMS in PiP instead of translation", isOn: $model.diagnosticsInPiP)
             Toggle("Show status line in PiP", isOn: $model.statusLineInPiP)
-            if !model.pip.error.isEmpty { Text(model.pip.error).foregroundStyle(.red) }
+            if !model.pip.error.isEmpty {
+                Text(model.pip.error).foregroundStyle(.red)
+            }
         }
     }
 
@@ -107,7 +121,9 @@ struct DeveloperView: View {
                 .disabled(model.capture.running || model.capture.pending || model.capture.stopping)
             Text("Stop capture before changing exclusion; iOS requires a fresh stream.").font(.caption)
             Text("Choose full display in the system consent sheet. Microphone audio never enters the system metrics.").font(.caption)
-            if !model.capture.error.isEmpty { Text(model.capture.error).foregroundStyle(.red).accessibilityIdentifier("captureError") }
+            if !model.capture.error.isEmpty {
+                Text(model.capture.error).foregroundStyle(.red).accessibilityIdentifier("captureError")
+            }
         }
     }
 
@@ -123,7 +139,9 @@ struct DeveloperView: View {
             Text(model.session.tonePlaying ? "1 kHz test tone playing" : "Test tone off")
             Text("Session: \(model.session.status)\nRoute: \(model.session.route)").font(.caption)
             Text("Capture alone uses no session activation. PiP/tone activate the selected mode. Microphone selects play & record. Exclusive mode may interrupt the source; record what you hear.").font(.caption)
-            if !model.session.error.isEmpty { Text(model.session.error).foregroundStyle(.red) }
+            if !model.session.error.isEmpty {
+                Text(model.session.error).foregroundStyle(.red)
+            }
         }
     }
 
@@ -140,26 +158,12 @@ struct DeveloperView: View {
 
     private var evidenceSection: some View {
         Section("Observations and logs") {
-            TextField("Source app / clip", text: $model.source)
+            TextField("Source app / clip", text: $model.observationSource)
                 .accessibilityIdentifier("sourceLabel")
-            TextField("What was audible? Any interruption?", text: $model.note, axis: .vertical)
-            Button("Log Observation") { model.mark() }
+            TextField("What was audible? Any interruption?", text: $model.observationNote, axis: .vertical)
+            Button("Log Observation") { model.logObservation() }
             ShareLink("Share JSONL Evidence", item: model.log.url)
             Text("Non-zero PCM is a signal check. Confirm the source by listening to the exported CAF. A callback is not a successful capture.").font(.caption)
         }
-    }
-}
-
-struct DiagnosticsPanel: View {
-    let stats: AudioSnapshot
-    var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text(String(format: "%.0f Hz · %d ch · %d buffers · %.2f s PCM", stats.sampleRate, stats.channels, stats.buffers, stats.seconds))
-            Text(String(format: "RMS %.6f · peak %.6f · non-zero %.2f%%", stats.rms, stats.peak, stats.nonZeroPercent))
-            Text("Last buffer: \(stats.age.map { String(format: "%.2f s ago", $0) } ?? "never") · silent buffers: \(stats.silentBuffers)")
-            Text(String(format: "1 kHz amplitude %.6f · energy %.2f%%", stats.toneAmplitude, 100 * stats.toneEnergyFraction))
-            Text(String(format: "Max gap %.3f s · PTS regressions %d · decode errors %d", stats.maxGap, stats.ptsRegressions, stats.errors))
-            Text(String(format: "Background: span %.1f s · PCM %.1f s · audible %.1f s · max gap %.3f s", stats.backgroundSpan, stats.backgroundPCMSeconds, stats.backgroundAudibleSeconds, stats.backgroundMaxGap))
-        }.font(.system(.caption, design: .monospaced)).textSelection(.enabled)
     }
 }

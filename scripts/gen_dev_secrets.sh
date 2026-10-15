@@ -8,5 +8,6 @@ if [ "${CONFIGURATION:-Debug}" = "Debug" ] && [ -f "$root/.env" ]; then
   key="$(grep '^OPENAI_API_KEY=' "$root/.env" | head -1 | cut -d= -f2- | tr -d "\"' ")"
 fi
 content="enum DevSecrets { static let openAIKey = \"$key\" }"
+mkdir -p "$(dirname "$out")"
 [ -f "$out" ] && [ "$(cat "$out")" = "$content" ] && exit 0
 printf '%s' "$content" > "$out"

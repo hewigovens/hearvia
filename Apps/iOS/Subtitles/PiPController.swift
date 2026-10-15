@@ -16,7 +16,9 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
     /// While armed, leaving the app starts PiP automatically (no extra tap needed).
     private(set) var autoStartArmed = false
     let previewView = SubtitlePreviewView()
-    var fontScale = 1.0 { didSet { renderer?.fontScale = fontScale } }
+    var fontScale = 1.0 {
+        didSet { renderer?.fontScale = fontScale }
+    }
     private let log: DiagnosticLog
     private let session: AudioSessionController
     private var controller: AVPictureInPictureController?
@@ -27,11 +29,16 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
     private var restoreCompletion: ((Bool) -> Void)?
     private nonisolated let playbackFlag = PlaybackFlag()
 
-    init(log: DiagnosticLog, session: AudioSessionController) { self.log = log; self.session = session }
+    init(log: DiagnosticLog, session: AudioSessionController) {
+        self.log = log
+        self.session = session
+    }
 
     func attach(_ layer: AVSampleBufferDisplayLayer) {
         guard renderer == nil else { return }
-        guard AVPictureInPictureController.isPictureInPictureSupported() else { state = "Unsupported device"; return }
+        guard AVPictureInPictureController.isPictureInPictureSupported() else { state = "Unsupported device"
+            return
+        }
         do {
             renderer = try SubtitleRenderer(layer: layer)
             renderer?.fontScale = fontScale
@@ -54,38 +61,58 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
 
     func start() {
         guard let controller, !active, !pending else { return }
-        pending = true; state = "Activating PiP session"; error = ""
+        pending = true
+        state = "Activating PiP session"
+        error = ""
         Task { await startFromUserAction(controller) }
     }
 
     private func startFromUserAction(_ controller: AVPictureInPictureController) async {
         do {
             try await session.acquire("pip")
-            playing = true; playbackFlag.set(true); renderer?.setPlaying(true); controller.invalidatePlaybackState()
+            playing = true
+            playbackFlag.set(true)
+            renderer?.setPlaying(true)
+            controller.invalidatePlaybackState()
             log.event("pip_start_requested", ["possible": "\(possible)"])
             // Readiness changed ~40 ms after activation on the device. Keep this user request
             // pending while KVO catches up, rather than making the first tap fail.
-            for _ in 0..<30 {
-                if controller.isPictureInPicturePossible { break }
+            for _ in 0 ..< 30 {
+                if controller.isPictureInPicturePossible {
+                    break
+                }
                 try await Task.sleep(for: .milliseconds(100))
             }
             guard controller.isPictureInPicturePossible else {
                 error = "PiP is not ready. Keep the inline preview visible, then retry."
-                pending = false; state = "PiP unavailable"; session.release("pip"); return
+                pending = false
+                state = "PiP unavailable"
+                session.release("pip")
+                return
             }
             state = "Starting PiP"
             controller.startPictureInPicture()
-        } catch { pending = false; fail(error); session.release("pip") }
+        } catch { pending = false
+            fail(error)
+            session.release("pip")
+        }
     }
 
-    func stop() { controller?.stopPictureInPicture() }
+    func stop() {
+        controller?.stopPictureInPicture()
+    }
 
     /// Called once capture is running. Playback + mix never interrupts the audio the user is listening to.
     func armAutoStart() async {
         guard let controller, !autoStartArmed else { return }
-        do { try await session.acquire("pip") } catch { fail(error); return }
+        do { try await session.acquire("pip") } catch { fail(error)
+            return
+        }
         autoStartArmed = true
-        playing = true; playbackFlag.set(true); renderer?.setPlaying(true); controller.invalidatePlaybackState()
+        playing = true
+        playbackFlag.set(true)
+        renderer?.setPlaying(true)
+        controller.invalidatePlaybackState()
         controller.canStartPictureInPictureAutomaticallyFromInline = true
         log.event("pip_auto_start_armed", ["possible": "\(controller.isPictureInPicturePossible)"])
     }
@@ -94,7 +121,9 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
         guard autoStartArmed else { return }
         autoStartArmed = false
         controller?.canStartPictureInPictureAutomaticallyFromInline = false
-        if !active { session.release("pip") }
+        if !active {
+            session.release("pip")
+        }
         log.event("pip_auto_start_disarmed")
     }
 
@@ -102,12 +131,18 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
         if began {
             playbackFlag.set(false)
             renderer?.setPlaying(false)
-            if active { state = "PiP interrupted" }
+            if active {
+                state = "PiP interrupted"
+            }
         } else {
-            if !mayResume { playing = false }
+            if !mayResume {
+                playing = false
+            }
             playbackFlag.set(playing)
             renderer?.setPlaying(playing)
-            if active { state = playing ? "PiP active" : "PiP paused — resume from controls" }
+            if active {
+                state = playing ? "PiP active" : "PiP paused — resume from controls"
+            }
         }
         controller?.invalidatePlaybackState()
         log.event("pip_session_interruption", ["began": "\(began)", "may_resume": "\(mayResume)"])
@@ -128,41 +163,65 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
                                              "active": "\(active)", "gap": lastFrameUptime.map { "\(now - $0)" } ?? "none",
                                              "subtitle": subtitle, "detail": detail ?? "",
                                              "synchronizer_rate": "\(renderer.synchronizer.rate)", "enqueue": "accepted"])
-                frames = renderer.frames; lastFrameUptime = now
-            } else { log.event("subtitle_backpressure") }
+                frames = renderer.frames
+                lastFrameUptime = now
+            } else {
+                log.event("subtitle_backpressure")
+            }
         } catch { fail(error) }
     }
 
     func finishRestore() {
         guard restoreRequested, UIApplication.shared.applicationState == .active else { return }
         restoreRequested = false
-        let completion = restoreCompletion; restoreCompletion = nil
-        log.event("pip_restore_completed"); completion?(true)
+        let completion = restoreCompletion
+        restoreCompletion = nil
+        log.event("pip_restore_completed")
+        completion?(true)
     }
 
-    private func fail(_ error: Error) { self.error = String(describing: error); state = "PiP error"; log.event("pip_error", ["error": "\(error)"]) }
+    private func fail(_ error: Error) {
+        self.error = String(describing: error)
+        state = "PiP error"
+        log.event("pip_error", ["error": "\(error)"])
+    }
 
     nonisolated func pictureInPictureControllerWillStartPictureInPicture(_ controller: AVPictureInPictureController) {
         Task { @MainActor in self.log.event("pip_will_start") }
     }
     nonisolated func pictureInPictureControllerDidStartPictureInPicture(_ controller: AVPictureInPictureController) {
-        Task { @MainActor in self.pending = false; self.active = true; self.state = "PiP active"; self.log.event("pip_did_start") }
+        Task { @MainActor in self.pending = false
+            self.active = true
+            self.state = "PiP active"
+            self.log.event("pip_did_start")
+        }
     }
     nonisolated func pictureInPictureController(_ controller: AVPictureInPictureController, failedToStartPictureInPictureWithError error: Error) {
-        Task { @MainActor in self.pending = false; self.active = false; self.fail(error); self.session.release("pip") }
+        Task { @MainActor in self.pending = false
+            self.active = false
+            self.fail(error)
+            self.session.release("pip")
+        }
     }
     nonisolated func pictureInPictureControllerWillStopPictureInPicture(_ controller: AVPictureInPictureController) {
         Task { @MainActor in self.log.event("pip_will_stop") }
     }
     nonisolated func pictureInPictureControllerDidStopPictureInPicture(_ controller: AVPictureInPictureController) {
-        Task { @MainActor in self.pending = false; self.active = false; self.state = "PiP stopped"; self.log.event("pip_did_stop")
-            if !self.autoStartArmed { self.session.release("pip") } }
+        Task { @MainActor in self.pending = false
+            self.active = false
+            self.state = "PiP stopped"
+            self.log.event("pip_did_stop")
+            if !self.autoStartArmed {
+                self.session.release("pip")
+            }
+        }
     }
     nonisolated func pictureInPictureController(_ controller: AVPictureInPictureController, restoreUserInterfaceForPictureInPictureStopWithCompletionHandler completionHandler: @escaping (Bool) -> Void) {
         let box = RestoreCompletion(completionHandler)
         Task { @MainActor in
             self.restoreCompletion?(false)
-            self.restoreCompletion = box.action; self.restoreRequested = true
+            self.restoreCompletion = box.action
+            self.restoreRequested = true
             self.log.event("pip_restore_requested")
         }
         // SwiftUI observes this flag and scrolls the inline view back into sight.
@@ -171,14 +230,18 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
     nonisolated func pictureInPictureController(_ controller: AVPictureInPictureController, setPlaying playing: Bool) {
         playbackFlag.set(playing)
         Task { @MainActor in
-            self.playing = playing; self.renderer?.setPlaying(playing); self.controller?.invalidatePlaybackState()
+            self.playing = playing
+            self.renderer?.setPlaying(playing)
+            self.controller?.invalidatePlaybackState()
             self.log.event("pip_set_playing", ["value": "\(playing)"])
         }
     }
     nonisolated func pictureInPictureControllerTimeRangeForPlayback(_ controller: AVPictureInPictureController) -> CMTimeRange {
         CMTimeRange(start: .zero, duration: .positiveInfinity)
     }
-    nonisolated func pictureInPictureControllerIsPlaybackPaused(_ controller: AVPictureInPictureController) -> Bool { !playbackFlag.get() }
+    nonisolated func pictureInPictureControllerIsPlaybackPaused(_ controller: AVPictureInPictureController) -> Bool {
+        !playbackFlag.get()
+    }
     nonisolated func pictureInPictureController(_ controller: AVPictureInPictureController, didTransitionToRenderSize newRenderSize: CMVideoDimensions) {
         Task { @MainActor in
             self.renderSize = "\(newRenderSize.width) × \(newRenderSize.height) px"
@@ -195,29 +258,22 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
 private final class PlaybackFlag: @unchecked Sendable {
     private let lock = NSLock()
     private var value = true
-    func set(_ value: Bool) { lock.lock(); defer { lock.unlock() }; self.value = value }
-    func get() -> Bool { lock.lock(); defer { lock.unlock() }; return value }
+    func set(_ value: Bool) {
+        lock.lock()
+        defer { lock.unlock() }
+        self.value = value
+    }
+    func get() -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return value
+    }
 }
 
 /// Transferred once to the main actor, where restoration invokes the completion exactly once.
 private final class RestoreCompletion: @unchecked Sendable {
     let action: (Bool) -> Void
-    init(_ action: @escaping (Bool) -> Void) { self.action = action }
-}
-
-final class SubtitlePreviewView: UIView {
-    override class var layerClass: AnyClass { AVSampleBufferDisplayLayer.self }
-    var displayLayer: AVSampleBufferDisplayLayer { layer as! AVSampleBufferDisplayLayer }
-}
-
-struct SubtitlePreview: UIViewRepresentable {
-    let pip: PiPController
-    func makeUIView(context: Context) -> SubtitlePreviewView {
-        let view = pip.previewView
-        view.backgroundColor = .black
-        view.accessibilityIdentifier = "subtitlePreview"
-        pip.attach(view.displayLayer)
-        return view
+    init(_ action: @escaping (Bool) -> Void) {
+        self.action = action
     }
-    func updateUIView(_ uiView: SubtitlePreviewView, context: Context) {}
 }

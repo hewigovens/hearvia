@@ -13,34 +13,34 @@ Requires iOS 27 / macOS 27 and Xcode 27.
 ## Layout
 
 ```
-Apps/
-  iOS/         Hearvia for iPhone (Views, Capture, Subtitles = PiP, Developer = PoC diagnostics)
-    Tests/     unit tests        UITests/  device smoke tests (outdated)
-  macOS/       Hearvia for Mac (Views, Capture = Core Audio tap)
-  Shared/      DevSecrets.generated.swift (generated, gitignored)
-HearviaKit/    Swift package shared by both apps
-               LiveTranslator, RealtimeTranslationClient, OnDeviceEngine, MicrophoneCapture, Theme
-               hearvia-translate: CLI that streams an audio file through either engine
+HearviaKit/    Swift package shared by both apps (the "core")
+  Translation/ LiveTranslator (+Realtime, +OnDevice, +Transcript), feed, engine, transcript lines
+  Realtime/    gpt-realtime-translate WebSocket client
+  OnDevice/    SpeechAnalyzer + Translation framework engine, model availability and downloads
+  Audio/       resampler, microphone capture, level meter
+  Design/      colors, appearance, icon mark, buttons, segmented control, transcript list
+  hearvia-translate: CLI that streams an audio file through either engine
+Apps/iOS/      App, Home, Onboarding, Settings, Capture (ScreenCaptureKit), Subtitles (PiP), Developer (PoC tools)
+Apps/macOS/    App, Control, Overlay, Transcript, Settings, MenuBar, Capture (Core Audio process tap)
+agents/        architecture, SwiftUI, design, testing, version-control and run/debug guides (start at AGENTS.md)
 docs/          PoC feasibility report and measurement protocol
 scripts/       gen_dev_secrets.sh, make_icons.swift, chatgpt_plan_probe.py; poc/ = PoC analysis tools
 TestMedia/     speech samples for the CLI and a Safari test page
-Archive/       local-only PoC evidence (gitignored)
 ```
+
+Architecture and conventions: [AGENTS.md](AGENTS.md).
 
 ## Build
 
-```sh
-brew install xcodegen
-xcodegen generate                       # creates Hearvia.xcodeproj from project.yml
-open Hearvia.xcodeproj                  # schemes: Hearvia (iOS), HearviaMac
-```
-
-Command line:
+Needs Xcode 27, [XcodeGen](https://github.com/yonaskolb/XcodeGen), [just](https://github.com/casey/just), SwiftFormat and SwiftLint (`brew install xcodegen just swiftformat swiftlint`).
 
 ```sh
-xcodebuild -project Hearvia.xcodeproj -scheme Hearvia -destination 'generic/platform=iOS' build
-xcodebuild -project Hearvia.xcodeproj -scheme HearviaMac -destination 'platform=macOS' build
-(cd HearviaKit && swift test)
+just generate      # Hearvia.xcodeproj from project.yml (not checked in); schemes Hearvia (iOS) and HearviaMac
+just build         # both apps
+just test          # HearviaKit unit tests
+just run-mac       # launch the Mac app with JSON event logging
+just install-ios   # build, install and launch on the paired iPhone (HEARVIA_DEVICE=<udid>)
+just format lint
 ```
 
 The signing team in `project.yml` is this workspace's; replace `DEVELOPMENT_TEAM` for another account.
@@ -52,14 +52,13 @@ Put `OPENAI_API_KEY=sk-…` in `.env` (gitignored). The pre-build script `script
 ### Try the engines without the apps
 
 ```sh
-cd HearviaKit && swift build && cd ..
-HearviaKit/.build/debug/hearvia-translate TestMedia/speech/en.aiff zh                  # OpenAI Realtime
-HearviaKit/.build/debug/hearvia-translate TestMedia/speech/ja.aiff en --on-device=ja   # on-device
+just translate TestMedia/speech/en.aiff zh                  # OpenAI Realtime (needs .env)
+just translate TestMedia/speech/ja.aiff en --on-device=ja   # on-device
 ```
 
 ### App icon
 
-`swift scripts/make_icons.swift` renders the iOS (default, dark, tinted) and macOS icon sets from the same geometry as `HearviaMark` in `HearviaKit/Sources/HearviaKit/Theme.swift`.
+`just icons` renders the iOS (default, dark, tinted) and macOS icon sets from the same geometry as `HearviaMark` in `HearviaKit/Sources/HearviaKit/Theme.swift`.
 
 ## Background
 

@@ -1,0 +1,17 @@
+--swiftversion 6.0
+--indent 4
+--indentcase false
+--trimwhitespace always
+--voidtype void
+--wraparguments preserve
+--wrapparameters preserve
+--wrapcollections preserve
+--maxwidth none
+--self init-only
+--importgrouping alpha
+--semicolons never
+--commas inline
+--stripunusedargs closure-only
+--disable modifierOrder,redundantSelf,wrapMultilineStatementBraces,blankLinesBetweenScopes
+--header strip
+--exclude HearviaKit/.build,Archive,Hearvia.xcodeproj

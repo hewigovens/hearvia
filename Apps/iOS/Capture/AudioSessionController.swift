@@ -1,13 +1,6 @@
 import AVFoundation
 import Observation
 
-enum SessionMode: String, CaseIterable, Identifiable {
-    case playbackMix = "Playback + mix"
-    case recordMix = "Play & record + mix"
-    case playbackExclusive = "Playback exclusive"
-    var id: String { rawValue }
-}
-
 @MainActor @Observable
 final class AudioSessionController {
     var mode = SessionMode.playbackMix
@@ -43,7 +36,9 @@ final class AudioSessionController {
                         self.onInterruption?(true, false)
                     } else if name == AVAudioSession.resumptionRecommendationNotification {
                         let resume = resumption?.recommendation == .shouldResume
-                        if resume && !self.owners.isEmpty { try? await self.activate() }
+                        if resume, !self.owners.isEmpty {
+                            try? await self.activate()
+                        }
                         self.onInterruption?(false, resume)
                     }
                 }
@@ -52,9 +47,15 @@ final class AudioSessionController {
     }
 
     func acquire(_ owner: String, microphone: Bool = false) async throws {
-        if microphone { mode = .recordMix; microphoneOwners.insert(owner) }
+        if microphone {
+            mode = .recordMix
+            microphoneOwners.insert(owner)
+        }
         owners.insert(owner)
-        do { try await activate() } catch { owners.remove(owner); microphoneOwners.remove(owner); throw error }
+        do { try await activate() } catch { owners.remove(owner)
+            microphoneOwners.remove(owner)
+            throw error
+        }
     }
 
     func activate() async throws {
@@ -72,31 +73,45 @@ final class AudioSessionController {
             case .playbackExclusive: try session.setCategory(.playback, mode: .default)
             }
             guard try await session.activate(options: []) else { throw NSError(domain: "Hearvia", code: 2, userInfo: [NSLocalizedDescriptionKey: "Audio session activation was declined."]) }
-            status = requestedMode.rawValue; error = ""; updateRoute()
+            status = requestedMode.rawValue
+            error = ""
+            updateRoute()
             log.event("audio_session_active", ["mode": requestedMode.rawValue, "route": route, "sample_rate": "\(session.sampleRate)", "output_volume": "\(session.outputVolume)"])
-        } catch { self.error = error.localizedDescription; log.event("audio_session_error", ["error": "\(error)"]); throw error }
+        } catch { self.error = error.localizedDescription
+            log.event("audio_session_error", ["error": "\(error)"])
+            throw error
+        }
     }
 
     func release(_ owner: String) {
         guard owners.remove(owner) != nil else { return }
         if microphoneOwners.remove(owner) != nil, microphoneOwners.isEmpty {
             mode = .playbackMix // Leave play-and-record so the mic indicator goes away.
-            if !owners.isEmpty { Task { try? await self.activate() } }
+            if !owners.isEmpty {
+                Task { try? await self.activate() }
+            }
         }
-        if owners.isEmpty { Task { await self.deactivate(onlyIfUnowned: true) } }
+        if owners.isEmpty {
+            Task { await self.deactivate(onlyIfUnowned: true) }
+        }
     }
 
     func deactivate(onlyIfUnowned: Bool = false) async {
         do {
             try await serialize {
-                if onlyIfUnowned && !self.owners.isEmpty { return }
+                if onlyIfUnowned, !self.owners.isEmpty {
+                    return
+                }
                 guard try await AVAudioSession.sharedInstance().deactivate(options: [.notifyOthersOnDeactivation]) else {
                     throw NSError(domain: "Hearvia", code: 3, userInfo: [NSLocalizedDescriptionKey: "Audio session deactivation was declined."])
                 }
-                self.status = "Inactive"; self.updateRoute()
+                self.status = "Inactive"
+                self.updateRoute()
                 self.log.event("audio_session_inactive", ["owners": self.owners.sorted().joined(separator: ",")])
             }
-        } catch { self.error = error.localizedDescription; log.event("audio_session_error", ["error": "\(error)"]) }
+        } catch { self.error = error.localizedDescription
+            log.event("audio_session_error", ["error": "\(error)"])
+        }
     }
 
     func startTone() async {
@@ -108,19 +123,31 @@ final class AudioSessionController {
             let format = AVAudioFormat(standardFormatWithSampleRate: 48000, channels: 1)!
             let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 48000)!
             buffer.frameLength = 48000
-            for n in 0..<48000 { buffer.floatChannelData![0][n] = Float(0.1 * sin(2 * .pi * 1000 * Double(n) / 48000)) }
+            for n in 0 ..< 48000 {
+                buffer.floatChannelData![0][n] = Float(0.1 * sin(2 * .pi * 1000 * Double(n) / 48000))
+            }
             let url = URL.temporaryDirectory.appending(path: "hearvia-1khz.caf")
             var file: AVAudioFile? = try AVAudioFile(forWriting: url, settings: format.settings)
-            try file?.write(from: buffer); file = nil
+            try file?.write(from: buffer)
+            file = nil
             tone = try AVAudioPlayer(contentsOf: url)
             tone?.numberOfLoops = -1
             guard tone?.play() == true else { throw PCMError.converter }
             tonePlaying = true
             log.event("tone_started", ["hz": "1000", "pcm_peak": "0.1", "pcm_rms": "0.0707107", "mode": mode.rawValue])
-        } catch { self.error = error.localizedDescription; log.event("tone_error", ["error": "\(error)"]); release("tone") }
+        } catch { self.error = error.localizedDescription
+            log.event("tone_error", ["error": "\(error)"])
+            release("tone")
+        }
     }
 
-    func stopTone() { tone?.stop(); tone = nil; tonePlaying = false; log.event("tone_stopped"); release("tone") }
+    func stopTone() {
+        tone?.stop()
+        tone = nil
+        tonePlaying = false
+        log.event("tone_stopped")
+        release("tone")
+    }
 
     private func serialize(_ action: @escaping @MainActor () async throws -> Void) async throws {
         let previous = operation

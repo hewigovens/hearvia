@@ -23,7 +23,8 @@ targets:
     sources:
       - path: Apps/iOS
         excludes: ["Tests/**", "UITests/**"]
-      - path: Apps/Shared
+      - path: Apps/Shared/DevSecrets.generated.swift
+        optional: true
     dependencies:
       - package: HearviaKit
         product: HearviaKit
@@ -58,7 +59,8 @@ targets:
     platform: macOS
     sources:
       - path: Apps/macOS
-      - path: Apps/Shared
+      - path: Apps/Shared/DevSecrets.generated.swift
+        optional: true
     dependencies:
       - package: HearviaKit
         product: HearviaKit

@@ -1,0 +1,35 @@
+included:
+  - Apps
+  - HearviaKit/Sources
+excluded:
+  - Apps/Shared
+  - HearviaKit/.build
+
+disabled_rules:
+  - line_length
+  - type_body_length
+  - file_length
+  - identifier_name
+  - opening_brace
+  - multiple_closures_with_trailing_closure
+  - optional_data_string_conversion  # UTF-8 decoding of JSON/WebSocket payloads is intended
+  - large_tuple
+
+opt_in_rules:
+  - closure_spacing
+  - contains_over_filter_count
+  - empty_count
+  - empty_string
+  - first_where
+  - sorted_first_last
+  - toggle_bool
+
+cyclomatic_complexity:
+  warning: 12
+
+function_body_length:
+  warning: 60
+  error: 100
+
+nesting:
+  type_level: 3

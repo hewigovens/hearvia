@@ -7,9 +7,11 @@ import HearviaKit
 // Usage: hearvia-translate <audio-file> [target-lang=zh] [--fast]
 
 func apiKey() -> String? {
-    if let key = ProcessInfo.processInfo.environment["OPENAI_API_KEY"], !key.isEmpty { return key }
+    if let key = ProcessInfo.processInfo.environment["OPENAI_API_KEY"], !key.isEmpty {
+        return key
+    }
     var dir = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-    for _ in 0..<4 {
+    for _ in 0 ..< 4 {
         if let text = try? String(contentsOf: dir.appending(path: ".env"), encoding: .utf8) {
             for line in text.split(separator: "\n") where line.hasPrefix("OPENAI_API_KEY=") {
                 return String(line.dropFirst("OPENAI_API_KEY=".count)).trimmingCharacters(in: .init(charactersIn: "\"' "))
@@ -21,7 +23,9 @@ func apiKey() -> String? {
 }
 
 let args = CommandLine.arguments.dropFirst().filter { !$0.hasPrefix("--") }
-guard let path = args.first else { print("usage: hearvia-translate <audio-file> [lang] [--fast] [--on-device=<spoken-lang>]"); exit(2) }
+guard let path = args.first else { print("usage: hearvia-translate <audio-file> [lang] [--fast] [--on-device=<spoken-lang>]")
+    exit(2)
+}
 let language = args.dropFirst().first ?? "zh"
 let realtime = !CommandLine.arguments.contains("--fast")
 
@@ -30,7 +34,9 @@ if let flag = CommandLine.arguments.first(where: { $0.hasPrefix("--on-device") }
     try await runOnDevice(path: path, spoken: spoken, target: language)
     exit(0)
 }
-guard let key = apiKey() else { print("OPENAI_API_KEY not set and no .env found"); exit(2) }
+guard let key = apiKey() else { print("OPENAI_API_KEY not set and no .env found")
+    exit(2)
+}
 
 let file = try AVAudioFile(forReading: URL(fileURLWithPath: path))
 let resampler = PCM16Resampler()
@@ -47,7 +53,9 @@ print("audio: \(file.fileFormat.sampleRate) Hz × \(file.fileFormat.channelCount
 let client = RealtimeTranslationClient(configuration: .init(targetLanguage: language), credential: key)
 let start = Date()
 nonisolated(unsafe) var streamStart = Date.distantFuture
-func stamp() -> String { String(format: "%6.2fs", Date().timeIntervalSince(start)) }
+func stamp() -> String {
+    String(format: "%6.2fs", Date().timeIntervalSince(start))
+}
 
 let receiver = Task {
     var source = "", translation = "", audioBytes = 0
@@ -56,18 +64,26 @@ let receiver = Task {
     for await event in client.events {
         let now = Date().timeIntervalSince(start)
         switch event {
-        case .sessionCreated(let id, let expires): print("[\(stamp())] session.created \(id) expires=\(expires.map { "\($0)" } ?? "-")")
+        case let .sessionCreated(id, expires): print("[\(stamp())] session.created \(id) expires=\(expires.map { "\($0)" } ?? "-")")
         case .sessionUpdated: print("[\(stamp())] session.updated")
-        case .sourceDelta(let d, _):
-            if firstSource == nil { firstSource = now }
-            source += d; print("[\(stamp())] SRC  \(d.debugDescription)")
-        case .translationDelta(let d, let ms):
-            if firstTranslation == nil { firstTranslation = now }
-            if let ms, realtime { lags.append(Date().timeIntervalSince(streamStart) - Double(ms) / 1000) }
-            translation += d; print("[\(stamp())] TR   \(d.debugDescription) elapsed_ms=\(ms.map(String.init) ?? "-")")
-        case .audioDelta(let bytes, _): audioBytes += bytes
-        case .serverError(let type, let code, let message): print("[\(stamp())] ERROR \(type) \(code ?? "") \(message)")
-        case .closed(let reason): print("[\(stamp())] closed \(reason ?? "session.closed")")
+        case let .sourceDelta(d, _):
+            if firstSource == nil {
+                firstSource = now
+            }
+            source += d
+            print("[\(stamp())] SRC  \(d.debugDescription)")
+        case let .translationDelta(d, ms):
+            if firstTranslation == nil {
+                firstTranslation = now
+            }
+            if let ms, realtime {
+                lags.append(Date().timeIntervalSince(streamStart) - Double(ms) / 1000)
+            }
+            translation += d
+            print("[\(stamp())] TR   \(d.debugDescription) elapsed_ms=\(ms.map(String.init) ?? "-")")
+        case let .audioDelta(bytes, _): audioBytes += bytes
+        case let .serverError(type, code, message): print("[\(stamp())] ERROR \(type) \(code ?? "") \(message)")
+        case let .closed(reason): print("[\(stamp())] closed \(reason ?? "session.closed")")
         }
     }
     print("\n--- source ---\n\(source)\n--- translation ---\n\(translation)")
@@ -87,7 +103,9 @@ do {
         if realtime {
             let due = streamStart.addingTimeInterval(Double(i + 1) * 0.2)
             let wait = due.timeIntervalSinceNow
-            if wait > 0 { try await Task.sleep(for: .seconds(wait)) }
+            if wait > 0 {
+                try await Task.sleep(for: .seconds(wait))
+            }
         }
     }
 } catch {
@@ -95,7 +113,9 @@ do {
 }
 print("[\(stamp())] sent all audio, closing")
 await client.close()
-let timeout = Task { try await Task.sleep(for: .seconds(20)); await client.cancel() }
+let timeout = Task { try await Task.sleep(for: .seconds(20))
+    await client.cancel()
+}
 await receiver.value
 timeout.cancel()
 
@@ -106,7 +126,9 @@ timeout.cancel()
     await translator.setSourceLanguage(spoken)
     await translator.setTargetLanguage(target)
     let start = Date()
-    func stamp() -> String { String(format: "%6.2fs", Date().timeIntervalSince(start)) }
+    func stamp() -> String {
+        String(format: "%6.2fs", Date().timeIntervalSince(start))
+    }
     var last = ""
     translator.onTextChange = {
         guard translator.translation != last else { return }
@@ -125,7 +147,9 @@ timeout.cancel()
         translator.feed.push(buffer)
         sent += Double(buffer.frameLength) / buffer.format.sampleRate
         let wait = streamStart.addingTimeInterval(sent).timeIntervalSinceNow
-        if wait > 0 { try await Task.sleep(for: .seconds(wait)) }
+        if wait > 0 {
+            try await Task.sleep(for: .seconds(wait))
+        }
     }
     while file.framePosition < file.length {
         let buffer = AVAudioPCMBuffer(pcmFormat: file.processingFormat, frameCapacity: block)!
@@ -133,7 +157,7 @@ timeout.cancel()
         try await feed(buffer)
     }
     print("[\(stamp())] audio ended (\(String(format: "%.1f", sent)) s)")
-    for _ in 0..<15 { // 3 s of silence so the last segment finalizes
+    for _ in 0 ..< 15 { // 3 s of silence so the last segment finalizes
         let silence = AVAudioPCMBuffer(pcmFormat: file.processingFormat, frameCapacity: block)!
         silence.frameLength = block
         try await feed(silence)

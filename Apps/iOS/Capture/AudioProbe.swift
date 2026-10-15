@@ -2,13 +2,6 @@ import AVFoundation
 import HearviaKit
 import ScreenCaptureKit
 
-struct ProbeSnapshot: Sendable {
-    var system = AudioSnapshot()
-    var microphone = AudioSnapshot()
-    var recordingState = "Idle"
-    var recordingURL: URL?
-}
-
 /// All mutable state belongs to this serial queue, including the SCStreamOutput callback.
 final class AudioProbe: NSObject, SCStreamOutput, @unchecked Sendable {
     let queue = DispatchQueue(label: "dev.hewig.hearvia.pcm", qos: .userInitiated)
@@ -28,7 +21,9 @@ final class AudioProbe: NSObject, SCStreamOutput, @unchecked Sendable {
     private var recordingArmed = false
     private var activeStream: ObjectIdentifier?
 
-    init(log: DiagnosticLog) { self.log = log }
+    init(log: DiagnosticLog) {
+        self.log = log
+    }
 
     func reset() async {
         await withCheckedContinuation { continuation in
@@ -36,7 +31,9 @@ final class AudioProbe: NSObject, SCStreamOutput, @unchecked Sendable {
                 self.finishRecordingOnQueue()
                 self.snapshot = ProbeSnapshot()
                 self.activeStream = nil
-                self.lastPTS = [:]; self.lastLog = [:]; self.backgroundLast = [:]
+                self.lastPTS = [:]
+                self.lastLog = [:]
+                self.backgroundLast = [:]
                 continuation.resume()
             }
         }
@@ -45,12 +42,16 @@ final class AudioProbe: NSObject, SCStreamOutput, @unchecked Sendable {
     func bind(_ stream: SCStream) async {
         let identity = ObjectIdentifier(stream)
         await withCheckedContinuation { continuation in
-            queue.async { self.activeStream = identity; continuation.resume() }
+            queue.async { self.activeStream = identity
+                continuation.resume()
+            }
         }
     }
 
     func unbind() {
-        queue.async { self.activeStream = nil; self.finishRecordingOnQueue() }
+        queue.async { self.activeStream = nil
+            self.finishRecordingOnQueue()
+        }
     }
 
     func read() async -> ProbeSnapshot {
@@ -66,8 +67,10 @@ final class AudioProbe: NSObject, SCStreamOutput, @unchecked Sendable {
                 self.backgroundLast = [:]
                 for source in [SCStreamOutputType.audio, .microphone] {
                     var stats = self.stats(source)
-                    stats.backgroundSpan = 0; stats.backgroundPCMSeconds = 0
-                    stats.backgroundAudibleSeconds = 0; stats.backgroundMaxGap = 0
+                    stats.backgroundSpan = 0
+                    stats.backgroundPCMSeconds = 0
+                    stats.backgroundAudibleSeconds = 0
+                    stats.backgroundMaxGap = 0
                     self.setStats(stats, source)
                 }
             } else {
@@ -90,21 +93,29 @@ final class AudioProbe: NSObject, SCStreamOutput, @unchecked Sendable {
         }
     }
 
-    func finishRecording() { queue.async { self.finishRecordingOnQueue() } }
+    func finishRecording() {
+        queue.async { self.finishRecordingOnQueue() }
+    }
 
     private func finishRecordingOnQueue() {
         if recordingArmed {
             snapshot.recordingState = file == nil ? "No PCM received" : "Saved \(framesWritten) frames"
             log.event("recording_finished", ["frames": "\(framesWritten)", "file": snapshot.recordingURL?.lastPathComponent ?? "none"])
         }
-        file = nil; recordingFormat = nil; recordingArmed = false
+        file = nil
+        recordingFormat = nil
+        recordingArmed = false
     }
 
     private func stats(_ source: SCStreamOutputType) -> AudioSnapshot {
         source == .audio ? snapshot.system : snapshot.microphone
     }
     private func setStats(_ stats: AudioSnapshot, _ source: SCStreamOutputType) {
-        if source == .audio { snapshot.system = stats } else { snapshot.microphone = stats }
+        if source == .audio {
+            snapshot.system = stats
+        } else {
+            snapshot.microphone = stats
+        }
     }
 
     func stream(_ stream: SCStream, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, of type: SCStreamOutputType) {
@@ -113,45 +124,70 @@ final class AudioProbe: NSObject, SCStreamOutput, @unchecked Sendable {
         guard type == .audio || type == .microphone else { return } // Screen frames are intentionally discarded.
         do {
             let pcm = try PCMDecoder.decode(sampleBuffer)
-            if type == .audio { translationFeed?.push(pcm); levelMeter?.measure(pcm) } // before writeRecording, which may shorten frameLength
-            let metrics = AudioMetrics.measure(pcm)
-            let now = ProcessInfo.processInfo.systemUptime
-            let duration = Double(pcm.frameLength) / pcm.format.sampleRate
-            var stats = stats(type)
-            if let last = stats.lastUptime { stats.maxGap = max(stats.maxGap, now - last) }
-            stats.buffers += 1; stats.seconds += duration
-            stats.sampleRate = pcm.format.sampleRate; stats.channels = Int(pcm.format.channelCount)
-            stats.lastUptime = now; stats.rms = metrics.rms; stats.peak = metrics.peak
-            stats.nonZeroPercent = metrics.nonZeroPercent
-            stats.toneAmplitude = metrics.toneAmplitude; stats.toneEnergyFraction = metrics.toneEnergyFraction
-            if metrics.nonZeroPercent == 0 { stats.silentBuffers += 1 }
-            let pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer).seconds
-            if pts.isFinite {
-                if let previous = lastPTS[type.rawValue], pts <= previous { stats.ptsRegressions += 1 }
-                lastPTS[type.rawValue] = pts
+            if type == .audio { // before writeRecording, which may shorten frameLength
+                translationFeed?.push(pcm)
+                levelMeter?.measure(pcm)
             }
-            if let start = backgroundStart {
-                stats.backgroundSpan = now - start // Only advances when a PCM callback arrives.
-                stats.backgroundPCMSeconds += duration
-                if metrics.rms > 0.0001 { stats.backgroundAudibleSeconds += duration }
-                stats.backgroundMaxGap = max(stats.backgroundMaxGap, now - (backgroundLast[type.rawValue] ?? start))
-                backgroundLast[type.rawValue] = now
+            record(pcm, of: type, at: CMSampleBufferGetPresentationTimeStamp(sampleBuffer).seconds)
+            if recordingArmed, type == recordingSource {
+                try writeRecording(pcm)
             }
-            setStats(stats, type)
-            if now - (lastLog[type.rawValue] ?? 0) >= 1 {
-                log.event(type == .audio ? "system_pcm" : "microphone_pcm", stats.logFields)
-                lastLog[type.rawValue] = now
-            }
-            if recordingArmed && type == recordingSource { try writeRecording(pcm) }
         } catch {
-            var stats = stats(type); stats.errors += 1; setStats(stats, type)
+            var stats = stats(type)
+            stats.errors += 1
+            setStats(stats, type)
             // Bound error logging if every buffer has an unsupported format.
             if stats.errors == 1 || stats.errors % 100 == 0 {
                 log.event("pcm_error", ["source": "\(type.rawValue)", "error": "\(error)"])
             }
-            if recordingArmed && type == recordingSource {
-                finishRecordingOnQueue(); snapshot.recordingState = "Recording failed: \(error)"
+            if recordingArmed, type == recordingSource {
+                finishRecordingOnQueue()
+                snapshot.recordingState = "Recording failed: \(error)"
             }
+        }
+    }
+
+    /// Updates the per-source counters shown in Developer tools and logs them once a second.
+    private func record(_ pcm: AVAudioPCMBuffer, of type: SCStreamOutputType, at pts: Double) {
+        let metrics = AudioMetrics.measure(pcm)
+        let now = ProcessInfo.processInfo.systemUptime
+        let duration = Double(pcm.frameLength) / pcm.format.sampleRate
+        var stats = stats(type)
+        if let last = stats.lastUptime {
+            stats.maxGap = max(stats.maxGap, now - last)
+        }
+        stats.buffers += 1
+        stats.seconds += duration
+        stats.sampleRate = pcm.format.sampleRate
+        stats.channels = Int(pcm.format.channelCount)
+        stats.lastUptime = now
+        stats.rms = metrics.rms
+        stats.peak = metrics.peak
+        stats.nonZeroPercent = metrics.nonZeroPercent
+        stats.toneAmplitude = metrics.toneAmplitude
+        stats.toneEnergyFraction = metrics.toneEnergyFraction
+        if metrics.nonZeroPercent == 0 {
+            stats.silentBuffers += 1
+        }
+        if pts.isFinite {
+            if let previous = lastPTS[type.rawValue], pts <= previous {
+                stats.ptsRegressions += 1
+            }
+            lastPTS[type.rawValue] = pts
+        }
+        if let start = backgroundStart {
+            stats.backgroundSpan = now - start // Only advances when a PCM callback arrives.
+            stats.backgroundPCMSeconds += duration
+            if metrics.rms > 0.0001 {
+                stats.backgroundAudibleSeconds += duration
+            }
+            stats.backgroundMaxGap = max(stats.backgroundMaxGap, now - (backgroundLast[type.rawValue] ?? start))
+            backgroundLast[type.rawValue] = now
+        }
+        setStats(stats, type)
+        if now - (lastLog[type.rawValue] ?? 0) >= 1 {
+            log.event(type == .audio ? "system_pcm" : "microphone_pcm", stats.logFields)
+            lastLog[type.rawValue] = now
         }
     }
 
@@ -162,16 +198,21 @@ final class AudioProbe: NSObject, SCStreamOutput, @unchecked Sendable {
             file = try AVAudioFile(forWriting: url, settings: pcm.format.settings,
                                    commonFormat: .pcmFormatFloat32, interleaved: false)
             try FileManager.default.setAttributes([.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication], ofItemAtPath: url.path)
-            recordingFormat = pcm.format; snapshot.recordingURL = url
+            recordingFormat = pcm.format
+            snapshot.recordingURL = url
         }
         guard recordingFormat == pcm.format else {
-            finishRecordingOnQueue(); snapshot.recordingState = "Saved partial: audio format changed"; return
+            finishRecordingOnQueue()
+            snapshot.recordingState = "Saved partial: audio format changed"
+            return
         }
         let target = AVAudioFrameCount(pcm.format.sampleRate * 15)
         pcm.frameLength = min(pcm.frameLength, target - framesWritten)
         try file?.write(from: pcm)
         framesWritten += pcm.frameLength
         snapshot.recordingState = String(format: "Recording %.1f / 15 s", Double(framesWritten) / pcm.format.sampleRate)
-        if framesWritten >= target { finishRecordingOnQueue() }
+        if framesWritten >= target {
+            finishRecordingOnQueue()
+        }
     }
 }

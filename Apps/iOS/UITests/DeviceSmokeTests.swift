@@ -2,7 +2,9 @@ import XCTest
 
 /// Narrow on-device evidence. This does not auto-approve screen capture or claim external PCM success.
 final class DeviceSmokeTests: XCTestCase {
-    override func setUpWithError() throws { continueAfterFailure = false }
+    override func setUpWithError() throws {
+        continueAfterFailure = false
+    }
     @MainActor
     func testAStandaloneSafari() throws {
         guard ProcessInfo.processInfo.environment["HEARVIA_RUN_SAFARI"] == "1" else { throw XCTSkip("Requires prepared local Safari test video") }
@@ -17,10 +19,16 @@ final class DeviceSmokeTests: XCTestCase {
         let play = safari.buttons["Play test video"]
         let playing = safari.buttons["Playing test video"]
         XCTAssertTrue(playing.exists || play.waitForExistence(timeout: 8), safari.debugDescription)
-        if play.exists { play.tap() } else { playing.tap() }
+        if play.exists {
+            play.tap()
+        } else {
+            playing.tap()
+        }
         sleep(3)
         attach("A-Safari-start", XCUIScreen.main.screenshot())
-        sleep(30); sleep(30); sleep(5)
+        sleep(30)
+        sleep(30)
+        sleep(5)
         attach("A-Safari-end", XCUIScreen.main.screenshot())
         app.activate()
         reveal(app.buttons["captureStop"], in: app, up: false)
@@ -83,7 +91,9 @@ final class DeviceSmokeTests: XCTestCase {
         sleep(3)
         print("PODCAST_PLAYBACK_CONTROLS " + podcasts.buttons.allElementsBoundByIndex.map { String($0.label.prefix(80)) + " [" + $0.identifier + "]" }.joined(separator: " | "))
         attach("Podcasts-source-start", XCUIScreen.main.screenshot())
-        sleep(30); sleep(30); sleep(5)
+        sleep(30)
+        sleep(30)
+        sleep(5)
         attach("Podcasts-source-end", XCUIScreen.main.screenshot())
         app.activate()
         reveal(app.buttons["recordStart"], in: app, up: false)
@@ -96,14 +106,20 @@ final class DeviceSmokeTests: XCTestCase {
         reveal(app.buttons["captureStop"], in: app, up: false)
         app.buttons["captureStop"].tap()
         podcasts.activate()
-        if pause.exists && pause.isHittable { pause.tap() }
+        if pause.exists, pause.isHittable {
+            pause.tap()
+        }
         // Source audibility and session compatibility are decided from PCM/logs, not this UI predicate.
     }
     @MainActor
-    func testD1OwnToneIncludedWithSafari() throws { try ownTone(exclude: false) }
+    func testD1OwnToneIncludedWithSafari() throws {
+        try ownTone(exclude: false)
+    }
 
     @MainActor
-    func testD2OwnToneExcludedWithSafari() throws { try ownTone(exclude: true) }
+    func testD2OwnToneExcludedWithSafari() throws {
+        try ownTone(exclude: true)
+    }
 
     @MainActor private func ownTone(exclude: Bool) throws {
         guard ProcessInfo.processInfo.environment["HEARVIA_RUN_SAFARI"] == "1" else { throw XCTSkip("Requires prepared local Safari test video") }
@@ -134,7 +150,11 @@ final class DeviceSmokeTests: XCTestCase {
         let play = safari.buttons["Play test video"]
         let playing = safari.buttons["Playing test video"]
         XCTAssertTrue(playing.exists || play.waitForExistence(timeout: 3), safari.debugDescription)
-        if play.exists { play.tap() } else { playing.tap() }
+        if play.exists {
+            play.tap()
+        } else {
+            playing.tap()
+        }
         sleep(20)
         attach(exclude ? "D2-Safari" : "D1-Safari", XCUIScreen.main.screenshot())
         app.activate()
@@ -146,10 +166,14 @@ final class DeviceSmokeTests: XCTestCase {
     }
 
     @MainActor
-    func testC1CaptureThenPiPWithSafari() throws { try combined(pipFirst: false) }
+    func testC1CaptureThenPiPWithSafari() throws {
+        try combined(pipFirst: false)
+    }
 
     @MainActor
-    func testC2PiPThenCaptureWithSafari() throws { try combined(pipFirst: true) }
+    func testC2PiPThenCaptureWithSafari() throws {
+        try combined(pipFirst: true)
+    }
 
     @MainActor
     private func combined(pipFirst: Bool) throws {
@@ -158,9 +182,13 @@ final class DeviceSmokeTests: XCTestCase {
         let app = XCUIApplication()
         app.launchEnvironment["HEARVIA_EXPERIMENT"] = pipFirst ? "C2 PiP-capture-Safari" : "C1 capture-PiP-Safari"
         app.launch()
-        if pipFirst { try startPiP(app) }
+        if pipFirst {
+            try startPiP(app)
+        }
         try startCapture(app)
-        if !pipFirst { try startPiP(app) }
+        if !pipFirst {
+            try startPiP(app)
+        }
         let record = app.buttons["recordStart"]
         reveal(record, in: app, up: false)
         record.tap()
@@ -169,10 +197,16 @@ final class DeviceSmokeTests: XCTestCase {
         let play = safari.buttons["Play test video"]
         let playing = safari.buttons["Playing test video"]
         XCTAssertTrue(playing.exists || play.waitForExistence(timeout: 8), safari.debugDescription)
-        if play.exists { play.tap() } else { playing.tap() }
+        if play.exists {
+            play.tap()
+        } else {
+            playing.tap()
+        }
         sleep(3)
         attach(pipFirst ? "C2-start" : "C1-start", XCUIScreen.main.screenshot())
-        sleep(30); sleep(30); sleep(5)
+        sleep(30)
+        sleep(30)
+        sleep(5)
         attach(pipFirst ? "C2-end" : "C1-end", XCUIScreen.main.screenshot())
         app.activate()
         reveal(app.buttons["captureStop"], in: app, up: false)
@@ -209,14 +243,22 @@ final class DeviceSmokeTests: XCTestCase {
     }
 
     @MainActor private func reveal(_ element: XCUIElement, in app: XCUIApplication, up: Bool = true) {
-        for _ in 0..<12 {
-            if element.isHittable { return }
+        for _ in 0 ..< 12 {
+            if element.isHittable {
+                return
+            }
             var scrollUp = up
             if element.exists {
                 let bounds = element.frame
-                if bounds.width > 0 && bounds.height > 0 && bounds.minY.isFinite { scrollUp = bounds.midY > app.frame.midY }
+                if bounds.width > 0, bounds.height > 0, bounds.minY.isFinite {
+                    scrollUp = bounds.midY > app.frame.midY
+                }
             }
-            if scrollUp { app.swipeUp() } else { app.swipeDown() }
+            if scrollUp {
+                app.swipeUp()
+            } else {
+                app.swipeDown()
+            }
         }
     }
 
@@ -230,12 +272,14 @@ final class DeviceSmokeTests: XCTestCase {
     }
 
     @MainActor
-    func testInspectCaptureConsent() throws {
+    func testInspectCaptureConsent() {
         let app = XCUIApplication()
         app.launch()
         let button = app.buttons["captureStart"]
         XCTAssertTrue(button.waitForExistence(timeout: 15))
-        if !button.isHittable { app.swipeUp() }
+        if !button.isHittable {
+            app.swipeUp()
+        }
         button.tap()
         sleep(4)
         print("CAPTURE_APP_TREE\n" + app.debugDescription)
@@ -244,7 +288,7 @@ final class DeviceSmokeTests: XCTestCase {
     }
 
     @MainActor
-    func testDynamicInlineAndPiP() throws {
+    func testDynamicInlineAndPiP() {
         let app = XCUIApplication()
         app.launch()
         XCTAssertTrue(app.buttons["pipStart"].waitForExistence(timeout: 15))
@@ -267,7 +311,9 @@ final class DeviceSmokeTests: XCTestCase {
     }
 
     @MainActor private func attach(_ name: String, _ screenshot: XCUIScreenshot) {
-        let attachment = XCTAttachment(screenshot: screenshot); attachment.name = name
-        attachment.lifetime = .keepAlways; add(attachment)
+        let attachment = XCTAttachment(screenshot: screenshot)
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
     }
 }

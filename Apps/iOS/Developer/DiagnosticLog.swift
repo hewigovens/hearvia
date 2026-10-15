@@ -13,8 +13,8 @@ final class DiagnosticLog: @unchecked Sendable {
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         url = directory.appending(path: "session-\(UUID().uuidString).jsonl")
         FileManager.default.createFile(atPath: url.path, contents: nil,
-                                      attributes: [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication])
-        handle = try! FileHandle(forWritingTo: url)
+                                       attributes: [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication])
+        handle = try! FileHandle(forWritingTo: url) // swiftlint:disable:this force_try
         event("session_created", ["log": url.lastPathComponent])
     }
 
@@ -28,10 +28,13 @@ final class DiagnosticLog: @unchecked Sendable {
         guard let data = try? JSONSerialization.data(withJSONObject: record, options: [.sortedKeys]),
               let line = String(data: data, encoding: .utf8) else { return }
         logger.info("\(line, privacy: .public)")
-        do { try handle.write(contentsOf: data + Data([10])) }
-        catch { logger.error("Log write failed: \(error.localizedDescription, privacy: .public)") }
+        do { try handle.write(contentsOf: data + Data([10])) } catch { logger.error("Log write failed: \(error.localizedDescription, privacy: .public)") }
     }
 
-    func sync() { lock.lock(); defer { lock.unlock() }; try? handle.synchronize() }
+    func sync() {
+        lock.lock()
+        defer { lock.unlock() }
+        try? handle.synchronize()
+    }
     deinit { try? handle.close() }
 }

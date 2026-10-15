@@ -19,17 +19,17 @@ enum AnalyzePCM {
             let m = AudioMetrics.measure(pcm)
             amplitudes.append(m.toneAmplitude)
             let fields: [String: Any] = ["file": URL(fileURLWithPath: path).lastPathComponent,
-                                       "frames": pcm.frameLength, "sample_rate": pcm.format.sampleRate,
-                                       "channels": pcm.format.channelCount, "seconds": Double(pcm.frameLength) / pcm.format.sampleRate,
-                                       "rms": m.rms, "peak": m.peak, "nonzero_pct": m.nonZeroPercent,
-                                       "tone_1khz_amplitude": m.toneAmplitude, "tone_energy_fraction": m.toneEnergyFraction]
-            print(String(data: try JSONSerialization.data(withJSONObject: fields, options: [.sortedKeys]), encoding: .utf8)!)
+                                         "frames": pcm.frameLength, "sample_rate": pcm.format.sampleRate,
+                                         "channels": pcm.format.channelCount, "seconds": Double(pcm.frameLength) / pcm.format.sampleRate,
+                                         "rms": m.rms, "peak": m.peak, "nonzero_pct": m.nonZeroPercent,
+                                         "tone_1khz_amplitude": m.toneAmplitude, "tone_energy_fraction": m.toneEnergyFraction]
+            try print(String(data: JSONSerialization.data(withJSONObject: fields, options: [.sortedKeys]), encoding: .utf8)!)
             let windowFrames = AVAudioFrameCount(pcm.format.sampleRate / 2)
             if let window = AVAudioPCMBuffer(pcmFormat: pcm.format, frameCapacity: windowFrames) {
                 for start in stride(from: 0, to: Int(pcm.frameLength), by: Int(windowFrames)) {
                     let count = min(Int(windowFrames), Int(pcm.frameLength) - start)
                     window.frameLength = AVAudioFrameCount(count)
-                    for c in 0..<Int(pcm.format.channelCount) {
+                    for c in 0 ..< Int(pcm.format.channelCount) {
                         window.floatChannelData![c].update(from: pcm.floatChannelData![c].advanced(by: start), count: count)
                     }
                     let m440 = AudioMetrics.measure(window, toneHz: 440)

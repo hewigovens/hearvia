@@ -4,7 +4,10 @@ import AppKit
 import CoreGraphics
 import Foundation
 
-struct Palette { let ground: CGColor; let accent: CGColor; let secondary: CGColor }
+struct Palette { let ground: CGColor
+    let accent: CGColor
+    let secondary: CGColor
+}
 func rgb(_ hex: UInt32, _ a: CGFloat = 1) -> CGColor {
     CGColor(srgbRed: CGFloat((hex >> 16) & 0xFF) / 255, green: CGFloat((hex >> 8) & 0xFF) / 255, blue: CGFloat(hex & 0xFF) / 255, alpha: a)
 }
@@ -19,24 +22,33 @@ let original = CGRect(x: 47, y: 53, width: 26, height: 9)
 /// Draws the mark into `box` (top-left origin units 0...100).
 func drawMark(_ ctx: CGContext, _ box: CGRect, _ p: Palette, cornerRadius: CGFloat) {
     let s = box.width / 100
-    func r(_ u: CGRect) -> CGRect { CGRect(x: box.minX + u.minX * s, y: box.minY + u.minY * s, width: u.width * s, height: u.height * s) }
+    func r(_ u: CGRect) -> CGRect {
+        CGRect(x: box.minX + u.minX * s, y: box.minY + u.minY * s, width: u.width * s, height: u.height * s)
+    }
     ctx.saveGState()
-    ctx.addPath(CGPath(roundedRect: box, cornerWidth: cornerRadius, cornerHeight: cornerRadius, transform: nil)); ctx.clip()
-    ctx.setFillColor(p.ground); ctx.fill(box)
+    ctx.addPath(CGPath(roundedRect: box, cornerWidth: cornerRadius, cornerHeight: cornerRadius, transform: nil))
+    ctx.clip()
+    ctx.setFillColor(p.ground)
+    ctx.fill(box)
     ctx.setFillColor(p.accent)
     for b in bars + [translation] {
-        let rr = r(b); let rad = min(rr.width, rr.height) / 2
-        ctx.addPath(CGPath(roundedRect: rr, cornerWidth: rad, cornerHeight: rad, transform: nil)); ctx.fillPath()
+        let rr = r(b)
+        let rad = min(rr.width, rr.height) / 2
+        ctx.addPath(CGPath(roundedRect: rr, cornerWidth: rad, cornerHeight: rad, transform: nil))
+        ctx.fillPath()
     }
     ctx.setFillColor(p.secondary)
-    let o = r(original); ctx.addPath(CGPath(roundedRect: o, cornerWidth: o.height / 2, cornerHeight: o.height / 2, transform: nil)); ctx.fillPath()
+    let o = r(original)
+    ctx.addPath(CGPath(roundedRect: o, cornerWidth: o.height / 2, cornerHeight: o.height / 2, transform: nil))
+    ctx.fillPath()
     ctx.restoreGState()
 }
 
 func render(_ px: Int, opaque: Bool, _ draw: (CGContext, CGFloat) -> Void) -> Data {
     let ctx = CGContext(data: nil, width: px, height: px, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpace(name: CGColorSpace.sRGB)!,
                         bitmapInfo: opaque ? CGImageAlphaInfo.noneSkipLast.rawValue : CGImageAlphaInfo.premultipliedLast.rawValue)!
-    ctx.translateBy(x: 0, y: CGFloat(px)); ctx.scaleBy(x: 1, y: -1) // top-left origin like the 100-unit grid
+    ctx.translateBy(x: 0, y: CGFloat(px))
+    ctx.scaleBy(x: 1, y: -1) // top-left origin like the 100-unit grid
     ctx.interpolationQuality = .high
     draw(ctx, CGFloat(px))
     return NSBitmapImageRep(cgImage: ctx.makeImage()!).representation(using: .png, properties: [:])!
@@ -66,7 +78,8 @@ for points in [16, 32, 128, 256, 512] {
             ctx.saveGState()
             ctx.setShadow(offset: CGSize(width: 0, height: -10 * k), blur: 28 * k, color: rgb(0x000000, 0.35))
             ctx.addPath(CGPath(roundedRect: body, cornerWidth: 185 * k, cornerHeight: 185 * k, transform: nil))
-            ctx.setFillColor(standard.ground); ctx.fillPath()
+            ctx.setFillColor(standard.ground)
+            ctx.fillPath()
             ctx.restoreGState()
             drawMark(ctx, body, standard, cornerRadius: 185 * k)
         }, "\(mac)/\(file)")

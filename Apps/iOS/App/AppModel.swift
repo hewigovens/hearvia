@@ -1,0 +1,96 @@
+import HearviaKit
+import SwiftUI
+
+/// Owns capture, the PiP subtitle window and the translator, and keeps them in step while listening.
+@MainActor @Observable
+final class AppModel {
+    let settings: AppSettings
+    let log: DiagnosticLog
+    let session: AudioSessionController
+    let capture: CaptureController
+    let pip: PiPController
+    let translation: LiveTranslator
+    var audio = ProbeSnapshot()
+    var scene = "active"
+    var tickCount = 0
+    var listening: Bool {
+        capture.running || micRunning
+    }
+    var listeningSince: Date?
+    var micRunning = false
+    var micStarting = false
+    var micError = ""
+    /// Last ~1 s of input peaks (system audio or mic), 10 per second.
+    var levels = [Float](repeating: 0, count: 10)
+    var level: Float {
+        levels.last ?? 0
+    }
+
+    // Developer tools
+    var translationEnabled = true
+    var diagnosticsInPiP = false
+    var statusLineInPiP = false
+    var observationSource = "Safari"
+    var observationNote = ""
+
+    @ObservationIgnored let microphone = MicrophoneCapture()
+    @ObservationIgnored let meter = LevelMeter()
+    @ObservationIgnored var levelTimer: Timer?
+    @ObservationIgnored var wasListening = false
+    @ObservationIgnored var renderQueued = false
+    @ObservationIgnored private var ticking = false
+    @ObservationIgnored private var timer: Timer?
+
+    init(settings: AppSettings) {
+        self.settings = settings
+        let log = DiagnosticLog()
+        self.log = log
+        session = AudioSessionController(log: log)
+        capture = CaptureController(log: log, session: session)
+        pip = PiPController(log: log, session: session)
+        translation = LiveTranslator(fallbackKey: DevSecrets.openAIKey)
+        capture.probe.translationFeed = translation.feed
+        capture.probe.levelMeter = meter
+        if let label = ProcessInfo.processInfo.environment["HEARVIA_EXPERIMENT"] {
+            observationSource = label
+        }
+        session.onInterruption = { [weak pip] began, resume in
+            pip?.handleInterruption(began: began, mayResume: resume)
+        }
+        log.event("environment", ["device": UIDevice.current.model, "os": UIDevice.current.systemVersion,
+                                  "os_build": ProcessInfo.processInfo.operatingSystemVersionString,
+                                  "app": Bundle.main.bundleIdentifier ?? "unknown", "experiment": observationSource])
+        let timer = Timer(timeInterval: 1, repeats: true) { [weak self] _ in
+            Task { @MainActor [weak self] in await self?.tick() }
+        }
+        self.timer = timer
+        RunLoop.main.add(timer, forMode: .common)
+        translation.onTextChange = { [weak self] in self?.scheduleRender() }
+        translation.onLog = { [log] name, fields in log.event(name, fields) }
+    }
+
+    /// Once a second: refresh audio stats, follow listening start/stop, and repaint the subtitle frame.
+    func tick() async {
+        guard !ticking else { return }
+        ticking = true
+        defer { ticking = false }
+        audio = await capture.probe.read()
+        tickCount += 1
+        await syncListeningState()
+        await renderSubtitle()
+        pip.finishRestore()
+    }
+
+    func sceneChanged(_ phase: ScenePhase) {
+        UIApplication.shared.isIdleTimerDisabled = phase == .active // Keep the screen awake while Hearvia is open; manual lock still works.
+        scene = phase == .active ? "active" : phase == .background ? "background" : "inactive"
+        log.event("scene", ["phase": scene, "pip_active": "\(pip.active)", "capture_running": "\(capture.running)"])
+        if phase == .background {
+            capture.probe.markBackground(true)
+        }
+        if phase == .active {
+            capture.probe.markBackground(false)
+            pip.finishRestore()
+        }
+    }
+}

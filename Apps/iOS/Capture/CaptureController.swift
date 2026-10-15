@@ -1,6 +1,6 @@
-@preconcurrency import ScreenCaptureKit
 import AVFoundation
 import Observation
+@preconcurrency import ScreenCaptureKit
 
 @MainActor @Observable
 final class CaptureController: NSObject, SCContentSharingPickerObserver, SCStreamDelegate {
@@ -22,19 +22,26 @@ final class CaptureController: NSObject, SCContentSharingPickerObserver, SCStrea
     private var starting = false
 
     init(log: DiagnosticLog, session: AudioSessionController) {
-        self.log = log; self.session = session; probe = AudioProbe(log: log)
+        self.log = log
+        self.session = session
+        probe = AudioProbe(log: log)
         super.init()
         picker.add(self)
     }
 
     func start() {
         guard !running, !pending, !stopping else { return }
-        guard picker.isAvailable else { state = "Unavailable"; error = "Screen capture is unavailable or restricted on this device."; return }
+        guard picker.isAvailable else { state = "Unavailable"
+            error = "Screen capture is unavailable or restricted on this device."
+            return
+        }
         var config = SCContentSharingPickerConfiguration()
         config.showsMicrophoneControl = offerMicrophone
         picker.defaultConfiguration = config
         picker.isActive = true
-        pending = true; state = "Awaiting system consent"; error = ""
+        pending = true
+        state = "Awaiting system consent"
+        error = ""
         log.event("picker_presented", ["full_display": "true", "microphone_control": "\(offerMicrophone)", "exclude_own_audio": "\(excludeOwnAudio)"])
         picker.present() // iOS full-display entry point in Apple's iOS 27 sample.
     }
@@ -44,31 +51,47 @@ final class CaptureController: NSObject, SCContentSharingPickerObserver, SCStrea
         stopping = true
         defer { stopping = false }
         generation += 1
-        pending = false; starting = false
+        pending = false
+        starting = false
         let old = stream
-        stream = nil; running = false; state = "Stopping"
+        stream = nil
+        running = false
+        state = "Stopping"
         probe.unbind()
-        if let old { do { try await old.stopCapture() } catch { self.error = error.localizedDescription; log.event("stop_error", ["error": "\(error)"]) } }
+        if let old {
+            do { try await old.stopCapture() } catch { self.error = error.localizedDescription
+                log.event("stop_error", ["error": "\(error)"])
+            }
+        }
         probe.finishRecording()
-        picker.isActive = false; microphoneEnabled = false
+        picker.isActive = false
+        microphoneEnabled = false
         session.release("microphone")
-        state = "Stopped"; log.event("capture_stopped")
+        state = "Stopped"
+        log.event("capture_stopped")
     }
 
     private func configuration() -> SCStreamConfiguration {
         let config = SCStreamConfiguration()
         config.capturesAudio = true
         config.excludesCurrentProcessAudio = excludeOwnAudio
-        config.sampleRate = 48000; config.channelCount = 2
-        config.width = 320; config.height = 568
+        config.sampleRate = 48000
+        config.channelCount = 2
+        config.width = 320
+        config.height = 568
         return config
     }
 
     private func begin(_ filter: SCContentFilter) async {
         guard pending, !starting else { return }
-        generation += 1; let attempt = generation
+        generation += 1
+        let attempt = generation
         starting = true
-        defer { if attempt == generation { starting = false } }
+        defer {
+            if attempt == generation {
+                starting = false
+            }
+        }
         state = "Starting"
         do {
             guard filter.style == .display else { throw NSError(domain: "Hearvia", code: 1, userInfo: [NSLocalizedDescriptionKey: "A full-display filter is required."]) }
@@ -76,24 +99,41 @@ final class CaptureController: NSObject, SCContentSharingPickerObserver, SCStrea
             guard attempt == generation, pending else { return }
             microphoneEnabled = filter.isMicrophoneEnabled
             log.event("picker_authorized", ["style": "\(filter.style.rawValue)", "microphone": "\(microphoneEnabled)"])
-            if microphoneEnabled { try await session.acquire("microphone", microphone: true) }
-            guard attempt == generation, pending else { session.release("microphone"); return }
+            if microphoneEnabled {
+                try await session.acquire("microphone", microphone: true)
+            }
+            guard attempt == generation, pending else { session.release("microphone")
+                return
+            }
             let candidate = SCStream(filter: filter, configuration: configuration(), delegate: self)
             try candidate.addStreamOutput(probe, type: .screen, sampleHandlerQueue: probe.queue)
             try candidate.addStreamOutput(probe, type: .audio, sampleHandlerQueue: probe.queue)
-            if microphoneEnabled { try candidate.addStreamOutput(probe, type: .microphone, sampleHandlerQueue: probe.queue) }
+            if microphoneEnabled {
+                try candidate.addStreamOutput(probe, type: .microphone, sampleHandlerQueue: probe.queue)
+            }
             await probe.bind(candidate)
-            guard attempt == generation, pending else { probe.unbind(); return }
+            guard attempt == generation, pending else { probe.unbind()
+                return
+            }
             stream = candidate
             try await candidate.startCapture()
-            guard attempt == generation, stream === candidate else { try? await candidate.stopCapture(); return }
-            pending = false; running = true; captureStart = ProcessInfo.processInfo.systemUptime
+            guard attempt == generation, stream === candidate else { try? await candidate.stopCapture()
+                return
+            }
+            pending = false
+            running = true
+            captureStart = ProcessInfo.processInfo.systemUptime
             state = "Capturing full display"
             log.event("capture_started", ["requested_rate": "48000", "requested_channels": "2", "exclude_own_audio": "\(excludeOwnAudio)"])
         } catch {
             guard attempt == generation else { return }
-            self.error = error.localizedDescription; state = "Failed"; pending = false; running = false
-            stream = nil; picker.isActive = false; session.release("microphone")
+            self.error = error.localizedDescription
+            state = "Failed"
+            pending = false
+            running = false
+            stream = nil
+            picker.isActive = false
+            session.release("microphone")
             probe.unbind()
             log.event("capture_error", ["error": "\(error)"])
         }
@@ -101,7 +141,9 @@ final class CaptureController: NSObject, SCContentSharingPickerObserver, SCStrea
 
     nonisolated func contentSharingPicker(_ picker: SCContentSharingPicker, didCancelFor stream: SCStream?) {
         Task { @MainActor in
-            self.pending = false; self.state = "Picker cancelled"; self.picker.isActive = false
+            self.pending = false
+            self.state = "Picker cancelled"
+            self.picker.isActive = false
             self.log.event("picker_cancelled")
         }
     }
@@ -113,8 +155,11 @@ final class CaptureController: NSObject, SCContentSharingPickerObserver, SCStrea
     nonisolated func contentSharingPickerStartDidFailWithError(_ error: any Error) {
         let message = String(describing: error)
         Task { @MainActor in
-            self.pending = false; self.state = "Picker failed"; self.error = message
-            self.picker.isActive = false; self.log.event("picker_error", ["error": message])
+            self.pending = false
+            self.state = "Picker failed"
+            self.error = message
+            self.picker.isActive = false
+            self.log.event("picker_error", ["error": message])
         }
     }
 
@@ -122,10 +167,16 @@ final class CaptureController: NSObject, SCContentSharingPickerObserver, SCStrea
         let message = String(describing: error)
         Task { @MainActor in
             guard self.stream === stream else { return }
-            self.generation += 1; self.running = false; self.pending = false; self.state = "Stream ended"
-            self.error = message; self.stream = nil; self.picker.isActive = false
+            self.generation += 1
+            self.running = false
+            self.pending = false
+            self.state = "Stream ended"
+            self.error = message
+            self.stream = nil
+            self.picker.isActive = false
             self.probe.unbind()
-            self.probe.finishRecording(); self.session.release("microphone")
+            self.probe.finishRecording()
+            self.session.release("microphone")
             self.log.event("stream_ended", ["error": message])
         }
     }
