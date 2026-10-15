@@ -11,6 +11,7 @@ final class AppModel {
     var source = CaptureSource.allApps
     var processes: [AudioProcess] = []
     var capturing = false
+    var capturingSince: Date?
     var captureError = ""
     var levels = [Float](repeating: 0, count: 10)
 
@@ -19,6 +20,8 @@ final class AppModel {
     @ObservationIgnored let microphone = MicrophoneCapture()
     @ObservationIgnored let meter = LevelMeter()
     @ObservationIgnored var meterTimer: Timer?
+    /// Set once the menu bar label appears; opening windows needs SwiftUI's `openWindow`.
+    @ObservationIgnored var openWindow: ((String) -> Void)?
     let verbose = CommandLine.arguments.contains("--verbose")
 
     init(settings: AppSettings) {

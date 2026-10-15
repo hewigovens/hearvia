@@ -7,8 +7,9 @@ Load before changing app file layout, models, settings, or presentation.
 ```text
 Apps/iOS/
 ├── App/          HearviaApp, AppModel (+Listening, +Subtitles, +Diagnostics), AppSettings, InputSource
-├── Home/         HomeView, HomePresentation, HomeHeader, ReadyPanel, ListeningPanel, ListenControls,
-│                 LanguageCard, EngineCard, EngineStatus, TranscriptCard, Card, CircleButton
+├── Home/         HomeView, HomePresentation, HomeHeader, StartPrompt, HomeTiles, ListeningSummary,
+│                 TranscriptCard, LanguagesSheet (LanguageCard), TranslatorSheet (EngineCard, EngineStatus),
+│                 CircleButton
 ├── Onboarding/   OnboardingView, OnboardingPage, FeatureCard, Bullet, MicrophonePermissionRow
 ├── Settings/     SettingsView
 ├── Capture/      CaptureController (ScreenCaptureKit), AudioProbe, ProbeSnapshot, AudioAnalysis,
@@ -19,11 +20,12 @@ Apps/iOS/
 Apps/macOS/
 ├── App/          HearviaMacApp (scenes), AppModel (+Capture), AppSettings, CaptureSource
 ├── Capture/      ProcessTapCapture, AudioProcesses, AudioProcess, CoreAudioProperty, CoreAudioError
-├── Control/      ControlView, EngineStatusLine
-├── Overlay/      OverlayPanel, OverlayView, DraggableHostingView
+├── Control/      ControlPanel (menu bar popover and main window), ListenHero, ControlTiles, OverlayOptions,
+│                 EngineStatusLine
+├── Overlay/      OverlayPanel (+ OverlayPointer), OverlayView
 ├── Settings/     SettingsView
 ├── Transcript/   TranscriptView
-└── MenuBar/      MenuBarContent
+└── MenuBar/      MenuBarLabel
 Apps/Shared/      DevSecrets.generated.swift (generated, optional in project.yml)
 ```
 
@@ -33,15 +35,16 @@ Apps/Shared/      DevSecrets.generated.swift (generated, optional in project.yml
 
 - **State ownership**: the `App` creates `AppSettings` and `AppModel(settings:)` once in `init` as `@State`, and injects settings with `.environment(settings)`. Views read `@Environment(AppSettings.self)` and use a local `@Bindable var settings = settings` for bindings. Pass the model explicitly (`let model: AppModel`); use `@Bindable` only in views that bind model properties.
 - **Settings side effects**: views or the model react to settings with `.onChange` (iOS home) or `withObservationTracking` (macOS overlay panel, which is AppKit). Settings objects only persist values; they do not call back into models.
-- **Composition over long bodies**: a screen is a thin composer (`HomeView`) over focused subviews (`HomeHeader`, `ReadyPanel`, `ListeningPanel`, `ListenControls`). Prefer a small `View` type over a long `@ViewBuilder` property when it has its own inputs.
-- **Shared look**: colors are `Color.hv*` tokens; buttons use `HVButtonStyle`; segmented choices use `SegmentedChoice` (system segmented controls ignore the tint on macOS). Never hard-code hex colors in an app view; the subtitle surfaces stay dark in both themes.
+- **Composition over long bodies**: a screen is a thin composer (`HomeView`, `ControlPanel`) over focused subviews (`HomeHeader`, `StartPrompt`, `HomeTiles`, `TranscriptCard`). Prefer a small `View` type over a long `@ViewBuilder` property when it has its own inputs.
+- **Main screens**: both apps centre a `ListenButton` over three `ControlTile`s (Listen to · Languages · Translator). Starting animates one layout into the other, so keep the button's identity across states: one slot in a stable stack on iOS, `AnyLayout` on macOS. Drive it with one `.animation(_:value:)` on the listening flag.
+- **Shared look**: colors are `Color.hv*` tokens; buttons use `HVButtonStyle` or `ListenButton`. Never hard-code hex colors in an app view; the subtitle surfaces stay dark in both themes.
 - **Copy**: plain, outcome-first, no jargon ("Other apps keep playing").
 
 ## Presentation Surfaces
 
 - **Inline state**: missing models, missing API key, waiting for the iOS picker, errors under the main button.
 - **Sheet / full-screen cover**: driven by one optional enum per screen (`HomePresentation`), not by several booleans.
-- **Floating window**: PiP on iOS (`PiPController`, 3:1 sample-buffer layer that must stay on screen inline), overlay `NSPanel` on macOS (non-activating, all Spaces, draggable unless click-through).
+- **Floating window**: PiP on iOS (`PiPController`, 1.8:1 sample-buffer layer that must stay on screen inline; its ✕ stops listening, Back to app does not), overlay `NSPanel` on macOS (non-activating, all Spaces, compact while idle and full-size while listening, hover ✕ and Start/Stop, `WindowDragGesture` elsewhere unless click-through).
 
 ## Platform notes
 

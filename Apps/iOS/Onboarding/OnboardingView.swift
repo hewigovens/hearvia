@@ -56,7 +56,7 @@ struct OnboardingView: View {
 
     private var permission: some View {
         OnboardingPage(symbol: "rectangle.dashed.badge.record", title: "iOS will ask to share your screen",
-                       message: "iOS only lets apps hear other apps' sound through screen sharing. When you tap Start Listening, choose **Share Entire Screen**.") {
+                       message: "iOS only lets apps hear other apps' sound through screen sharing. When you tap the play button, choose **Share Entire Screen**.") {
             Bullet("waveform", "Hearvia uses only the sound. Screen images are thrown away immediately and never saved or uploaded.")
             Bullet("record.circle", "A red indicator stays in the status bar while Hearvia is listening. Tap it any time to stop.")
             Bullet("network", "OpenAI Realtime sends speech to OpenAI to translate. On-device mode keeps everything on your iPhone. Hearvia doesn't keep recordings.")

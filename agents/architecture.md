@@ -14,7 +14,7 @@ HearviaKit (one Swift package, one `HearviaKit` product, five modules)
                              RealtimeTranslationClient (WebSocket actor), RealtimeTiming, events, configuration
                   OnDevice/  OnDeviceEngine (+Text), OnDeviceSpeech (SpeechAnalyzer), OnDeviceTextTranslator, OnDeviceModels
   HearviaSession  LiveTranslator (+Run): preferences, one engine run at a time, observable text/transcript/stats
-  HearviaUI       palette, Appearance, HearviaMark/Icon, HVButtonStyle, LevelBars, SegmentedChoice,
+  HearviaUI       palette, Appearance, HearviaMark/Icon, HVButtonStyle, ListenButton, ControlTile, LevelBars,
                   TranscriptList, OnDeviceModelsView, OnDeviceLanguages (picker lists per engine)
   hearvia-translate  CLI over Audio + Engines: streams an audio file through either engine
 Apps/iOS     SwiftUI shell: ScreenCaptureKit / mic capture, PiP subtitle strip, home, onboarding, settings

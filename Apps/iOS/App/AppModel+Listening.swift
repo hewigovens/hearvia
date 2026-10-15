@@ -1,11 +1,37 @@
 import Foundation
 
 extension AppModel {
-    func startListening() {
+    private func startListening() {
         switch settings.input {
         case .otherApps: capture.start()
         case .microphone: Task { await startMicrophone() }
         }
+    }
+
+    /// Capture is starting: the iOS picker is up or the microphone is warming up.
+    var busy: Bool {
+        capture.pending || micStarting
+    }
+
+    /// Start when idle; otherwise stop, which also cancels a start in progress.
+    func toggleListening() async {
+        if listening || busy {
+            await stopListening()
+        } else {
+            startListening()
+        }
+    }
+
+    /// Capture and translator errors, with the common Realtime failures reworded.
+    var errorMessage: String {
+        let message = [translation.error, capture.error, micError].filter { !$0.isEmpty }.joined(separator: "\n")
+        if message.contains("invalid_api_key") {
+            return "The OpenAI key was rejected. Check it in Settings."
+        }
+        if message.contains("insufficient_quota") {
+            return "The OpenAI account has no remaining credit. Try the on-device translator."
+        }
+        return message
     }
 
     func stopListening() async {

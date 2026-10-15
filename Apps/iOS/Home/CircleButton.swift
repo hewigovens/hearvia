@@ -7,8 +7,9 @@ struct CircleButton: View {
     let action: () -> Void
     var body: some View {
         Button(action: action) {
-            Image(systemName: symbol).font(.system(size: 17, weight: .medium)).foregroundStyle(Color.hvText)
-                .frame(width: 44, height: 44).background(Color.hvSurface, in: .circle)
+            Image(systemName: symbol).font(.system(size: 20, weight: .regular)).foregroundStyle(Color.hvMuted)
+                .frame(width: 44, height: 44)
+                .contentShape(.circle)
         }
         .accessibilityLabel(label)
     }

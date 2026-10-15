@@ -11,7 +11,7 @@ struct MenuBarLabel: View {
             .accessibilityLabel("Hearvia")
             .task {
                 delegate.model = model
-                delegate.openWindow = { id in
+                model.openWindow = { id in
                     openWindow(id: id)
                     NSApp.activate()
                 }

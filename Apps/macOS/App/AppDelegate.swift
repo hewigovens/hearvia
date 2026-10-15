@@ -4,20 +4,18 @@ import AppKit
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     var model: AppModel?
-    /// Set once the menu bar label appears; opening windows needs SwiftUI's `openWindow`.
-    var openWindow: ((String) -> Void)?
 
     func applicationShouldHandleReopen(_: NSApplication, hasVisibleWindows _: Bool) -> Bool {
         // The overlay panel usually counts as visible, so always bring the control window forward.
-        openWindow?("main")
+        model?.openWindow?("main")
         return false
     }
 
     func applicationDockMenu(_: NSApplication) -> NSMenu? {
         guard let model else { return nil }
         let menu = NSMenu()
-        menu.addItem(ActionMenuItem(model.capturing ? "Stop Listening" : "Start Listening") { [weak self] in
-            Task { await model.toggleListening { self?.openWindow?("permissions") } }
+        menu.addItem(ActionMenuItem(model.capturing ? "Stop Listening" : "Start Listening") {
+            Task { await model.toggleListening() }
         })
         let overlay = ActionMenuItem("Show Subtitle Overlay") { model.settings.overlayVisible.toggle() }
         overlay.state = model.settings.overlayVisible ? .on : .off

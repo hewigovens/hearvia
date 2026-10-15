@@ -19,6 +19,7 @@ public extension Color {
     static let hvOnAccent = Color(light: 0xFFFFFF, dark: 0x0B1033)
     static let hvAccentSoft = Color(light: 0xEEF2FF, dark: 0x1A1E3A)
     static let hvReady = Color(light: 0x1E9E62, dark: 0x4CC38A)
+    static let hvAttention = Color(light: 0xC2570C, dark: 0xF5A35C)
     static let hvStop = Color(hex: 0xC8352E)
     static let hvSubtitleGround = Color(hex: 0x000000)
     static let hvSubtitleOriginal = Color(hex: 0x8A919E)

@@ -15,10 +15,10 @@ final class SubtitleRenderer {
     private(set) var frames = 0
     /// User text size, 0.8–1.3; the frame size is fixed so larger text shows fewer lines.
     var fontScale = 1.0
-    /// A wide 3:1 frame makes the PiP window a slim subtitle bar rather than a 16:9 video tile.
-    static let aspectRatio = 3.0
+    /// A 1.8:1 frame keeps the PiP window wider than a video tile but tall enough for three lines of text.
+    static let aspectRatio = 1.8
     let width = 720
-    let height = 240
+    let height = 400
 
     init(layer: AVSampleBufferDisplayLayer) throws {
         self.layer = layer

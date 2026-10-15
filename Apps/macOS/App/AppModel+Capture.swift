@@ -22,6 +22,7 @@ extension AppModel {
             return
         }
         capturing = true
+        capturingSince = Date()
         Self.emit("capture_started", ["source": source.label, "format": tap.format.map { "\($0)" } ?? "mic"])
         meterTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
             Task { @MainActor in guard let self else { return }
@@ -39,6 +40,7 @@ extension AppModel {
         meterTimer = nil
         levels = levels.map { _ in 0 }
         capturing = false
+        capturingSince = nil
         await translator.stop()
         Self.emit("capture_stopped", ["translation": translator.translation])
     }

@@ -15,6 +15,8 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
     var restoreRequested = false
     /// While armed, leaving the app starts PiP automatically (no extra tap needed).
     private(set) var autoStartArmed = false
+    /// The user closed the floating window with its ✕, rather than going back to the app or Hearvia stopping it.
+    var onClose: (() -> Void)?
     let previewView = SubtitlePreviewView()
     var fontScale = 1.0 {
         didSet { renderer?.fontScale = fontScale }
@@ -27,7 +29,10 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
     private var lastFrameUptime: Double?
     private var rendering = false
     private var restoreCompletion: ((Bool) -> Void)?
-    private nonisolated let playbackFlag = PlaybackFlag()
+    private nonisolated let playbackFlag = LockedFlag(true)
+    // Set synchronously so the stop callback can tell ✕ apart from Back to app and from `stop()`.
+    private nonisolated let returningToApp = LockedFlag(false)
+    private nonisolated let stopRequested = LockedFlag(false)
 
     init(log: DiagnosticLog, session: AudioSessionController) {
         self.log = log
@@ -99,6 +104,8 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
     }
 
     func stop() {
+        guard active || pending else { return }
+        stopRequested.set(true)
         controller?.stopPictureInPicture()
     }
 
@@ -207,16 +214,23 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
         Task { @MainActor in self.log.event("pip_will_stop") }
     }
     nonisolated func pictureInPictureControllerDidStopPictureInPicture(_ controller: AVPictureInPictureController) {
+        let closed = !returningToApp.get() && !stopRequested.get()
+        returningToApp.set(false)
+        stopRequested.set(false)
         Task { @MainActor in self.pending = false
             self.active = false
             self.state = "PiP stopped"
-            self.log.event("pip_did_stop")
+            self.log.event("pip_did_stop", ["closed_by_user": "\(closed)"])
             if !self.autoStartArmed {
                 self.session.release("pip")
+            }
+            if closed, UIApplication.shared.applicationState != .active { // Coming back to Hearvia also stops PiP.
+                self.onClose?()
             }
         }
     }
     nonisolated func pictureInPictureController(_ controller: AVPictureInPictureController, restoreUserInterfaceForPictureInPictureStopWithCompletionHandler completionHandler: @escaping (Bool) -> Void) {
+        returningToApp.set(true)
         let box = RestoreCompletion(completionHandler)
         Task { @MainActor in
             self.restoreCompletion?(false)
@@ -254,10 +268,13 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
     }
 }
 
-/// AVKit may query the synchronous playback delegate outside the main actor.
-private final class PlaybackFlag: @unchecked Sendable {
+/// AVKit may call the playback delegate outside the main actor.
+private final class LockedFlag: @unchecked Sendable {
     private let lock = NSLock()
-    private var value = true
+    private var value: Bool
+    init(_ value: Bool) {
+        self.value = value
+    }
     func set(_ value: Bool) {
         lock.lock()
         defer { lock.unlock() }

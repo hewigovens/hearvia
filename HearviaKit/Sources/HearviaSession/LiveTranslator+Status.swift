@@ -1,0 +1,24 @@
+import HearviaCore
+import HearviaEngines
+
+/// What the setup tiles show about the current preferences.
+public extension LiveTranslator {
+    /// Whether Start translates right away: Realtime needs an API key, on-device needs its models.
+    func isReady() async -> Bool {
+        switch engine {
+        case .realtime: !apiKey.isEmpty
+        case .onDevice: await OnDeviceModels.isReady(from: sourceLanguage, to: targetLanguage)
+        }
+    }
+
+    /// Changes whenever `isReady()` might; use it as a `.task(id:)`.
+    var readinessKey: String {
+        "\(engine.rawValue)>\(sourceLanguage)>\(targetLanguage)>\(apiKey.isEmpty)"
+    }
+
+    /// "English → 中文", or "Auto → 中文" when the engine detects the spoken language.
+    var languagePair: String {
+        let spoken = engine.detectsSpokenLanguage ? "Auto" : LanguageName.short(sourceLanguage)
+        return "\(spoken) → \(LanguageName.short(targetLanguage))"
+    }
+}

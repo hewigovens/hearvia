@@ -15,10 +15,11 @@ struct HearviaMacApp: App {
 
     var body: some Scene {
         Window("Hearvia", id: "main") {
-            ControlView(model: model)
+            ControlPanel(model: model, inMenuBar: false)
                 .environment(settings)
         }
         .windowResizability(.contentSize)
+        .windowStyle(.hiddenTitleBar)
 
         Window("Transcript", id: "transcript") {
             TranscriptView(translator: model.translator)
@@ -40,10 +41,11 @@ struct HearviaMacApp: App {
         }
 
         MenuBarExtra {
-            MenuBarContent(model: model)
+            ControlPanel(model: model, inMenuBar: true)
                 .environment(settings)
         } label: {
             MenuBarLabel(model: model, delegate: delegate)
         }
+        .menuBarExtraStyle(.window)
     }
 }

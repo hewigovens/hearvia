@@ -69,6 +69,7 @@ final class AppModel {
         RunLoop.main.add(timer, forMode: .common)
         translation.onTextChange = { [weak self] in self?.scheduleRender() }
         translation.onLog = { [log] name, fields in log.event(name, fields) }
+        pip.onClose = { [weak self] in Task { await self?.stopListening() } }
         followShowsOriginal()
     }
 

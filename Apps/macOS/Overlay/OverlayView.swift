@@ -1,39 +1,68 @@
 import AppKit
+import HearviaUI
 import SwiftUI
 
+/// A compact strip while idle that grows to fill the panel once listening starts. Hovering shows ✕ and
+/// Start/Stop; dragging anywhere else moves the panel.
 struct OverlayView: View {
     let model: AppModel
+    let pointer: OverlayPointer
     @Environment(AppSettings.self) private var settings
 
     var body: some View {
-        let translator = model.translator
-        let originalSize = settings.overlayFontSize * 0.55
-        VStack(spacing: 2) {
-            Spacer(minLength: 0)
-            if settings.showsOriginal, !translator.source.isEmpty {
-                // Two whole lines: a fraction of a line more would show a sliver of the line above.
-                tail(Text(Self.tail(translator.source, 300))
-                    .font(.system(size: originalSize))
-                    .foregroundStyle(.white.opacity(0.7)), fade: 0)
-                    .frame(maxHeight: 2 * Self.lineHeight(ofSystemFontSize: originalSize))
-                    .layoutPriority(2) // Keeps its two lines when the translation overflows.
+        let live = model.capturing
+        subtitles
+            .allowsHitTesting(false)
+            .padding(.horizontal, 24).padding(.vertical, 12)
+            .frame(maxWidth: live ? .infinity : 600, maxHeight: live ? .infinity : 96)
+            .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(.black.opacity(settings.overlayOpacity)))
+            .overlay {
+                if pointer.inside, !settings.clickThrough {
+                    OverlayButtons(model: model).transition(.opacity)
+                }
             }
-            tail(Text(translator.translation.isEmpty ? placeholder : Self.tail(translator.translation, 400))
-                .font(.system(size: settings.overlayFontSize, weight: .semibold))
-                .foregroundStyle(.white), fade: 0.4 * Self.lineHeight(ofSystemFontSize: settings.overlayFontSize))
-                .layoutPriority(1)
+            .contentShape(.rect(cornerRadius: 20, style: .continuous))
+            .gesture(WindowDragGesture())
+            .pointerStyle(.grabIdle)
+            .shadow(color: .black.opacity(0.4), radius: 2)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            .animation(.spring(duration: 0.5, bounce: 0.15), value: live)
+            .animation(.easeOut(duration: 0.2), value: pointer.inside)
+    }
+
+    @ViewBuilder private var subtitles: some View {
+        let translator = model.translator
+        if !model.capturing || translator.translation.isEmpty {
+            Text(placeholder)
+                .font(.system(size: min(settings.overlayFontSize, 22), weight: .medium))
+                .foregroundStyle(.white.opacity(0.7))
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: model.capturing ? .bottom : .center)
+        } else {
+            let originalSize = settings.overlayFontSize * 0.55
+            VStack(spacing: 2) {
+                Spacer(minLength: 0)
+                if settings.showsOriginal, !translator.source.isEmpty {
+                    // Two whole lines: a fraction of a line more would show a sliver of the line above.
+                    tail(Text(Self.tail(translator.source, 300))
+                        .font(.system(size: originalSize))
+                        .foregroundStyle(.white.opacity(0.7)), fade: 0)
+                        .frame(maxHeight: 2 * Self.lineHeight(ofSystemFontSize: originalSize))
+                        .layoutPriority(2) // Keeps its two lines when the translation overflows.
+                }
+                tail(Text(Self.tail(translator.translation, 400))
+                    .font(.system(size: settings.overlayFontSize, weight: .semibold))
+                    .foregroundStyle(.white), fade: 0.4 * Self.lineHeight(ofSystemFontSize: settings.overlayFontSize))
+                    .layoutPriority(1)
+            }
         }
-        .padding(.horizontal, 20).padding(.vertical, 12)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(RoundedRectangle(cornerRadius: 16).fill(.black.opacity(settings.overlayOpacity)))
-        .shadow(color: .black.opacity(0.4), radius: 2)
     }
 
     private var placeholder: String {
         if !model.translator.error.isEmpty {
             return model.translator.error
         }
-        return model.capturing ? "Listening… (\(model.translator.status.label))" : "Hearvia — start capture in the main window"
+        return model.capturing ? "Listening… (\(model.translator.status.label))" : "Subtitles appear here"
     }
 
     /// Text at its natural height when it fits, so original and translation sit together at the bottom;
@@ -71,5 +100,38 @@ struct OverlayView: View {
             tail = tail[tail.index(after: space)...]
         }
         return String(tail)
+    }
+}
+
+/// Hover controls: ✕ hides the overlay (the popover's Visible brings it back), the centre button starts or stops.
+private struct OverlayButtons: View {
+    let model: AppModel
+    @Environment(AppSettings.self) private var settings
+
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 20, style: .continuous).fill(.black.opacity(0.35))
+                .allowsHitTesting(false)
+            Button { Task { await model.toggleListening() } } label: {
+                Image(systemName: model.capturing ? "stop.fill" : "play.fill")
+                    .font(.system(size: 20, weight: .bold))
+                    .contentTransition(.symbolEffect(.replace))
+                    .frame(width: 52, height: 52)
+                    .background(.white.opacity(0.22), in: .circle)
+            }
+            .accessibilityLabel(model.capturing ? "Stop listening" : "Start listening")
+            Button { settings.overlayVisible = false } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 12, weight: .bold))
+                    .frame(width: 28, height: 28)
+                    .background(.white.opacity(0.2), in: .circle)
+            }
+            .accessibilityLabel("Hide subtitle overlay")
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .padding(12)
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(.white)
+        .pointerStyle(.default)
     }
 }

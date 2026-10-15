@@ -3,6 +3,14 @@ enum CaptureSource: Hashable {
     case process(AudioProcess)
     case microphone
 
+    var symbol: String {
+        switch self {
+        case .allApps: "speaker.wave.2"
+        case .process: "app.badge"
+        case .microphone: "mic"
+        }
+    }
+
     var label: String {
         switch self {
         case .allApps: "All system audio"

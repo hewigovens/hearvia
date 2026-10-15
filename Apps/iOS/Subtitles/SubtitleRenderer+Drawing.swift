@@ -30,14 +30,14 @@ extension SubtitleRenderer {
         defer { UIGraphicsPopContext() }
 
         let bilingual = !(original ?? "").isEmpty
-        var box = detail == nil ? CGRect(x: 20, y: 12, width: width - 40, height: height - 24)
-            : CGRect(x: 20, y: 8, width: width - 40, height: height - 52)
+        var box = detail == nil ? CGRect(x: 28, y: 20, width: width - 56, height: height - 40)
+            : CGRect(x: 28, y: 12, width: width - 56, height: height - 60)
         if let original, bilingual {
-            let top = CGRect(x: box.minX, y: box.minY, width: box.width, height: ceil(62 * scale))
-            Self.drawTail(original, attributes: Self.attributes(size: 24 * scale, weight: .regular, color: UIColor(white: 0.62, alpha: 1)), in: top)
-            box = CGRect(x: box.minX, y: top.maxY + 6, width: box.width, height: box.height - top.height - 6)
+            let top = CGRect(x: box.minX, y: box.minY, width: box.width, height: ceil(72 * scale))
+            Self.drawTail(original, attributes: Self.attributes(size: 28 * scale, weight: .regular, color: UIColor(white: 0.62, alpha: 1)), in: top)
+            box = CGRect(x: box.minX, y: top.maxY + 10, width: box.width, height: box.height - top.height - 10)
         }
-        Self.drawTail(subtitle, attributes: Self.attributes(size: (bilingual ? 36 : 40) * scale, weight: .semibold, color: .white), in: box)
+        Self.drawTail(subtitle, attributes: Self.attributes(size: (bilingual ? 46 : 50) * scale, weight: .semibold, color: .white), in: box)
         if let detail {
             (detail as NSString).draw(in: CGRect(x: 20, y: CGFloat(height) - 38, width: CGFloat(width) - 40, height: 32),
                                       withAttributes: [.font: UIFont.monospacedDigitSystemFont(ofSize: 20, weight: .medium),

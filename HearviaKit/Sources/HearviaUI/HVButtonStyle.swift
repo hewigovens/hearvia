@@ -1,8 +1,8 @@
 import SwiftUI
 
-/// Filled pill button: accent for primary actions, red for Stop, raised surface for secondary ones.
+/// Filled pill button: accent for primary actions, surface with a hairline for secondary ones.
 public struct HVButtonStyle: ButtonStyle {
-    public enum Kind: Sendable { case primary, stop, secondary }
+    public enum Kind: Sendable { case primary, secondary }
     let kind: Kind
     let height: CGFloat
     public init(_ kind: Kind = .primary, height: CGFloat = 56) {
@@ -14,8 +14,8 @@ public struct HVButtonStyle: ButtonStyle {
         configuration.label
             .font(.system(size: height >= 50 ? 18 : 15, weight: .semibold))
             .frame(maxWidth: .infinity, minHeight: height)
-            .foregroundStyle(kind == .primary ? Color.hvOnAccent : kind == .stop ? .white : Color.hvText)
-            .background(kind == .primary ? Color.hvAccent : kind == .stop ? Color.hvStop : Color.hvSurface,
+            .foregroundStyle(kind == .primary ? Color.hvOnAccent : Color.hvText)
+            .background(kind == .primary ? Color.hvAccent : Color.hvSurface,
                         in: .rect(cornerRadius: height >= 50 ? 18 : 14, style: .continuous))
             .overlay {
                 if kind == .secondary {
