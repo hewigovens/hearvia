@@ -11,38 +11,6 @@ struct SettingsView: View {
         @Bindable var settings = settings
         NavigationStack {
             Form {
-                Section {
-                    SecureField("sk-…", text: Bindable(model.translation).openAIKey)
-                        .textInputAutocapitalization(.never).autocorrectionDisabled()
-                } header: { Text("OpenAI Realtime") } footer: {
-                    Text("Only used by the OpenAI Realtime translator. Kept in this iPhone's Keychain.")
-                }
-                .listRowBackground(Color.hvSurface)
-
-                Section {
-                    SecureField("AIza…", text: Bindable(model.translation).geminiKey)
-                        .textInputAutocapitalization(.never).autocorrectionDisabled()
-                } header: { Text("Gemini Live") } footer: {
-                    Text("Only used by the Gemini Live translator. Get a free key at [aistudio.google.com](https://aistudio.google.com/apikey). Kept in this iPhone's Keychain.")
-                }
-                .listRowBackground(Color.hvSurface)
-
-                Section {
-                    OnDeviceModelsView(source: model.translation.sourceLanguage, target: model.translation.targetLanguage)
-                } header: { Text("On-device models") } footer: {
-                    Text("For the languages chosen on the home screen. Downloaded once, then work offline.")
-                }
-                .listRowBackground(Color.hvSurface)
-
-                Section("Appearance") {
-                    Picker("Appearance", selection: $settings.appearance) {
-                        ForEach(Appearance.allCases) { Text($0.title).tag($0) }
-                    }
-                    .pickerStyle(.segmented)
-                    .labelsHidden()
-                }
-                .listRowBackground(Color.hvSurface)
-
                 Section("Subtitles") {
                     HStack(spacing: 14) {
                         Text("A").font(.footnote).foregroundStyle(Color.hvMuted)
@@ -55,7 +23,21 @@ struct SettingsView: View {
                 }
                 .listRowBackground(Color.hvSurface)
 
+                Section("Appearance") {
+                    Picker("Appearance", selection: $settings.appearance) {
+                        ForEach(Appearance.allCases) { Text($0.title).tag($0) }
+                    }
+                    .pickerStyle(.segmented)
+                    .labelsHidden()
+                }
+                .listRowBackground(Color.hvSurface)
+
                 Section {
+                    NavigationLink { TranslatorSettingsView(translator: model.translation) } label: {
+                        LabeledContent { Text(model.translation.engine.title) } label: {
+                            Label("Translators", systemImage: "character.bubble")
+                        }
+                    }
                     Button("How Hearvia works", action: showOnboarding)
                     #if DEBUG
                         NavigationLink { DeveloperView(model: model) } label: {

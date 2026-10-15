@@ -11,7 +11,7 @@ Apps/iOS/
 │                 TileSheet + SourceSheet, LanguagesSheet (LanguageCard), TranslatorSheet (EngineStatus),
 │                 ChoiceRow, TranscriptSheet, CircleButton
 ├── Onboarding/   OnboardingView, OnboardingPage, FeatureCard, Bullet, MicrophonePermissionRow
-├── Settings/     SettingsView
+├── Settings/     SettingsView, TranslatorSettingsView (API keys and on-device models)
 ├── Capture/      CaptureController (ScreenCaptureKit), AudioProbe, ProbeSnapshot, AudioAnalysis,
 │                 AudioSessionController, SessionMode
 ├── Subtitles/    PiPController, SubtitleRenderer, SubtitlePreview
@@ -23,7 +23,7 @@ Apps/macOS/
 ├── Control/      ControlPanel (menu bar popover and main window), ListenHero, ControlTiles, OverlayOptions,
 │                 EngineStatusLine
 ├── Overlay/      OverlayPanel (+ OverlayPointer), OverlayView
-├── Settings/     SettingsView
+├── Settings/     SettingsView (tabs: General, Translators, Overlay, Diagnostics)
 ├── Transcript/   TranscriptView
 └── MenuBar/      MenuBarLabel
 Apps/Shared/      DevSecrets.generated.swift (generated, optional in project.yml)
@@ -37,6 +37,7 @@ Apps/Shared/      DevSecrets.generated.swift (generated, optional in project.yml
 - **Settings side effects**: views or the model react to settings with `.onChange` (iOS home) or `withObservationTracking` (macOS overlay panel, which is AppKit). Settings objects only persist values; they do not call back into models.
 - **Composition over long bodies**: a screen is a thin composer (`HomeView`, `ControlPanel`) over focused subviews (`HomeHeader`, `StartPrompt`, `HomeTiles`, `TranscriptCard`). Prefer a small `View` type over a long `@ViewBuilder` property when it has its own inputs.
 - **Main screens**: both apps centre a `ListenButton` over three `ControlTile`s (Listen to · Languages · Translator). Starting animates one layout into the other, so keep the button's identity across states: one slot in a stable stack on iOS, `AnyLayout` on macOS. Drive it with one `.animation(_:value:)` on the listening flag.
+- **Theme**: on macOS `AppSettings.applyAppearance()` sets `NSApp.appearance`, so every window (menu bar popover and overlay included) resolves the palette's dynamic colors the same way; don't add per-view `preferredColorScheme` there. iOS views use `preferredColorScheme`.
 - **Shared look**: colors are `Color.hv*` tokens; buttons use `HVButtonStyle` or `ListenButton`. Never hard-code hex colors in an app view; the subtitle surfaces stay dark in both themes.
 - **Copy**: plain, outcome-first, no jargon ("Other apps keep playing").
 
