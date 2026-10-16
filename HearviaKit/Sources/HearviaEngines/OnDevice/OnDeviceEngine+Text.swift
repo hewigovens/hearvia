@@ -64,13 +64,22 @@ extension OnDeviceEngine {
 
     private func translated(_ text: String, with translate: @Sendable (String) async throws -> String) async -> String {
         do {
-            return try await translate(text)
+            let output = try await translate(text)
+            if running, !translationProblem.isEmpty {
+                translationProblem = ""
+                continuation.yield(.status(.translating(onDevice: true))) // Clears the problem.
+            }
+            return output
         } catch TranslationError.notInstalled {
             fail(OnDeviceError.translationNotInstalled(sourceLanguage, targetLanguage)) // Removed mid-session.
         } catch TranslationError.nothingToTranslate {
         } catch {
             if running {
                 continuation.yield(.log("ondevice_translate_error", ["error": "\(error)", "text": text]))
+                if error.localizedDescription != translationProblem {
+                    translationProblem = error.localizedDescription
+                    continuation.yield(.problem(translationProblem))
+                }
             }
         }
         return ""

@@ -22,11 +22,22 @@ final class ScriptedSpeech: SpeechInput, @unchecked Sendable {
     }
 }
 
-/// Translates by upper-casing; `hold` keeps every request waiting until released.
+/// Translates by upper-casing; `hold` keeps every request waiting until released, `failing` makes them throw.
 actor ScriptedTranslator {
+    struct Unavailable: LocalizedError {
+        var errorDescription: String? {
+            "Translator unavailable."
+        }
+    }
+
     private(set) var requests: [String] = []
     private var held: [CheckedContinuation<Void, Never>] = []
     private var holding = false
+    var failing = false
+
+    func setFailing(_ failing: Bool) {
+        self.failing = failing
+    }
 
     func hold() {
         holding = true
@@ -38,10 +49,13 @@ actor ScriptedTranslator {
         held = []
     }
 
-    func translate(_ text: String) async -> String {
+    func translate(_ text: String) async throws -> String {
         requests.append(text)
         if holding {
             await withCheckedContinuation { held.append($0) }
+        }
+        if failing {
+            throw Unavailable()
         }
         return text.uppercased()
     }
@@ -80,7 +94,7 @@ struct OnDeviceEngineTests {
 
     func makeEngine(source: String = "en", target: String = "fr", translates: Bool = true) -> OnDeviceEngine {
         let translator = translator
-        let translate: @Sendable (String) async throws -> String = { await translator.translate($0) }
+        let translate: @Sendable (String) async throws -> String = { try await translator.translate($0) }
         return OnDeviceEngine(sourceLanguage: source, targetLanguage: target) { [speech] _ in
             OnDeviceModelSet(speech: speech, translate: translates ? translate : nil, strategy: "test")
         }
@@ -116,6 +130,30 @@ struct OnDeviceEngineTests {
         #expect(recorder.sentences == [.sentence(source: "one two three.", translation: "ONE TWO THREE.")])
         // The intermediate volatile versions were never translated.
         #expect(await translator.requests == ["one", "one two three."])
+        await engine.stop()
+    }
+
+    @Test func showsATranslationErrorUntilTranslatingWorksAgain() async throws {
+        let engine = makeEngine()
+        let recorder = Recorder(engine)
+        await engine.start(audio: AsyncStream { $0.finish() })
+        await translator.setFailing(true)
+        speech.say("first.", final: true)
+        speech.say("second.", final: true)
+        try await waitUntil { await translator.requests.count == 2 }
+        await translator.setFailing(false)
+        speech.say("third.", final: true)
+        try await waitUntil { recorder.sentences.count == 3 }
+        let problems = recorder.updates.filter {
+            if case .problem = $0 {
+                true
+            } else {
+                false
+            }
+        }
+        #expect(problems == [.problem("Translator unavailable.")]) // Once, not per sentence.
+        let cleared = try #require(recorder.updates.lastIndex(of: .status(.translating(onDevice: true))))
+        #expect(cleared > recorder.updates.firstIndex(of: .problem("Translator unavailable."))!)
         await engine.stop()
     }
 

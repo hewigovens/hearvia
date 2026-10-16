@@ -3,6 +3,9 @@ import MLX
 import MLXLLM
 import MLXLMCommon
 import Tokenizers
+#if os(iOS)
+    import UIKit
+#endif
 
 /// Translates text with a downloaded TranslateGemma model on the GPU (MLX). Load once per run; requests are serialised
 /// by the model container.
@@ -27,17 +30,36 @@ public final class GemmaTranslator: Sendable {
 
     /// Greedy translation of `text` from `source` to `target` (language codes such as "en", "zh").
     public func translate(_ text: String, from source: String, to target: String) async throws -> String {
+        // iOS rejects GPU work from background apps; a run that tried anyway fails every token until the length cap.
+        if await Self.isInBackground {
+            throw GemmaError.inBackground
+        }
         let prompt = Self.prompt(text, from: source, to: target)
         // A translation rarely needs more than ~3 tokens per source character; the cap only stops runaway output.
         let parameters = GenerateParameters(maxTokens: max(32, text.count * 3), temperature: 0)
-        return try await container.perform { context in
-            let input = LMInput(tokens: MLXArray(context.tokenizer.encode(text: prompt, addSpecialTokens: false)))
-            var output = ""
-            for await generation in try MLXLMCommon.generate(input: input, parameters: parameters, context: context) {
-                output += generation.chunk ?? ""
+        do {
+            // MLX's default error handler ends the process; this makes a failed GPU command buffer a Swift error.
+            return try await withError {
+                try await container.perform { context in
+                    let input = LMInput(tokens: MLXArray(context.tokenizer.encode(text: prompt, addSpecialTokens: false)))
+                    var output = ""
+                    for await generation in try MLXLMCommon.generate(input: input, parameters: parameters, context: context) {
+                        output += generation.chunk ?? ""
+                    }
+                    return output.trimmingCharacters(in: .whitespacesAndNewlines)
+                }
             }
-            return output.trimmingCharacters(in: .whitespacesAndNewlines)
+        } catch let MLXError.caught(message) where message.contains("BackgroundExecutionNotPermitted") {
+            throw GemmaError.inBackground // Went to the background mid-sentence.
         }
+    }
+
+    @MainActor private static var isInBackground: Bool {
+        #if os(iOS)
+            UIApplication.shared.applicationState == .background
+        #else
+            false
+        #endif
     }
 
     /// TranslateGemma's chat template for one text turn, written out: the Swift Jinja renderer doesn't take its

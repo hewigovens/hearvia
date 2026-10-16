@@ -24,6 +24,8 @@ public final class OnDeviceEngine: TranslationEngine {
     var volatileTranslation = ""
     var finalQueue: [String] = []
     var pendingVolatile: String?
+    /// The translation error on screen, cleared by the next translation that works.
+    var translationProblem = ""
 
     public convenience init(sourceLanguage: String, targetLanguage: String) {
         self.init(sourceLanguage: sourceLanguage, targetLanguage: targetLanguage) { progress in
