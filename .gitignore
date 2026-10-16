@@ -1,6 +1,7 @@
 # Build output
 DerivedData/
 .build/
+build/
 *.xcodeproj/
 *.xcuserstate
 xcuserdata/
@@ -9,6 +10,7 @@ xcuserdata/
 .env
 .env.*
 Apps/Shared/DevSecrets.generated.swift
+.asc/
 
 # Local-only material: PoC device logs, recordings and screenshots
 Archive/

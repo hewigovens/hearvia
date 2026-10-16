@@ -39,11 +39,22 @@ Decided 2026-10-15: TestFlight builds ship with no key and rely on bring-your-ow
 - **Linked to identity:** No. **Used for tracking:** No. **Purpose:** App Functionality.
 - **Everything else** (contact info, identifiers, usage data, diagnostics, location, and so on): not collected. There are no analytics or crash-reporting SDKs. The API key stays in the device Keychain.
 
-## iOS
+## TestFlight uploads
 
-- [ ] Archive with the Release configuration and upload through Xcode Organizer or `xcodebuild -exportArchive`.
-- [ ] Before upload, check that the archive has no key: `strings Hearvia.app/Hearvia | grep -c "sk-"` should print 0.
-- [ ] The UI tests target still uses the old prototype screens; don't rely on it as a release check.
+`scripts/testflight.sh` (ported from the AnyTime repo) archives with the Release configuration, exports with `scripts/ExportOptions-AppStore.plist` (App Store Connect, automatic signing) into `build/testflight/<platform>/`, and uploads:
+
+```sh
+just testflight-auth            # check the API key; writes a repo-local .asc/config.json (gitignored)
+just testflight-build ios       # archive and export only; also `macos`
+just testflight                 # iOS: upload the .ipa with asc
+just testflight-macos           # Mac: upload the .pkg with altool, then asc for processing and distribution
+```
+
+- `.env` (gitignored) holds `ASC_APP_ID=6823200947` and the App Store Connect API key: `APP_STORE_CONNECT_KEY_NAME`, `APP_STORE_CONNECT_KEY_ID`, `APP_STORE_CONNECT_ISSUER_ID`, `APP_STORE_CONNECT_KEY_PATH` (a `.p8` outside the repo, shared with the AnyTime and Inspect repos). Never print or commit them.
+- Optional: `TESTFLIGHT_GROUP` (group name or ID; the build is added to it and the script waits for processing), `TESTFLIGHT_NOTES` ("What to Test"), `TESTFLIGHT_NOTIFY`, `TESTFLIGHT_WAIT`, `TESTFLIGHT_TIMEOUT`, `TESTFLIGHT_BUILD_NUMBER`.
+- An internal group with access to all builds (like "Internal") receives every processed build by itself; the script doesn't try to add builds to it.
+- Build numbers default to a timestamp (`yyyyMMddHHmm`): unique per upload and across iOS and Mac, which share the one App Store Connect record.
+- Before uploading, check the iOS archive has no key: `strings build/testflight/ios/Hearvia.xcarchive/Products/Applications/Hearvia.app/Hearvia | grep -c "sk-"` should print 0.
 
 ## macOS: hardened runtime, sandbox, notarization
 

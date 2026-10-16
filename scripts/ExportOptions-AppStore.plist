@@ -4,12 +4,12 @@
 <dict>
 	<key>method</key>
 	<string>app-store-connect</string>
-	<key>destination</key>
-	<string>upload</string>
 	<key>teamID</key>
 	<string>V28VJH6B6S</string>
 	<key>signingStyle</key>
 	<string>automatic</string>
+	<key>stripSwiftSymbols</key>
+	<true/>
 	<key>uploadSymbols</key>
 	<true/>
 	<key>manageAppVersionAndBuildNumber</key>

@@ -22,8 +22,9 @@ Done:
 - [x] App ID `dev.hewig.hearvia.widgets` ("Hearvia Widgets") registered for the widget extension (2026-10-16).
 - [x] Mac App Sandbox on (2026-10-16): all system audio, one app's audio, Gemini Live and the TranslateGemma download work sandboxed (`docs/release.md`).
 - [x] `ITSAppUsesNonExemptEncryption = NO` in both apps (HTTPS/WSS only), so uploads skip the export-compliance question.
-- [x] Version 0.1 from `MARKETING_VERSION`; `just upload-ios` stamps `CFBundleVersion` with a timestamp, so every upload is unique.
-- [x] `just upload-ios` archives a Release build and uploads it: Hearvia 0.1 (202610161055) uploaded 2026-10-16.
+- [x] Version 0.1 from `MARKETING_VERSION`; build numbers are timestamps, so every upload is unique.
+- [x] Hearvia 0.1 (202610161055) uploaded 2026-10-16 (processed, valid).
+- [x] `just testflight` / `just testflight-macos` (`scripts/testflight.sh`, ported from AnyTime) archive, export and upload with the App Store Connect API key in `.env`; `just testflight-build ios|macos` stops before uploading (2026-10-16).
 - [x] Privacy policy (`docs/privacy.html`) covers the on-device, cloud and TranslateGemma translators, transcripts and permissions.
 
 Left for iPhone TestFlight (in order):
@@ -31,14 +32,16 @@ Left for iPhone TestFlight (in order):
 - [x] Stack pushed; GitHub Pages serves `docs/` from `main` and https://hewigovens.github.io/hearvia/privacy.html loads (2026-10-16).
 - [ ] App Store Connect: privacy policy URL, and the App Privacy answers from `docs/release.md` (unchanged by TranslateGemma: Hearvia collects nothing from the download).
 - [ ] A Release build on the phone (see "Verify on iPhone"): no Developer tools, no file sharing, no diagnostics log; quick start, transcripts and TranslateGemma work.
-- [ ] New upload with `just upload-ios`. It is the first archive with MLX (HearviaLLM) and the increased-memory-limit entitlement: check the archive builds and the distribution profile picks up the capability.
+- [x] Internal TestFlight group "Internal" (internal, access to all builds; `TESTFLIGHT_GROUP=Internal` in `.env`) with hewigovens@gmail.com as tester (2026-10-16).
+- [x] iOS 0.1 (202610161709) and Mac 0.1 (202610161713) uploaded with `just testflight` / `just testflight-macos`, processed and in Internal with What to Test notes (2026-10-16). The iOS one is the first archive with MLX and the increased-memory-limit entitlement.
+- [ ] Install both from TestFlight and run the "Verify on iPhone" / "Verify on Mac" checks on these Release builds.
 - [ ] TestFlight test information: what to test, feedback email, how to add an OpenAI or Gemini key, that a free-tier Gemini key's traffic may be used by Google, and that TranslateGemma is a 2.2 GB download for 8 GB iPhones that works while Hearvia is on screen.
 - [ ] Internal group: you plus a couple of devices; then an external group through Beta App Review (needs the privacy URL and test information).
 
 Left for Mac TestFlight:
 
 - [ ] Sandboxed Mac: speak into the microphone (Microphone source) and save an API key in Settings → Translators; both untested so far.
-- [ ] Mac upload: a `just upload-mac` like `upload-ios` (Mac App Store export), then a Mac TestFlight build.
+- [x] Mac TestFlight build (see above). `scripts/testflight.sh` was adapted to asc 5.14: `builds info` instead of `builds find`, no `--version` with `--build-id`/`--build-number`, and no assigning builds to an internal group that already gets every build.
 
 ## Verify on iPhone (built, not yet tested)
 
