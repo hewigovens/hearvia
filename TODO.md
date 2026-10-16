@@ -6,8 +6,8 @@ Open work, roughly by priority. State as of 2026-10-16.
 
 - Version control: jj only, in the default workspace (no sibling workspaces). Use `git` only for things jj has no command for, never for commit/add/stash/checkout/reset/worktree. See `agents/version-control.md`.
 - History: `main` → wxwkxwuv "Project setup, docs and tooling". On top, oldest first: smlvmklp architecture and agent guides; svourztr HearviaKit modules and release prep; unqokskr one-button main screens; qrlpnzpt tile sheets and transcript history; pmyrxrsz Gemini Live; umuvopot Mac app-wide theme; skutvlks Settings regrouped; rpwvlsyr App Store record and TestFlight milestone; norpsrnw quick start widget, Control Center control and shortcut; zmosyypz Home Screen quick actions; pyyxxryl TestFlight upload recipe and privacy site; nvzuworn transcripts kept and exported; qxwxpkqn Mac App Sandbox; wqonquuz TranslateGemma; nmwkqoyn TranslateGemma background pause and breathing play button; uluomzvq iPhone TranslateGemma labelling; then this TODO update.
-- Nothing pushed: `origin` (github.com/hewigovens/hearvia) has no `main` yet.
-- [ ] Review the stack, then `jj bookmark set main -r <rev>` and `jj git push --bookmark main`. The privacy page and the Pages workflow need this.
+- `main` on `origin` (github.com/hewigovens/hearvia) is at wuwnzrkn, pushed 2026-10-16. Publish later changes with `jj bookmark set main -r <rev>` and `jj git push --bookmark main`.
+- CI: `.github/workflows/ci.yml` on GitHub's `xcode-27` image (kit tests, SwiftFormat, SwiftLint, unsigned iOS and Mac builds).
 - [ ] svourztr is one large change (kit modules + four parallel work streams that touch the same files); split it in JayJay if separate commits are wanted.
 - Last verified on 2026-10-16: `just test` (57 tests), Debug builds of both apps, swiftlint and swiftformat clean; the device and Mac checks marked below. TestFlight build 0.1 (202610161055) predates the sandbox, transcripts and TranslateGemma. `just build-tests` was last run before the redesign.
 
@@ -24,11 +24,11 @@ Done:
 - [x] `ITSAppUsesNonExemptEncryption = NO` in both apps (HTTPS/WSS only), so uploads skip the export-compliance question.
 - [x] Version 0.1 from `MARKETING_VERSION`; `just upload-ios` stamps `CFBundleVersion` with a timestamp, so every upload is unique.
 - [x] `just upload-ios` archives a Release build and uploads it: Hearvia 0.1 (202610161055) uploaded 2026-10-16.
-- [x] Privacy policy (`site/privacy.html`) covers the on-device, cloud and TranslateGemma translators, transcripts and permissions.
+- [x] Privacy policy (`docs/privacy.html`) covers the on-device, cloud and TranslateGemma translators, transcripts and permissions.
 
 Left for iPhone TestFlight (in order):
 
-- [ ] Push the stack (see Handoff), set the repo's Pages source to GitHub Actions, and check https://hewigovens.github.io/hearvia/privacy.html loads.
+- [x] Stack pushed; GitHub Pages serves `docs/` from `main` and https://hewigovens.github.io/hearvia/privacy.html loads (2026-10-16).
 - [ ] App Store Connect: privacy policy URL, and the App Privacy answers from `docs/release.md` (unchanged by TranslateGemma: Hearvia collects nothing from the download).
 - [ ] A Release build on the phone (see "Verify on iPhone"): no Developer tools, no file sharing, no diagnostics log; quick start, transcripts and TranslateGemma work.
 - [ ] New upload with `just upload-ios`. It is the first archive with MLX (HearviaLLM) and the increased-memory-limit entitlement: check the archive builds and the distribution profile picks up the capability.

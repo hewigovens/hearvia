@@ -31,7 +31,7 @@ Decided 2026-10-15: TestFlight builds ship with no key and rely on bring-your-ow
 
 ## App Store privacy answers
 
-- **Privacy policy URL:** https://hewigovens.github.io/hearvia/privacy.html (`site/privacy.html`, published by `.github/workflows/pages.yml` once the repo's Pages source is set to GitHub Actions).
+- **Privacy policy URL:** https://hewigovens.github.io/hearvia/privacy.html (`docs/privacy.html`; GitHub Pages serves `docs/` from `main`, and `docs/.nojekyll` publishes the files as they are).
 - **Do you or your third-party partners collect data from this app?** Yes, Audio Data only:
   - When the user chooses a cloud translator (OpenAI Realtime or Gemini Live), captured speech audio is streamed to OpenAI or Google with the user's own API key to produce subtitles. It isn't stored by Hearvia, sent anywhere else, or linked to an identity by Hearvia.
   - The on-device translator sends nothing off the device.

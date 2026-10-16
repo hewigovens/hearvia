@@ -1,0 +1,69 @@
+# Kit tests, lint, and unsigned builds of both apps on GitHub's Xcode 27 image (public preview).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  kit:
+    name: HearviaKit tests and lint
+    runs-on: xcode-27
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install SwiftLint
+        run: brew install swiftlint
+      - name: SwiftFormat
+        run: swiftformat --lint .
+      - name: SwiftLint
+        run: swiftlint lint --quiet
+      - name: Tests
+        run: swift test --package-path HearviaKit
+
+  apps:
+    name: ${{ matrix.name }} app
+    runs-on: xcode-27
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: iOS
+            scheme: Hearvia
+            destination: generic/platform=iOS
+            action: build-for-testing # The test targets too; they run on a device.
+          - name: macOS
+            scheme: HearviaMac
+            destination: platform=macOS
+            action: build
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      # MLX (HearviaLLM) compiles Metal shaders.
+      - name: Metal Toolchain
+        run: xcodebuild -showComponent MetalToolchain | grep -q "Status: installed" || xcodebuild -downloadComponent MetalToolchain
+      - uses: actions/cache@v4
+        with:
+          path: .build/SourcePackages
+          key: spm-${{ hashFiles('HearviaLLM/Package.resolved', 'project.yml') }}
+          restore-keys: spm-
+      - name: Generate project
+        run: xcodegen generate
+      - name: Build
+        run: >
+          xcodebuild ${{ matrix.action }}
+          -project Hearvia.xcodeproj -scheme ${{ matrix.scheme }} -destination '${{ matrix.destination }}'
+          -clonedSourcePackagesDirPath .build/SourcePackages
+          -skipMacroValidation -skipPackagePluginValidation
+          CODE_SIGNING_ALLOWED=NO -quiet
