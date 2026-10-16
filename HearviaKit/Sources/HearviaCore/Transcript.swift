@@ -1,30 +1,61 @@
 import Foundation
 
-/// Finished sentences (original + translation), oldest first, capped to the newest `limit` lines.
-public struct Transcript: Equatable, Sendable {
+/// One listening session's finished sentences (original + translation), oldest first, with what produced them.
+/// Saved to the transcript history when the session ends.
+public struct Transcript: Identifiable, Equatable, Sendable, Codable {
+    public let id: UUID
+    public let startedAt: Date
+    public var endedAt: Date?
+    public let engine: EngineKind
+    /// Empty when the engine detected the spoken language.
+    public let sourceLanguage: String
+    public let targetLanguage: String
     public private(set) var lines: [TranscriptLine] = []
-    let limit: Int
 
-    public init(limit: Int = 300) {
-        self.limit = limit
+    public init(id: UUID = UUID(), startedAt: Date = .now, engine: EngineKind = .onDevice, sourceLanguage: String = "",
+                targetLanguage: String = "") {
+        self.id = id
+        self.startedAt = startedAt
+        self.engine = engine
+        self.sourceLanguage = sourceLanguage
+        self.targetLanguage = targetLanguage
     }
 
     public var isEmpty: Bool {
         lines.isEmpty
     }
 
-    /// Plain text for sharing: original above translation, sentences separated by a blank line.
-    public var text: String {
-        lines.map { $0.source.isEmpty ? $0.translation : "\($0.source)\n\($0.translation)" }.joined(separator: "\n\n")
-    }
-
-    public mutating func append(source: String, translation: String) {
+    public mutating func append(source: String, translation: String, at time: Date = .now) {
         let line = TranscriptLine(id: (lines.last?.id ?? 0) + 1, source: source.trimmingCharacters(in: .whitespacesAndNewlines),
-                                  translation: translation.trimmingCharacters(in: .whitespacesAndNewlines))
+                                  translation: translation.trimmingCharacters(in: .whitespacesAndNewlines), time: time)
         guard !line.translation.isEmpty || !line.source.isEmpty else { return }
         lines.append(line)
-        if lines.count > limit {
-            lines.removeFirst(lines.count - limit)
+    }
+
+    /// "Oct 16, 2026 at 10:55"
+    public var title: String {
+        startedAt.formatted(date: .abbreviated, time: .shortened)
+    }
+
+    /// "12 min · English → 中文 · On-device"
+    public var summary: String {
+        let minutes = max(1, Int(((endedAt ?? lines.last?.time ?? startedAt).timeIntervalSince(startedAt) / 60).rounded()))
+        return "\(minutes) min · \(LanguageName.pair(source: sourceLanguage, target: targetLanguage)) · \(engine.title)"
+    }
+
+    /// Plain text for sharing and export: a header, then each sentence's time, original and translation.
+    public var text: String {
+        let body = lines.map { line in
+            let time = "[\(line.time.formatted(date: .omitted, time: .standard))]"
+            return line.source.isEmpty ? "\(time) \(line.translation)" : "\(time) \(line.source)\n\(line.translation)"
         }
+        return (["Hearvia transcript · \(title)", summary] + body).joined(separator: "\n\n")
+    }
+
+    /// A file name without characters that file systems reject: "Hearvia 2026-10-16 10.55".
+    public var fileName: String {
+        let stamp = Date.VerbatimFormatStyle(format: "\(year: .defaultDigits)-\(month: .twoDigits)-\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)).\(minute: .twoDigits)",
+                                             timeZone: .current, calendar: Calendar(identifier: .gregorian))
+        return "Hearvia \(startedAt.formatted(stamp))"
     }
 }

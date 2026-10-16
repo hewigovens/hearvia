@@ -23,6 +23,15 @@ struct SettingsView: View {
                 }
                 .listRowBackground(Color.hvSurface)
 
+                Section {
+                    Toggle("Save transcripts", isOn: Bindable(model.translation).savesTranscripts)
+                    Button("Delete All Transcripts", role: .destructive) { model.translation.history.deleteAll() }
+                        .disabled(model.translation.history.transcripts.isEmpty)
+                } header: { Text("Transcripts") } footer: {
+                    Text("Kept on this iPhone only. Open one from the transcript button on the home screen to export or share it.")
+                }
+                .listRowBackground(Color.hvSurface)
+
                 Section("Appearance") {
                     Picker("Appearance", selection: $settings.appearance) {
                         ForEach(Appearance.allCases) { Text($0.title).tag($0) }

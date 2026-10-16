@@ -1,3 +1,4 @@
+import Foundation
 @testable import HearviaCore
 import Testing
 
@@ -28,13 +29,22 @@ import Testing
     #expect(next.translation == " How are you?")
 }
 
-@Test func transcriptTrimsSkipsEmptyAndCaps() {
-    var transcript = Transcript(limit: 2)
-    transcript.append(source: " a ", translation: " A ")
-    transcript.append(source: "", translation: "  ")
-    transcript.append(source: "b", translation: "B")
-    transcript.append(source: "", translation: "C")
-    #expect(transcript.lines.map(\.translation) == ["B", "C"])
-    #expect(transcript.lines.map(\.id) == [2, 3])
-    #expect(transcript.text == "b\nB\n\nC")
+@Test func transcriptTrimsAndSkipsEmptyLines() {
+    let start = Date(timeIntervalSince1970: 0)
+    var transcript = Transcript(startedAt: start, engine: .realtime, targetLanguage: "zh")
+    transcript.append(source: " a ", translation: " A ", at: start)
+    transcript.append(source: "", translation: "  ", at: start)
+    transcript.append(source: "", translation: "C", at: start.addingTimeInterval(600))
+    #expect(transcript.lines.map(\.translation) == ["A", "C"])
+    #expect(transcript.lines.map(\.id) == [1, 2])
+    #expect(transcript.summary.hasPrefix("10 min · Auto → "))
+    #expect(transcript.text.hasSuffix("] a\nA\n\n[\(transcript.lines[1].time.formatted(date: .omitted, time: .standard))] C"))
+    #expect(!transcript.fileName.contains(":") && !transcript.fileName.contains("/"))
+}
+
+@Test func transcriptRoundTripsThroughJSON() throws {
+    var transcript = Transcript(engine: .gemini, sourceLanguage: "", targetLanguage: "ja")
+    transcript.append(source: "Hello", translation: "こんにちは")
+    let decoded = try JSONDecoder().decode(Transcript.self, from: JSONEncoder().encode(transcript))
+    #expect(decoded == transcript)
 }

@@ -15,7 +15,7 @@ public extension LiveTranslator {
         error = ""
         source = ""
         translation = ""
-        transcript = Transcript()
+        transcript = Transcript(engine: engine, sourceLanguage: engine.detectsSpokenLanguage ? "" : sourceLanguage, targetLanguage: targetLanguage)
         stats = TranslatorStats()
         let engine = makeEngine(engine, EngineRequest(sourceLanguage: sourceLanguage, targetLanguage: targetLanguage, apiKey: apiKey,
                                                       transcribesSource: transcribesSource))
@@ -26,6 +26,13 @@ public extension LiveTranslator {
             }
         }
         await engine.start(audio: feed.open())
+    }
+
+    /// Writes the current transcript to the history now, e.g. before the app quits or is suspended mid-session.
+    func saveTranscript() {
+        if savesTranscripts {
+            history.save(transcript)
+        }
     }
 
     func stop() async {
@@ -56,6 +63,9 @@ public extension LiveTranslator {
             onTextChange?()
         case let .sentence(source, translation):
             transcript.append(source: source, translation: translation)
+            if transcript.lines.count.isMultiple(of: 10) {
+                saveTranscript() // A crash or kill mid-session loses at most the last few sentences.
+            }
         case .audioConsumed:
             stats.chunksSent += 1
         case let .problem(message):
@@ -75,6 +85,8 @@ public extension LiveTranslator {
         let engine = running
         running = nil
         isActive = false
+        transcript.endedAt = .now
+        saveTranscript()
         feed.close()
         listener?.cancel()
         listener = nil

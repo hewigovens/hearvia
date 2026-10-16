@@ -19,8 +19,8 @@ struct HomeHeader: View {
                 .transition(.offset(y: -8).combined(with: .opacity))
             }
             Spacer()
-            if !model.translation.transcript.isEmpty {
-                CircleButton(symbol: "text.bubble", label: "Transcript") { present(.transcript) }
+            if !model.translation.transcript.isEmpty || !model.translation.history.transcripts.isEmpty {
+                CircleButton(symbol: "text.bubble", label: "Transcripts") { present(.transcripts) }
             }
             if !model.listening {
                 CircleButton(symbol: "questionmark.circle", label: "How it works") { present(.onboarding) }

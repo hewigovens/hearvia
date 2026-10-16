@@ -21,11 +21,11 @@ struct HearviaMacApp: App {
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
 
-        Window("Transcript", id: "transcript") {
+        Window("Transcripts", id: "transcript") {
             TranscriptView(translator: model.translator)
                 .environment(settings)
         }
-        .defaultSize(width: 520, height: 560)
+        .defaultSize(width: 760, height: 560)
 
         Window("Before You Start", id: "permissions") {
             PermissionsView(model: model)

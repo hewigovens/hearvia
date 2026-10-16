@@ -17,10 +17,10 @@ Goal: internal testers first (no review), then an external group. Keys are bring
 - [x] App record in App Store Connect: "Hearvia" (Apple ID 6823200947, SKU `hearvia`), iOS + macOS, primary language English (U.S.), created 2026-10-15. Explicit App ID `dev.hewig.hearvia` registered for all platforms.
 - [x] One bundle ID for both apps (`dev.hewig.hearvia`), so a later In-App Purchase is a universal purchase. The Mac app moved from `dev.hewig.hearvia.mac`: its settings and Keychain keys start fresh once, and the permission explainer shows again.
 - [x] App ID `dev.hewig.hearvia.widgets` ("Hearvia Widgets") registered for the widget extension (2026-10-16).
-- [ ] Mac only: TestFlight and the Mac App Store require App Sandbox, which the Mac app doesn't have yet. Try the process tap and microphone under the sandbox (`docs/release.md`); ship iOS first if it blocks.
+- [ ] Mac only: TestFlight and the Mac App Store require App Sandbox. Checked 2026-10-16 on a scratch copy: with `app-sandbox`, `network.client` and `device.audio-input`, system-audio capture and on-device translation worked, with no Core Audio or network denials. Still to try sandboxed: per-app capture from the process list, microphone, Realtime/Gemini with a key, saving a key to the Keychain.
 - [x] `ITSAppUsesNonExemptEncryption = NO` in both apps (HTTPS/WSS only), so uploads skip the export-compliance question.
 - [x] Version 0.1 from `MARKETING_VERSION`; `just upload-ios` stamps `CFBundleVersion` with a timestamp, so every upload is unique.
-- [ ] `just upload-ios`: archive (Release) and upload to App Store Connect; the archive stays in Xcode's Organizer. Mac needs the sandbox first.
+- [x] `just upload-ios` archives a Release build and uploads it: Hearvia 0.1 (202610161055) uploaded 2026-10-16. Mac needs the sandbox first.
 - [ ] Re-check a Release build on the phone first (no Developer tools, no file sharing, no diagnostics log; see "Verify on iPhone").
 - [ ] App Privacy answers in App Store Connect from `docs/release.md`.
 - [ ] Privacy policy at https://hewigovens.github.io/hearvia/privacy.html: `site/` and `.github/workflows/pages.yml` are ready; after pushing, set the repo's Pages source to GitHub Actions and enter the URL in App Store Connect.
@@ -45,6 +45,8 @@ Goal: internal testers first (no review), then an external group. Keys are bring
 
 - [ ] Quick start: add the Hearvia widget (small and medium), the Control Center control and "Start Hearvia" in Shortcuts, and try both icon quick actions (long-press the app icon); each opens the app and starts listening (other apps still show the iOS sharing sheet). Check a cold launch, and that onboarding comes first on a fresh install.
 
+- [ ] Transcripts on iPhone: a session appears under Transcripts after Stop (and after leaving the app mid-session); export a .txt to Files; swipe to delete; "Save transcripts" off keeps nothing.
+
 ## Verify on Mac
 
 - [x] Realtime with system audio under the hardened runtime; silence pause after 25 s and resume with pre-roll; on-device ja → en; Dock vs menu-bar-only launch (5 launches); permission explainer; overlay keeps two original lines.
@@ -54,6 +56,8 @@ Goal: internal testers first (no review), then an external group. Keys are bring
 - [ ] Settings → "Show in menu bar only" toggled live both ways; Dock-icon click reopens the control window; Dock menu Start/Stop and Show overlay.
 - [ ] Session rotation in a real session close to 60 minutes (log event `translation_rotated`).
 - [ ] Overlay: the faded top edge of the translation can leave a faint trace of a clipped line; check at other font sizes.
+
+- [x] Transcripts on Mac: a session is saved on quit and listed in the Transcripts window with Export, Copy and Delete (2026-10-16).
 
 ## Gemini Live (preview)
 

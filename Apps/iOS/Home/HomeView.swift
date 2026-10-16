@@ -2,7 +2,7 @@ import HearviaUI
 import SwiftUI
 
 /// Ready: subtitle preview, a centred listen button and the setup tiles. Listening: the button shrinks to the
-/// bottom and the tiles give way to a status line; the transcript is one tap away in the header.
+/// bottom and the tiles give way to a status line; transcripts are one tap away in the header.
 struct HomeView: View {
     let model: AppModel
     @Environment(AppSettings.self) private var settings
@@ -67,7 +67,7 @@ struct HomeView: View {
             case .source: SourceSheet()
             case .languages: LanguagesSheet(translator: model.translation)
             case .translator: TranslatorSheet(translator: model.translation) { presentation = .settings }
-            case .transcript: TranscriptSheet(translator: model.translation)
+            case .transcripts: TranscriptsSheet(translator: model.translation)
             case .onboarding: EmptyView()
             }
         }

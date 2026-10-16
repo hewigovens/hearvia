@@ -8,7 +8,7 @@ struct SettingsView: View {
 
     var body: some View {
         TabView {
-            Tab("General", systemImage: "gearshape") { GeneralSettings() }
+            Tab("General", systemImage: "gearshape") { GeneralSettings(translator: model.translator) }
             Tab("Translators", systemImage: "character.bubble") { TranslatorSettings(translator: model.translator) }
             Tab("Overlay", systemImage: "captions.bubble") { OverlaySettings() }
             Tab("Diagnostics", systemImage: "stethoscope") { DiagnosticsSettings(translator: model.translator) }
@@ -32,6 +32,7 @@ private struct SettingsPane<Content: View>: View {
 }
 
 private struct GeneralSettings: View {
+    @Bindable var translator: LiveTranslator
     @Environment(AppSettings.self) private var settings
 
     var body: some View {
@@ -46,6 +47,14 @@ private struct GeneralSettings: View {
                     Text("Show in menu bar only")
                     Text("Hides the Dock icon. Open Hearvia from the captions icon in the menu bar.")
                 }
+            }
+            Section {
+                Toggle(isOn: $translator.savesTranscripts) {
+                    Text("Save transcripts")
+                    Text("Kept on this Mac only. Open Transcripts to export or copy one.")
+                }
+                Button("Delete All Transcripts", role: .destructive) { translator.history.deleteAll() }
+                    .disabled(translator.history.transcripts.isEmpty)
             }
         }
     }

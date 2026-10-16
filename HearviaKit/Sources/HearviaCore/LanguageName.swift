@@ -14,6 +14,11 @@ public enum LanguageName {
         (Locale(identifier: code).localizedString(forLanguageCode: code) ?? code).capitalized
     }
 
+    /// "English → 中文", or "Auto → 中文" when `source` is empty (the engine detects the spoken language).
+    public static func pair(source: String, target: String) -> String {
+        "\(source.isEmpty ? "Auto" : short(source)) → \(short(target))"
+    }
+
     /// The name in the user's language, e.g. "Japanese".
     public static func localized(_ code: String) -> String {
         Locale.current.localizedString(forLanguageCode: code)?.capitalized ?? code

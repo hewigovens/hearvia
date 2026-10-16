@@ -11,6 +11,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
 
+    func applicationWillTerminate(_: Notification) {
+        model?.translator.saveTranscript()
+    }
+
     func applicationDockMenu(_: NSApplication) -> NSMenu? {
         guard let model else { return nil }
         let menu = NSMenu()

@@ -1,7 +1,7 @@
 import Foundation
 
 /// Which pipeline turns captured audio into subtitles.
-public enum EngineKind: String, CaseIterable, Identifiable, Sendable {
+public enum EngineKind: String, CaseIterable, Identifiable, Sendable, Codable {
     /// SpeechTranscriber + Translation framework: free, offline, sentence-level lag.
     case onDevice
     /// gpt-realtime-translate over WebSocket: lowest lag, paid per minute.

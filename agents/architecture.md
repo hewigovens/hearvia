@@ -15,7 +15,8 @@ HearviaKit (one Swift package, one `HearviaKit` product, five modules)
                   OpenAI/    OpenAIRealtimeClient (WebSocket actor) + configuration
                   Gemini/    GeminiLiveClient (WebSocket actor, 24 → 16 kHz) + configuration
                   OnDevice/  OnDeviceEngine (+Text), OnDeviceSpeech (SpeechAnalyzer), OnDeviceTextTranslator, OnDeviceModels
-  HearviaSession  LiveTranslator (+Run): preferences, one engine run at a time, observable text/transcript/stats
+  HearviaSession  LiveTranslator (+Run, +Status): preferences, one engine run at a time, observable text/transcript/stats;
+                  TranscriptHistory: one JSON file per finished session in Application Support/Hearvia/Transcripts
   HearviaUI       palette, Appearance, HearviaMark/Icon, HVButtonStyle, ListenButton, ControlTile, LevelBars,
                   TranscriptList, OnDeviceModelsView, OnDeviceLanguages (picker lists per engine)
   hearvia-translate  CLI over Audio + Engines: streams an audio file through any engine

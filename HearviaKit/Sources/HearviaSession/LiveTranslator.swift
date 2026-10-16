@@ -45,6 +45,11 @@ public final class LiveTranslator {
     public internal(set) var translation = ""
     public internal(set) var transcript = Transcript()
     public internal(set) var stats = TranslatorStats()
+    /// Finished sessions' transcripts, kept on this device while `savesTranscripts` is on.
+    public let history: TranscriptHistory
+    public var savesTranscripts: Bool {
+        didSet { defaults.set(savesTranscripts, forKey: Keys.savesTranscripts) }
+    }
 
     /// Called on every text change, for consumers that draw outside SwiftUI (the PiP renderer, logs).
     public var onTextChange: (() -> Void)?
@@ -60,10 +65,12 @@ public final class LiveTranslator {
 
     /// `fallbackKeys` stand in for keys not saved yet (Debug builds pass the ones from `.env`).
     public init(fallbackKeys: [EngineKind: String] = [:], defaults: UserDefaults = .standard, secrets: any SecretStore = KeychainStore(),
-                makeEngine: @escaping EngineFactory = LiveTranslator.makeEngine) {
+                history: TranscriptHistory = TranscriptHistory(), makeEngine: @escaping EngineFactory = LiveTranslator.makeEngine) {
         self.defaults = defaults
         self.secrets = secrets
+        self.history = history
         self.makeEngine = makeEngine
+        savesTranscripts = defaults.object(forKey: Keys.savesTranscripts) as? Bool ?? true
         func key(_ engine: EngineKind) -> String {
             secrets.read(account: engine.keyAccount!) ?? fallbackKeys[engine] ?? ""
         }
@@ -131,6 +138,7 @@ public final class LiveTranslator {
         static let engine = "hearvia.engine"
         static let sourceLanguage = "hearvia.sourceLanguage"
         static let targetLanguage = "hearvia.targetLanguage"
+        static let savesTranscripts = "hearvia.savesTranscripts"
     }
 }
 

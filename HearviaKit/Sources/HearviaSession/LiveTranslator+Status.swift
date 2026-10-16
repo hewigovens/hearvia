@@ -15,7 +15,6 @@ public extension LiveTranslator {
 
     /// "English → 中文", or "Auto → 中文" when the engine detects the spoken language.
     var languagePair: String {
-        let spoken = engine.detectsSpokenLanguage ? "Auto" : LanguageName.short(sourceLanguage)
-        return "\(spoken) → \(LanguageName.short(targetLanguage))"
+        LanguageName.pair(source: engine.detectsSpokenLanguage ? "" : sourceLanguage, target: targetLanguage)
     }
 }

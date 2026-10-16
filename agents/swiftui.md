@@ -9,7 +9,8 @@ Apps/iOS/
 ├── App/          HearviaApp, AppModel (+Listening, +Subtitles, +Diagnostics, +QuickStart), AppSettings, InputSource
 ├── Home/         HomeView, HomePresentation, HomeHeader, StartPrompt, HomeTiles, ListeningSummary,
 │                 TileSheet + SourceSheet, LanguagesSheet (LanguageCard), TranslatorSheet (EngineStatus),
-│                 ChoiceRow, TranscriptSheet, CircleButton
+│                 ChoiceRow, CircleButton
+├── Transcripts/  TranscriptsSheet (in progress + saved), TranscriptDetailView (export, delete)
 ├── Onboarding/   OnboardingView, OnboardingPage, FeatureCard, Bullet, MicrophonePermissionRow
 ├── Settings/     SettingsView, TranslatorSettingsView (API keys and on-device models)
 ├── Capture/      CaptureController (ScreenCaptureKit), AudioProbe, ProbeSnapshot, AudioAnalysis,
@@ -28,7 +29,7 @@ Apps/macOS/
 │                 EngineStatusLine
 ├── Overlay/      OverlayPanel (+ OverlayPointer), OverlayView
 ├── Settings/     SettingsView (tabs: General, Translators, Overlay, Diagnostics)
-├── Transcript/   TranscriptView
+├── Transcript/   TranscriptView (Transcripts window: sidebar of sessions, export/copy/delete)
 └── MenuBar/      MenuBarLabel
 Apps/Shared/      DevSecrets.generated.swift (generated, optional in project.yml)
 ```

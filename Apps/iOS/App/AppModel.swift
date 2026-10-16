@@ -101,6 +101,7 @@ final class AppModel {
         log.event("scene", ["phase": scene, "pip_active": "\(pip.active)", "capture_running": "\(capture.running)"])
         if phase == .background {
             capture.probe.markBackground(true)
+            translation.saveTranscript() // iOS may end a backgrounded app without warning.
         }
         if phase == .active {
             capture.probe.markBackground(false)
