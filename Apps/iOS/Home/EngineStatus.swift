@@ -20,7 +20,7 @@ struct EngineStatus: View {
                     readyLine("Using your \(translator.engine.title) key")
                 }
             } else if ready == true {
-                readyLine("Speech and translation models ready")
+                readyLine(translator.engine == .gemma ? "Ready · translates while Hearvia is on screen" : "Speech and translation models ready")
             } else if ready == nil {
                 Label("Checking on-device models…", systemImage: "hourglass").font(.footnote).foregroundStyle(Color.hvMuted)
             } else {

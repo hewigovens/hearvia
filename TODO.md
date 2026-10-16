@@ -85,8 +85,9 @@ Goal: internal testers first (no review), then an external group. Keys are bring
 - [x] On-device offers more languages than the 13 Realtime ones.
 - [x] TranslateGemma 4B (open weights, MLX, `HearviaLLM`) as a downloadable translator on 8 GB devices, with Apple speech recognition in front (2026-10-16). Mac (Release `gemma-bench`): 1.3 s load, ~0.5 s per sentence, 2.8 GB peak; the sandboxed Mac app downloads it in Settings and subtitles live speech. iPhone 16 Pro (Release, `GemmaDeviceTests`): 6.1 GB free with the increased-memory-limit entitlement, 1.7 s load, 1.4–1.8 s per sentence, 3.8 GB still free once loaded.
 - [x] TranslateGemma while Hearvia is in the background on iPhone: iOS rejects the GPU work (checked 2026-10-16) and the CPU is far too slow, so it now shows "TranslateGemma pauses while Hearvia is behind other apps" instead of exiting the app.
-- [ ] Decide what TranslateGemma does behind other apps on iPhone, the main iPhone use: fall back to Apple's translator for those sentences, keep it for microphone/in-app use only, or hide it on iPhone. A `BGContinuedProcessingTask` with GPU access is untested and meant for finite jobs.
-- [ ] TranslateGemma in the iPhone app by hand: Settings → Translators download (2.2 GB over Wi-Fi), the Translator sheet, microphone mode.
+- [x] TranslateGemma on iPhone is for in-app use (decided 2026-10-16): offline microphone translation with Hearvia on screen. The picker, status line and Settings say it pauses behind other apps.
+- [ ] TranslateGemma in the iPhone app by hand, Hearvia on screen: microphone mode with no network, a few minutes of speech.
+- [ ] TranslateGemma download in the iPhone app (Settings → Translators, 2.2 GB over Wi-Fi); the test phone has the model copied in already.
 - [ ] TranslateGemma quality: 2 of 8 English test sentences came out wrong in Chinese ("fell asleep 20 minutes faster" → "slept 20 minutes"; "Activation went up" garbled). Compare against the built-in translator on real speech before calling it "better".
 - [x] Mac: Dock icon by default with a menu-bar-only setting and a Dock menu; tighter overlay; first-run permission explainer.
 - [ ] iOS: the screen-sharing picker appears every session (iOS limitation); own-audio exclusion is broken on iOS 27.0.1.

@@ -11,11 +11,16 @@ struct TranslatorSheet: View {
     var body: some View {
         TileSheet(title: "Translator") {
             ForEach(translator.engines) { engine in
-                ChoiceRow(symbol: engine.symbol, title: engine.title, detail: engine.tagline, selected: translator.engine == engine) {
+                ChoiceRow(symbol: engine.symbol, title: engine.title, detail: detail(engine), selected: translator.engine == engine) {
                     Task { await translator.setEngine(engine) }
                 }
             }
             EngineStatus(translator: translator, openSettings: openSettings)
         }
+    }
+
+    /// iOS keeps background apps off the GPU, so TranslateGemma only translates while Hearvia is on screen.
+    private func detail(_ engine: EngineKind) -> String {
+        engine == .gemma ? "Offline · better translation · only while Hearvia is open" : engine.tagline
     }
 }
