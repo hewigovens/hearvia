@@ -60,7 +60,9 @@ jobs:
           key: spm-${{ hashFiles('HearviaLLM/Package.resolved', 'project.yml') }}
           restore-keys: spm-
       - name: Generate project
-        run: xcodegen generate
+        run: |
+          sh scripts/gen_dev_secrets.sh
+          xcodegen generate
       - name: Build
         run: >
           xcodebuild ${{ matrix.action }}

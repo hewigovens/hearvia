@@ -29,10 +29,10 @@ HearviaLLM/      Swift package for open-weight models (kept out of HearviaKit so
 Apps/iOS/      App, Home, Onboarding, Settings, Capture (ScreenCaptureKit), Subtitles (PiP), Developer (PoC tools)
 Apps/macOS/    App, Control, Overlay, Transcript, Settings, MenuBar, Capture (Core Audio process tap)
 agents/        architecture, SwiftUI, design, testing, version-control and run/debug guides (start at AGENTS.md)
-docs/          release notes, PoC feasibility report and measurement protocol; also the GitHub Pages site
+docs/          release notes; also the GitHub Pages site
                (index.html, privacy.html: https://hewigovens.github.io/hearvia/)
-scripts/       gen_dev_secrets.sh, make_icons.swift, chatgpt_plan_probe.py; poc/ = PoC analysis tools
-TestMedia/     speech samples for the CLI and a Safari test page
+scripts/       gen_dev_secrets.sh, make_icons.swift, chatgpt_plan_probe.py
+TestMedia/     speech samples for the CLI
 ```
 
 Architecture and conventions: [AGENTS.md](AGENTS.md).
@@ -70,8 +70,7 @@ just translate TestMedia/speech/ja.aiff en --on-device=ja   # on-device
 
 `just icons` renders the iOS (default, dark, tinted) and macOS icon sets from the same geometry as `HearviaMark` in `HearviaKit/Sources/HearviaUI/HearviaMark.swift`.
 
-## Background
+## More
 
-- [docs/poc-feasibility.md](docs/poc-feasibility.md): what iOS 27 allows (system audio via ScreenCaptureKit, live PiP subtitles) and what it doesn't.
-- [docs/poc-measurement.md](docs/poc-measurement.md): how the PoC was measured; the same tools are in the iOS app under Settings → Developer tools.
 - [TODO.md](TODO.md): open work.
+- [docs/release.md](docs/release.md): TestFlight, sandbox and App Store privacy notes.

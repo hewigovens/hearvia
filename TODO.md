@@ -115,7 +115,7 @@ Left for Mac TestFlight:
 
 ## Code health
 
-- [ ] UI tests (`Apps/iOS/UITests`) still target the PoC screens; rewrite for the new UI (needs an iOS 27 simulator or a device).
+- [ ] No UI tests since the PoC smoke tests were removed (2026-10-16); add some for the redesigned iOS UI (GitHub's `xcode-27` image has iOS 27 simulators).
 - [x] Unit tests for the cloud engine's reconnect/backoff, pause and rotation (fake socket).
 - [x] Moved off the deprecated `installTap` to `installAudioTap`.
 - [ ] `TranslationSession` is still not Sendable in the 27 SDK, so `OnDeviceTextTranslator` and `OnDeviceModelsView` keep `nonisolated(unsafe)`; revisit with a later SDK.

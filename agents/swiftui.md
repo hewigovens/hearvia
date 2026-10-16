@@ -19,7 +19,7 @@ Apps/iOS/
 ├── Developer/    DeveloperView, DiagnosticsPanel, DiagnosticLog (PoC diagnostics)
 ├── QuickStart/   StartListeningIntent (+ QuickStart request, InputSource as AppEnum), HearviaShortcuts,
 │                 QuickActionSceneDelegate (Home Screen quick actions, installed by HearviaApp)
-├── Tests/, UITests/
+├── Tests/
 Apps/iOSWidgets/  HearviaWidgets extension: QuickStartWidget (Home/Lock Screen), QuickStartControl (Control Center).
                   Also compiles QuickStart/StartListeningIntent.swift and App/InputSource.swift; the intent runs in the app
 Apps/macOS/

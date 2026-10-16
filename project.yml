@@ -27,7 +27,7 @@ targets:
     platform: iOS
     sources:
       - path: Apps/iOS
-        excludes: ["Tests/**", "UITests/**"]
+        excludes: ["Tests/**"]
       - path: Apps/Shared/DevSecrets.generated.swift
         optional: true
     dependencies:
@@ -144,15 +144,6 @@ targets:
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
-  HearviaUITests:
-    type: bundle.ui-testing
-    platform: iOS
-    sources: [Apps/iOS/UITests]
-    dependencies:
-      - target: Hearvia
-    settings:
-      base:
-        GENERATE_INFOPLIST_FILE: YES
 schemes:
   HearviaMac:
     build:
@@ -166,4 +157,4 @@ schemes:
       targets:
         Hearvia: all
     test:
-      targets: [HearviaTests, HearviaUITests]
+      targets: [HearviaTests]

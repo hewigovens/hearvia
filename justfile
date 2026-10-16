@@ -7,6 +7,7 @@ default:
 
 # Generate Hearvia.xcodeproj from project.yml
 generate:
+  sh scripts/gen_dev_secrets.sh # The project lists its output, which a fresh clone doesn't have yet.
   xcodegen generate
 
 # Build both apps
