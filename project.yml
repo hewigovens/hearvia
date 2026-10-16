@@ -13,6 +13,9 @@ settings:
     TARGETED_DEVICE_FAMILY: "1,2"
     CODE_SIGN_STYLE: Automatic
     DEVELOPMENT_TEAM: V28VJH6B6S
+    MARKETING_VERSION: "0.1"
+    # Debug builds stay at 1; `just upload-ios` passes a timestamp so every upload is unique.
+    CURRENT_PROJECT_VERSION: "1"
 packages:
   HearviaKit:
     path: HearviaKit
@@ -41,10 +44,11 @@ targets:
       path: Apps/iOS/Info.plist
       properties:
         CFBundleDisplayName: Hearvia
-        CFBundleShortVersionString: "0.1"
-        CFBundleVersion: "1"
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSMicrophoneUsageDescription: Hearvia listens to the microphone to show live translated subtitles of speech around you.
         NSSpeechRecognitionUsageDescription: Hearvia turns speech into text on this device to show subtitles.
+        ITSAppUsesNonExemptEncryption: false # Only HTTPS/WSS.
         UIBackgroundModes: [screen-capture, audio]
         # Long-press the app icon; handled by QuickActionSceneDelegate.
         UIApplicationShortcutItems:
@@ -82,8 +86,8 @@ targets:
       path: Apps/iOSWidgets/Info.plist
       properties:
         CFBundleDisplayName: Hearvia
-        CFBundleShortVersionString: "0.1"
-        CFBundleVersion: "1"
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:
@@ -108,8 +112,9 @@ targets:
       path: Apps/macOS/Info.plist
       properties:
         CFBundleDisplayName: Hearvia
-        CFBundleShortVersionString: "0.1"
-        CFBundleVersion: "1"
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        ITSAppUsesNonExemptEncryption: false # Only HTTPS/WSS.
         LSApplicationCategoryType: public.app-category.productivity
         NSAudioCaptureUsageDescription: Hearvia listens to other apps' audio to show live translated subtitles.
         NSMicrophoneUsageDescription: Hearvia listens to the microphone to show live translated subtitles.

@@ -28,6 +28,17 @@ install-ios: generate
   xcrun devicectl device install app --device {{device}} "$(xcodebuild -project Hearvia.xcodeproj -scheme Hearvia -destination 'generic/platform=iOS' -showBuildSettings 2>/dev/null | awk '/ BUILT_PRODUCTS_DIR/{print $3}')/Hearvia.app"
   xcrun devicectl device process launch --terminate-existing --device {{device}} dev.hewig.hearvia
 
+# Archive the iOS app (Release) and upload it to App Store Connect for TestFlight.
+# The build number is a timestamp, so every upload is unique; the archive stays in Xcode's Organizer.
+upload-ios: generate
+  build="$(date +%Y%m%d%H%M)"; \
+  archive="$HOME/Library/Developer/Xcode/Archives/$(date +%F)/Hearvia $build.xcarchive"; \
+  xcodebuild archive -project Hearvia.xcodeproj -scheme Hearvia -configuration Release -destination 'generic/platform=iOS' \
+    -archivePath "$archive" -allowProvisioningUpdates CURRENT_PROJECT_VERSION="$build" -quiet; \
+  xcodebuild -exportArchive -archivePath "$archive" -exportOptionsPlist scripts/ExportOptions-AppStore.plist \
+    -exportPath "${TMPDIR:-/tmp}/hearvia-export-$build" -allowProvisioningUpdates; \
+  echo "Uploaded Hearvia 0.1 ($build)"
+
 # Build and launch the Mac app with JSON event logging
 run-mac *args: generate
   xcodebuild -project Hearvia.xcodeproj -scheme HearviaMac -destination 'platform=macOS' -quiet build

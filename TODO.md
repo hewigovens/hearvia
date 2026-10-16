@@ -16,13 +16,14 @@ Goal: internal testers first (no review), then an external group. Keys are bring
 
 - [x] App record in App Store Connect: "Hearvia" (Apple ID 6823200947, SKU `hearvia`), iOS + macOS, primary language English (U.S.), created 2026-10-15. Explicit App ID `dev.hewig.hearvia` registered for all platforms.
 - [x] One bundle ID for both apps (`dev.hewig.hearvia`), so a later In-App Purchase is a universal purchase. The Mac app moved from `dev.hewig.hearvia.mac`: its settings and Keychain keys start fresh once, and the permission explainer shows again.
-- [ ] Register `dev.hewig.hearvia.widgets` (the widget extension) as an App ID too, or let Xcode do it when archiving (automatic signing with `-allowProvisioningUpdates`); App Store profiles can't use the wildcard ID the Debug builds signed with.
+- [x] App ID `dev.hewig.hearvia.widgets` ("Hearvia Widgets") registered for the widget extension (2026-10-16).
 - [ ] Mac only: TestFlight and the Mac App Store require App Sandbox, which the Mac app doesn't have yet. Try the process tap and microphone under the sandbox (`docs/release.md`); ship iOS first if it blocks.
-- [ ] `ITSAppUsesNonExemptEncryption = NO` in both Info.plists (HTTPS/WSS only), so uploads skip the export-compliance question.
-- [ ] Version 0.1 (build 1) is set; bump `CFBundleVersion` on every upload.
-- [ ] Archive and upload a Release build per platform (`xcodebuild archive` + export for App Store Connect, or Xcode Organizer); add a `just` recipe once it works.
+- [x] `ITSAppUsesNonExemptEncryption = NO` in both apps (HTTPS/WSS only), so uploads skip the export-compliance question.
+- [x] Version 0.1 from `MARKETING_VERSION`; `just upload-ios` stamps `CFBundleVersion` with a timestamp, so every upload is unique.
+- [ ] `just upload-ios`: archive (Release) and upload to App Store Connect; the archive stays in Xcode's Organizer. Mac needs the sandbox first.
 - [ ] Re-check a Release build on the phone first (no Developer tools, no file sharing, no diagnostics log; see "Verify on iPhone").
-- [ ] App Privacy answers in App Store Connect from `docs/release.md`; a privacy policy URL (needed for external testing and the App Store).
+- [ ] App Privacy answers in App Store Connect from `docs/release.md`.
+- [ ] Privacy policy at https://hewigovens.github.io/hearvia/privacy.html: `site/` and `.github/workflows/pages.yml` are ready; after pushing, set the repo's Pages source to GitHub Actions and enter the URL in App Store Connect.
 - [ ] TestFlight test information: what to test, feedback email, how to add an OpenAI or Gemini key, and that a free-tier Gemini key's traffic may be used by Google.
 - [ ] Internal group: you plus a couple of devices; then an external group through Beta App Review.
 
