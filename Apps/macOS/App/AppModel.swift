@@ -28,6 +28,7 @@ final class AppModel {
     init(settings: AppSettings) {
         self.settings = settings
         refreshProcesses()
+        source = CaptureSource(launchArguments: CommandLine.arguments, processes: processes) ?? source
         followShowsOriginal()
         translator.onLog = { [verbose] name, fields in
             guard verbose else { return }

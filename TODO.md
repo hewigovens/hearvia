@@ -17,7 +17,9 @@ Goal: internal testers first (no review), then an external group. Keys are bring
 - [x] App record in App Store Connect: "Hearvia" (Apple ID 6823200947, SKU `hearvia`), iOS + macOS, primary language English (U.S.), created 2026-10-15. Explicit App ID `dev.hewig.hearvia` registered for all platforms.
 - [x] One bundle ID for both apps (`dev.hewig.hearvia`), so a later In-App Purchase is a universal purchase. The Mac app moved from `dev.hewig.hearvia.mac`: its settings and Keychain keys start fresh once, and the permission explainer shows again.
 - [x] App ID `dev.hewig.hearvia.widgets` ("Hearvia Widgets") registered for the widget extension (2026-10-16).
-- [ ] Mac only: TestFlight and the Mac App Store require App Sandbox. Checked 2026-10-16 on a scratch copy: with `app-sandbox`, `network.client` and `device.audio-input`, system-audio capture and on-device translation worked, with no Core Audio or network denials. Still to try sandboxed: per-app capture from the process list, microphone, Realtime/Gemini with a key, saving a key to the Keychain.
+- [x] Mac App Sandbox on (2026-10-16): all system audio, one app's audio and Gemini Live work sandboxed (`docs/release.md`).
+- [ ] Sandboxed Mac: speak into the microphone (Microphone source) and save an API key in Settings → Translators; both untested so far.
+- [ ] Mac upload: a `just upload-mac` like `upload-ios` (Mac App Store export), then a Mac TestFlight build.
 - [x] `ITSAppUsesNonExemptEncryption = NO` in both apps (HTTPS/WSS only), so uploads skip the export-compliance question.
 - [x] Version 0.1 from `MARKETING_VERSION`; `just upload-ios` stamps `CFBundleVersion` with a timestamp, so every upload is unique.
 - [x] `just upload-ios` archives a Release build and uploads it: Hearvia 0.1 (202610161055) uploaded 2026-10-16. Mac needs the sandbox first.

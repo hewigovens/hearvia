@@ -57,21 +57,21 @@ Decided 2026-10-15: TestFlight builds ship with no key and rely on bring-your-ow
 
 Still to check on a real run: start capture from system audio and from the microphone in a hardened Release build, since the entitlement problems this setting can cause only show up at runtime.
 
-### App Sandbox (not enabled; looks feasible, needs a test)
+### App Sandbox (enabled 2026-10-16)
 
-What Hearvia does on the Mac, and how it fares in the sandbox:
+`Apps/macOS/Hearvia.entitlements`: `com.apple.security.app-sandbox`, `com.apple.security.device.audio-input`, `com.apple.security.network.client`. Core Audio taps need no temporary exception: the tap, the process list and the private aggregate device are all calls to the Core Audio system object, and the system asks for the audio-capture permission itself.
 
-| Feature | Sandbox needs |
+Checked with the sandboxed Debug build (`--autostart`, `--source=`, logs on stdout):
+
+| Feature | Result |
 |---|---|
-| Microphone (`AVAudioEngine`) | `com.apple.security.device.audio-input` |
-| Other apps' audio (Core Audio process tap + private aggregate device) | Taps are created with the audio-capture TCC permission, not by reading other processes, so no temporary exception should be needed. Untested in the sandbox. |
-| Listing audio processes (`kAudioHardwarePropertyProcessObjectList`, bundle IDs) | Core Audio HAL properties; expected to work. Untested. |
-| OpenAI Realtime WebSocket | `com.apple.security.network.client` |
-| On-device Speech and Translation, model downloads | System services; no entitlement |
-| Keychain (API key) | Works inside the sandbox; the item moves to the sandbox's keychain access group, so a key saved by an unsandboxed build won't carry over |
-| Overlay panel, menu bar, `ShareLink`, pasteboard | No entitlement |
+| All system audio (process tap) + on-device translation | Works |
+| One app's audio (`--source=<pid>`, process list and PID lookup) | Works |
+| Gemini Live WebSocket (`network.client`) | Works |
+| Microphone | Starts; not confirmed with speech (the test Mac played into headphones) |
+| Saving a key in Settings (Keychain) | Not tested yet (the key field couldn't be filled by automation) |
 
-To try it, add `com.apple.security.app-sandbox`, `com.apple.security.network.client` and keep `com.apple.security.device.audio-input`, then test system-audio capture with a few apps (Safari, Music, a Chromium browser), microphone capture, and Realtime translation. The sandbox is required for the Mac App Store, optional for Developer ID distribution.
+The only sandbox denials logged were disk-space probes (`system-info vfs.disk-space`) and one NVMe user client, neither affecting capture. Moving into the sandbox gives the app a container: settings, transcripts and Keychain items from unsandboxed builds don't carry over.
 
 ### Notarization checklist (Developer ID, outside the App Store)
 
