@@ -46,6 +46,14 @@ targets:
         NSMicrophoneUsageDescription: Hearvia listens to the microphone to show live translated subtitles of speech around you.
         NSSpeechRecognitionUsageDescription: Hearvia turns speech into text on this device to show subtitles.
         UIBackgroundModes: [screen-capture, audio]
+        # Long-press the app icon; handled by QuickActionSceneDelegate.
+        UIApplicationShortcutItems:
+          - UIApplicationShortcutItemType: dev.hewig.hearvia.start.otherApps
+            UIApplicationShortcutItemTitle: Listen to Other Apps
+            UIApplicationShortcutItemIconSymbolName: square.grid.2x2
+          - UIApplicationShortcutItemType: dev.hewig.hearvia.start.microphone
+            UIApplicationShortcutItemTitle: Listen to Microphone
+            UIApplicationShortcutItemIconSymbolName: mic
         UILaunchScreen: {}
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
         UIFileSharingEnabled: true

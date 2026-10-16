@@ -16,6 +16,7 @@ Goal: internal testers first (no review), then an external group. Keys are bring
 
 - [x] App record in App Store Connect: "Hearvia" (Apple ID 6823200947, SKU `hearvia`), iOS + macOS, primary language English (U.S.), created 2026-10-15. Explicit App ID `dev.hewig.hearvia` registered for all platforms.
 - [x] One bundle ID for both apps (`dev.hewig.hearvia`), so a later In-App Purchase is a universal purchase. The Mac app moved from `dev.hewig.hearvia.mac`: its settings and Keychain keys start fresh once, and the permission explainer shows again.
+- [ ] Register `dev.hewig.hearvia.widgets` (the widget extension) as an App ID too, or let Xcode do it when archiving (automatic signing with `-allowProvisioningUpdates`); App Store profiles can't use the wildcard ID the Debug builds signed with.
 - [ ] Mac only: TestFlight and the Mac App Store require App Sandbox, which the Mac app doesn't have yet. Try the process tap and microphone under the sandbox (`docs/release.md`); ship iOS first if it blocks.
 - [ ] `ITSAppUsesNonExemptEncryption = NO` in both Info.plists (HTTPS/WSS only), so uploads skip the export-compliance question.
 - [ ] Version 0.1 (build 1) is set; bump `CFBundleVersion` on every upload.
@@ -41,7 +42,7 @@ Goal: internal testers first (no review), then an external group. Keys are bring
 - [ ] A Release build on the phone: no Developer tools in Settings, no Files sharing, no diagnostics log file.
 - [ ] Bundle ID is `dev.hewig.hearvia` on both platforms: delete the old "Hearvia PoC" install; Keychain key and settings start fresh. Translation preferences also moved to `hearvia.engine` / `hearvia.sourceLanguage` / `hearvia.targetLanguage`, so languages reset once.
 
-- [ ] Quick start: add the Hearvia widget (small and medium), the Control Center control and "Start Hearvia" in Shortcuts; each opens the app and starts listening (other apps still show the iOS sharing sheet). Check a cold launch, and that onboarding comes first on a fresh install.
+- [ ] Quick start: add the Hearvia widget (small and medium), the Control Center control and "Start Hearvia" in Shortcuts, and try both icon quick actions (long-press the app icon); each opens the app and starts listening (other apps still show the iOS sharing sheet). Check a cold launch, and that onboarding comes first on a fresh install.
 
 ## Verify on Mac
 

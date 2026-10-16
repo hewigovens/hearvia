@@ -3,6 +3,7 @@ import SwiftUI
 
 @main
 struct HearviaApp: App {
+    @UIApplicationDelegateAdaptor private var quickActions: QuickActionAppDelegate
     @State private var settings: AppSettings
     @State private var model: AppModel
 

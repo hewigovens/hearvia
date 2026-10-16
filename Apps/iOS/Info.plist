@@ -26,6 +26,25 @@
 	<string>Hearvia listens to the microphone to show live translated subtitles of speech around you.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Hearvia turns speech into text on this device to show subtitles.</string>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>square.grid.2x2</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Listen to Other Apps</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>dev.hewig.hearvia.start.otherApps</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>mic</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Listen to Microphone</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>dev.hewig.hearvia.start.microphone</string>
+		</dict>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>screen-capture</string>
