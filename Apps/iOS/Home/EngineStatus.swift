@@ -1,4 +1,3 @@
-import HearviaEngines
 import HearviaSession
 import HearviaUI
 import SwiftUI
@@ -26,19 +25,23 @@ struct EngineStatus: View {
                 Label("Checking on-device models…", systemImage: "hourglass").font(.footnote).foregroundStyle(Color.hvMuted)
             } else {
                 VStack(alignment: .leading, spacing: 8) {
-                    OnDeviceModelsView(source: translator.sourceLanguage, target: translator.targetLanguage)
-                        .font(.subheadline)
+                    if let model = translator.downloadable(for: translator.engine), !model.isDownloaded {
+                        DownloadableEngineRow(model)
+                    }
+                    OnDeviceModelsView(source: translator.sourceLanguage, target: translator.targetLanguage,
+                                       translates: translator.engine == .onDevice)
                 }
+                .font(.subheadline)
                 .padding(14)
                 .background(Color.hvSurface, in: .rect(cornerRadius: 14, style: .continuous))
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 4)
-        .task(id: "\(translator.engine.rawValue)\(translator.sourceLanguage)\(translator.targetLanguage)") {
+        .task(id: translator.readinessKey) {
             ready = nil
-            guard translator.engine == .onDevice else { return }
-            ready = await OnDeviceModels.isReady(from: translator.sourceLanguage, to: translator.targetLanguage)
+            guard !translator.engine.isCloud else { return }
+            ready = await translator.isReady()
         }
     }
 

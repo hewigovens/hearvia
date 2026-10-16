@@ -12,9 +12,13 @@ struct EngineStatusLine: View {
             if translator.engine.isCloud, translator.apiKey.isEmpty {
                 SettingsLink { Label("Add a \(translator.engine.title) key in Settings", systemImage: "key") }
                     .buttonStyle(.link).font(.caption)
-            } else if translator.engine == .onDevice, modelsMissing {
+            } else if !translator.engine.isCloud, modelsMissing {
                 VStack(alignment: .leading, spacing: 6) {
-                    OnDeviceModelsView(source: translator.sourceLanguage, target: translator.targetLanguage)
+                    if let model = translator.downloadable(for: translator.engine), !model.isDownloaded {
+                        DownloadableEngineRow(model)
+                    }
+                    OnDeviceModelsView(source: translator.sourceLanguage, target: translator.targetLanguage,
+                                       translates: translator.engine == .onDevice)
                 }
                 .font(.caption)
                 .padding(10)
@@ -22,7 +26,7 @@ struct EngineStatusLine: View {
             }
         }
         .task(id: translator.readinessKey) {
-            modelsMissing = translator.engine == .onDevice ? await !translator.isReady() : false
+            modelsMissing = translator.engine.isCloud ? false : await !translator.isReady()
         }
     }
 }

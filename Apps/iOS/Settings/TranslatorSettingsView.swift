@@ -30,6 +30,15 @@ struct TranslatorSettingsView: View {
                 Text("For the languages chosen on the home screen. Downloaded once, then work offline.")
             }
             .listRowBackground(Color.hvSurface)
+
+            if let gemma = translator.downloadable(for: .gemma), gemma.isSupported {
+                Section {
+                    DownloadableEngineRow(gemma)
+                } footer: {
+                    Text("Google's open translation model, run on this iPhone for better translations than the built-in one. [Gemma Terms of Use](https://ai.google.dev/gemma/terms).")
+                }
+                .listRowBackground(Color.hvSurface)
+            }
         }
         .scrollContentBackground(.hidden)
         .background(Color.hvGround)

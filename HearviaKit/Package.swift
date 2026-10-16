@@ -14,7 +14,7 @@ let package = Package(
         .target(name: "HearviaAudio"),
         .target(name: "HearviaEngines", dependencies: ["HearviaCore", "HearviaAudio"]),
         .target(name: "HearviaSession", dependencies: ["HearviaCore", "HearviaAudio", "HearviaEngines"]),
-        .target(name: "HearviaUI", dependencies: ["HearviaCore", "HearviaEngines"]),
+        .target(name: "HearviaUI", dependencies: ["HearviaCore", "HearviaEngines", "HearviaSession"]),
         .executableTarget(name: "hearvia-translate", dependencies: ["HearviaAudio", "HearviaEngines"]),
         .testTarget(name: "HearviaCoreTests", dependencies: ["HearviaCore"]),
         .testTarget(name: "HearviaAudioTests", dependencies: ["HearviaAudio"]),

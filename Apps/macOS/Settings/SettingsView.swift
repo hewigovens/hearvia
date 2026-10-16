@@ -79,6 +79,14 @@ private struct TranslatorSettings: View {
             Section("On-device models") {
                 OnDeviceModelsView(source: translator.sourceLanguage, target: translator.targetLanguage)
             }
+            if let gemma = translator.downloadable(for: .gemma), gemma.isSupported {
+                Section {
+                    DownloadableEngineRow(gemma)
+                } footer: {
+                    Text("Google's open translation model, run on this Mac for better translations than the built-in one. [Gemma Terms of Use](https://ai.google.dev/gemma/terms).")
+                        .foregroundStyle(Color.hvMuted)
+                }
+            }
         }
     }
 }

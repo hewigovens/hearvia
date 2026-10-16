@@ -1,4 +1,5 @@
 import HearviaAudio
+import HearviaGemma
 import HearviaSession
 import SwiftUI
 
@@ -50,7 +51,8 @@ final class AppModel {
         session = AudioSessionController(log: log)
         capture = CaptureController(log: log, session: session)
         pip = PiPController(log: log, session: session)
-        translation = LiveTranslator(fallbackKeys: [.realtime: DevSecrets.openAIKey, .gemini: DevSecrets.geminiKey])
+        translation = LiveTranslator(fallbackKeys: [.realtime: DevSecrets.openAIKey, .gemini: DevSecrets.geminiKey],
+                                     downloadable: [GemmaEngine()])
         capture.probe.translationFeed = translation.feed
         capture.probe.levelMeter = meter
         if let label = ProcessInfo.processInfo.environment["HEARVIA_EXPERIMENT"] {

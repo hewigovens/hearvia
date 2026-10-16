@@ -1,6 +1,7 @@
 import AppKit
 import HearviaAudio
 import HearviaCore
+import HearviaGemma
 import HearviaSession
 import Observation
 
@@ -8,7 +9,7 @@ import Observation
 @MainActor @Observable
 final class AppModel {
     let settings: AppSettings
-    let translator = LiveTranslator(fallbackKeys: AppModel.developmentKeys)
+    let translator = LiveTranslator(fallbackKeys: AppModel.developmentKeys, downloadable: [GemmaEngine()])
     var source = CaptureSource.allApps
     var processes: [AudioProcess] = []
     var capturing = false

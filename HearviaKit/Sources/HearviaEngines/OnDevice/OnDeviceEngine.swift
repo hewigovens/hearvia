@@ -42,6 +42,17 @@ public final class OnDeviceEngine: TranslationEngine {
         return OnDeviceModelSet(speech: speech, translate: translate, strategy: translator.strategy)
     }
 
+    /// Apple speech recognition with a text translator the app supplies, such as a downloaded open-weight model.
+    /// `loadTranslator` runs once per run, after the speech model is ready.
+    public convenience init(sourceLanguage: String, targetLanguage: String, translatorName: String,
+                            loadTranslator: @escaping @Sendable () async throws -> @Sendable (String) async throws -> String) {
+        self.init(sourceLanguage: sourceLanguage, targetLanguage: targetLanguage) { progress in
+            let speech = try await OnDeviceSpeech(language: sourceLanguage, progress: progress)
+            let translate = sourceLanguage == targetLanguage ? nil : try await loadTranslator()
+            return OnDeviceModelSet(speech: speech, translate: translate, strategy: translatorName)
+        }
+    }
+
     init(sourceLanguage: String, targetLanguage: String, load: @escaping ModelLoader) {
         self.sourceLanguage = sourceLanguage
         self.targetLanguage = targetLanguage

@@ -19,6 +19,8 @@ settings:
 packages:
   HearviaKit:
     path: HearviaKit
+  HearviaLLM:
+    path: HearviaLLM
 targets:
   Hearvia:
     type: application
@@ -31,6 +33,8 @@ targets:
     dependencies:
       - package: HearviaKit
         product: HearviaKit
+      - package: HearviaLLM
+        product: HearviaGemma
       - target: HearviaWidgets
     preBuildScripts:
       - name: Generate dev secrets
@@ -67,6 +71,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: dev.hewig.hearvia
         GENERATE_INFOPLIST_FILE: NO
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_ENTITLEMENTS: Apps/iOS/Hearvia.entitlements
     attributes:
       SystemCapabilities:
         com.apple.BackgroundModes:
@@ -104,6 +109,8 @@ targets:
     dependencies:
       - package: HearviaKit
         product: HearviaKit
+      - package: HearviaLLM
+        product: HearviaGemma
     preBuildScripts:
       - name: Generate dev secrets
         script: sh "$SRCROOT/scripts/gen_dev_secrets.sh"

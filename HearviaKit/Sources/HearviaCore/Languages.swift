@@ -10,7 +10,7 @@ public enum Languages {
     /// `selected` is always included so a picker never loses its current value.
     public static func choices(for engine: EngineKind, onDevice: [String], including selected: String) -> [String] {
         var choices = supported
-        if engine == .onDevice, !onDevice.isEmpty {
+        if !engine.isCloud, !onDevice.isEmpty {
             let available = Set(onDevice)
             choices = supported.filter(available.contains)
                 + available.subtracting(supported).sorted { LanguageName.localized($0) < LanguageName.localized($1) }

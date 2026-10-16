@@ -62,7 +62,9 @@ final class Harness {
     let defaults: UserDefaults
     let secrets: MemorySecrets
     let history = TranscriptHistory(directory: FileManager.default.temporaryDirectory.appending(path: "hearvia-tests-\(UUID().uuidString)"))
-    lazy var translator = LiveTranslator(defaults: defaults, secrets: secrets, history: history) { [unowned self] kind, request in
+    var downloadable: [any DownloadableEngine] = []
+    lazy var translator = LiveTranslator(defaults: defaults, secrets: secrets, history: history,
+                                         downloadable: downloadable) { [unowned self] kind, request in
         let engine = FakeEngine(kind: kind, request: request)
         engines.append(engine)
         return engine

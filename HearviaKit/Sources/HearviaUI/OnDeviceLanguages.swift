@@ -22,7 +22,8 @@ public final class OnDeviceLanguages {
         Languages.choices(for: engine, onDevice: spoken, including: selected)
     }
 
+    /// TranslateGemma isn't limited to Apple's translation languages; it gets the shared list.
     public func subtitleChoices(for engine: EngineKind, including selected: String) -> [String] {
-        Languages.choices(for: engine, onDevice: subtitles, including: selected)
+        Languages.choices(for: engine, onDevice: engine == .onDevice ? subtitles : [], including: selected)
     }
 }

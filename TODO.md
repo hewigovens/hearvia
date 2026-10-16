@@ -83,6 +83,10 @@ Goal: internal testers first (no review), then an external group. Keys are bring
 - [x] Keys for TestFlight: bring your own key only (decided 2026-10-15). On-device is the default; testers paste an OpenAI or Gemini key in Settings → Translators. See `docs/release.md`.
 - [ ] Keys for the App Store: decide on a paid tier later. Option on the table: a token server (App Attest + StoreKit check, short-lived provider tokens, the app still connects straight to OpenAI/Google) with minutes sold through In-App Purchase; on-device stays free.
 - [x] On-device offers more languages than the 13 Realtime ones.
+- [x] TranslateGemma 4B (open weights, MLX, `HearviaLLM`) as a downloadable translator on 8 GB devices, with Apple speech recognition in front (2026-10-16). Mac (Release `gemma-bench`): 1.3 s load, ~0.5 s per sentence, 2.8 GB peak; the sandboxed Mac app downloads it in Settings and subtitles live speech. iPhone 16 Pro (Release, `GemmaDeviceTests`): 6.1 GB free with the increased-memory-limit entitlement, 1.7 s load, 1.4–1.8 s per sentence, 3.8 GB still free once loaded.
+- [ ] TranslateGemma while Hearvia is in the background on iPhone (other apps + floating window): iOS doesn't let background apps use the GPU, so MLX may fail there. Check on the phone; if it does, run MLX on the CPU while in the background or fall back to the on-device translator.
+- [ ] TranslateGemma in the iPhone app by hand: Settings → Translators download (2.2 GB over Wi-Fi), the Translator sheet, microphone mode.
+- [ ] TranslateGemma quality: 2 of 8 English test sentences came out wrong in Chinese ("fell asleep 20 minutes faster" → "slept 20 minutes"; "Activation went up" garbled). Compare against the built-in translator on real speech before calling it "better".
 - [x] Mac: Dock icon by default with a menu-bar-only setting and a Dock menu; tighter overlay; first-run permission explainer.
 - [ ] iOS: the screen-sharing picker appears every session (iOS limitation); own-audio exclusion is broken on iOS 27.0.1.
 
