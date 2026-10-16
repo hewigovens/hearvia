@@ -52,7 +52,8 @@ jobs:
         run: brew install xcodegen
       # MLX (HearviaLLM) compiles Metal shaders.
       - name: Metal Toolchain
-        run: xcodebuild -showComponent MetalToolchain | grep -q "Status: installed" || xcodebuild -downloadComponent MetalToolchain
+        run: |
+          xcodebuild -showComponent MetalToolchain | grep -q "Status: installed" || xcodebuild -downloadComponent MetalToolchain
       - uses: actions/cache@v4
         with:
           path: .build/SourcePackages
