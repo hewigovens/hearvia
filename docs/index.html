@@ -4,16 +4,81 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hearvia</title>
+<meta name="description" content="Live translated subtitles for anything you hear, on iPhone and Mac: videos, podcasts, calls, or the person in front of you.">
+<meta property="og:title" content="Hearvia">
+<meta property="og:description" content="Live translated subtitles for anything you hear, on iPhone and Mac.">
+<meta property="og:image" content="https://hewigovens.github.io/hearvia/icon.png">
+<meta name="theme-color" content="#0E1020" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F7F7F5" media="(prefers-color-scheme: light)">
+<link rel="icon" href="favicon.png">
+<link rel="apple-touch-icon" href="icon.png">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<main>
-  <h1>Hearvia</h1>
-  <p class="lede">Live translated subtitles for anything you hear, on iPhone and Mac: videos, podcasts, calls, or the person in front of you.</p>
-  <ul class="links">
-    <li><a href="privacy.html">Privacy Policy</a></li>
-    <li><a href="https://github.com/hewigovens/hearvia/issues">Support</a></li>
-  </ul>
+<main class="landing">
+  <header class="hero">
+    <img class="app-icon" src="icon.png" width="96" height="96" alt="">
+    <p class="name">Hearvia</p>
+    <h1>Live subtitles for anything you hear, in your language.</h1>
+    <p class="lede">Hearvia listens to other apps or the microphone and shows translated subtitles on top of whatever you're doing, on iPhone and Mac.</p>
+    <p class="availability"><span class="pill">Coming soon to TestFlight</span> <span class="platforms">iPhone and Mac · iOS 27 and macOS 27</span></p>
+  </header>
+
+  <figure class="strip" aria-label="Example subtitles">
+    <p class="strip-pair" id="pair">English → 中文</p>
+    <p class="strip-original" id="original" lang="en">Tonight we're looking at how small changes in daily routines can improve sleep.</p>
+    <p class="strip-translation" id="translation" lang="zh-Hans">今晚，我们将探讨日常习惯中的小改变如何改善睡眠。</p>
+  </figure>
+
+  <section class="features">
+    <div class="feature">
+      <h2>Hears other apps</h2>
+      <p>On iPhone, a floating window shows subtitles over videos, podcasts and calls. On Mac, an overlay follows all system audio or just one app.</p>
+    </div>
+    <div class="feature">
+      <h2>Never gets in the way</h2>
+      <p>Hearvia doesn't play sound or pause anything. What you're watching keeps playing.</p>
+    </div>
+    <div class="feature">
+      <h2>Your choice of translator</h2>
+      <p>Free on-device translation that works offline, TranslateGemma for better offline translations, or OpenAI Realtime and Gemini Live with your own API key.</p>
+    </div>
+    <div class="feature">
+      <h2>Private by default</h2>
+      <p>No accounts, no analytics, no tracking. Transcripts stay on your device until you export them.</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="https://github.com/hewigovens/hearvia/issues">Support</a>
+    <a href="https://github.com/hewigovens/hearvia">Source on GitHub</a>
+  </footer>
 </main>
+<script>
+  // Cycles a few subtitle examples; stays on the first with Reduce Motion.
+  // [pair, original, translation, original language, translation language]
+  const examples = [
+    ["English → 中文", "Tonight we're looking at how small changes in daily routines can improve sleep.", "今晚，我们将探讨日常习惯中的小改变如何改善睡眠。", "en", "zh-Hans"],
+    ["English → 日本語", "Let's start with where we landed last quarter.", "まずは前四半期の結果から始めましょう。", "en", "ja"],
+    ["日本語 → English", "次の電車は10分遅れて到着します。", "The next train will arrive 10 minutes late.", "ja", "en"],
+    ["Español → English", "¿Dónde está la estación más cercana?", "Where is the nearest station?", "es", "en"]
+  ];
+  const strip = document.querySelector(".strip");
+  const fields = ["pair", "original", "translation"].map((id) => document.getElementById(id));
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    let index = 0;
+    setInterval(() => {
+      strip.classList.add("fading");
+      setTimeout(() => {
+        index = (index + 1) % examples.length;
+        fields.forEach((field, i) => { field.textContent = examples[index][i]; });
+        fields[1].lang = examples[index][3];
+        fields[2].lang = examples[index][4];
+        strip.classList.remove("fading");
+      }, 350);
+    }, 4200);
+  }
+</script>
 </body>
 </html>

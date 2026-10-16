@@ -30,3 +30,62 @@ a { color: var(--accent); }
 .meta, .back { color: var(--muted); font-size: 15px; }
 .lede { font-size: 19px; color: var(--muted); }
 .links { padding-left: 20px; }
+
+/* Landing page */
+:root {
+  --surface: #FFFFFF;
+  --border: #E3E5EC;
+  --strip: #0E1020;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: #191C33;
+    --border: #262A47;
+    --strip: #070814;
+  }
+}
+main.landing { max-width: 920px; }
+.hero { text-align: center; padding-top: 24px; }
+.app-icon { border-radius: 22%; box-shadow: 0 12px 32px rgba(47, 91, 255, 0.25); }
+.name { font-weight: 600; letter-spacing: 0.02em; color: var(--muted); margin: 16px 0 4px; }
+.hero h1 { font-size: clamp(30px, 6vw, 48px); line-height: 1.1; max-width: 760px; margin: 0 auto 16px; letter-spacing: -0.01em; }
+.hero .lede { max-width: 620px; margin: 0 auto 20px; }
+.availability { color: var(--muted); font-size: 15px; }
+.platforms { white-space: nowrap; }
+.pill {
+  display: inline-block;
+  margin: 0 8px 6px 0;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #FFFFFF;
+  font-weight: 600;
+}
+@media (prefers-color-scheme: dark) {
+  .pill { color: #0E1020; }
+}
+/* Subtitle surfaces are dark in both themes, like the app's floating window and overlay. */
+.strip {
+  margin: 40px auto 48px;
+  max-width: 720px;
+  min-height: 150px;
+  padding: 20px 24px;
+  border-radius: 18px;
+  background: var(--strip);
+  border: 1px solid var(--border);
+  box-shadow: 0 16px 40px rgba(14, 16, 32, 0.25);
+  transition: opacity 0.35s ease;
+}
+.strip.fading { opacity: 0; }
+.strip p { margin: 0; }
+.strip-pair { color: #8B9CFF; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; margin-bottom: 10px !important; }
+.strip-original { color: #A6ABC8; font-size: 16px; margin-bottom: 6px !important; }
+.strip-translation { color: #FFFFFF; font-size: clamp(20px, 3.4vw, 26px); font-weight: 600; line-height: 1.35; }
+.features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+@media (max-width: 620px) {
+  .features { grid-template-columns: 1fr; }
+}
+.feature { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+.feature h2 { font-size: 18px; margin: 0 0 6px; }
+.feature p { margin: 0; color: var(--muted); font-size: 16px; }
+.footer { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 24px; margin-top: 48px; font-size: 15px; }
