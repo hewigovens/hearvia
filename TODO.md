@@ -1,33 +1,44 @@
 # TODO
 
-Open work, roughly by priority. State as of 2026-10-15.
+Open work, roughly by priority. State as of 2026-10-16.
 
 ## Handoff (where things stand)
 
 - Version control: jj only, in the default workspace (no sibling workspaces). Use `git` only for things jj has no command for, never for commit/add/stash/checkout/reset/worktree. See `agents/version-control.md`.
-- History: `main` → "Project setup, docs and tooling" (wxwkxwuv). On top: smlvmklp "Adopt JayJay-style SwiftUI architecture and agent guides", svourztr "HearviaKit modules, Realtime cost controls, release prep and Mac polish", unqokskr "iOS, macOS: one-button main screens with animated start/stop", qrlpnzpt "iOS: tile sheets, transcript as history, quiet user stop, aligned onboarding", pmyrxrsz "HearviaKit, apps: Gemini Live translator behind a provider-neutral cloud engine", then the working copy. Nothing pushed; `main` not moved yet.
-- [ ] Review the stack, then `jj bookmark set main -r <rev>` and `jj git push --bookmark main` (remote `origin` = github.com/hewigovens/hearvia).
+- History: `main` → wxwkxwuv "Project setup, docs and tooling". On top, oldest first: smlvmklp architecture and agent guides; svourztr HearviaKit modules and release prep; unqokskr one-button main screens; qrlpnzpt tile sheets and transcript history; pmyrxrsz Gemini Live; umuvopot Mac app-wide theme; skutvlks Settings regrouped; rpwvlsyr App Store record and TestFlight milestone; norpsrnw quick start widget, Control Center control and shortcut; zmosyypz Home Screen quick actions; pyyxxryl TestFlight upload recipe and privacy site; nvzuworn transcripts kept and exported; qxwxpkqn Mac App Sandbox; wqonquuz TranslateGemma; nmwkqoyn TranslateGemma background pause and breathing play button; uluomzvq iPhone TranslateGemma labelling; then this TODO update.
+- Nothing pushed: `origin` (github.com/hewigovens/hearvia) has no `main` yet.
+- [ ] Review the stack, then `jj bookmark set main -r <rev>` and `jj git push --bookmark main`. The privacy page and the Pages workflow need this.
 - [ ] svourztr is one large change (kit modules + four parallel work streams that touch the same files); split it in JayJay if separate commits are wanted.
-- Last verified on 2026-10-15: `just test` (50 tests), Debug builds of both apps, swiftlint and swiftformat clean, the device and Mac checks marked below. Release builds and `just build-tests` were last run before the redesign.
+- Last verified on 2026-10-16: `just test` (57 tests), Debug builds of both apps, swiftlint and swiftformat clean; the device and Mac checks marked below. TestFlight build 0.1 (202610161055) predates the sandbox, transcripts and TranslateGemma. `just build-tests` was last run before the redesign.
 
 ## Milestone: TestFlight 0.1
 
 Goal: internal testers first (no review), then an external group. Keys are bring-your-own (`docs/release.md`); on-device works with no key.
 
+Done:
+
 - [x] App record in App Store Connect: "Hearvia" (Apple ID 6823200947, SKU `hearvia`), iOS + macOS, primary language English (U.S.), created 2026-10-15. Explicit App ID `dev.hewig.hearvia` registered for all platforms.
 - [x] One bundle ID for both apps (`dev.hewig.hearvia`), so a later In-App Purchase is a universal purchase. The Mac app moved from `dev.hewig.hearvia.mac`: its settings and Keychain keys start fresh once, and the permission explainer shows again.
 - [x] App ID `dev.hewig.hearvia.widgets` ("Hearvia Widgets") registered for the widget extension (2026-10-16).
-- [x] Mac App Sandbox on (2026-10-16): all system audio, one app's audio and Gemini Live work sandboxed (`docs/release.md`).
-- [ ] Sandboxed Mac: speak into the microphone (Microphone source) and save an API key in Settings → Translators; both untested so far.
-- [ ] Mac upload: a `just upload-mac` like `upload-ios` (Mac App Store export), then a Mac TestFlight build.
+- [x] Mac App Sandbox on (2026-10-16): all system audio, one app's audio, Gemini Live and the TranslateGemma download work sandboxed (`docs/release.md`).
 - [x] `ITSAppUsesNonExemptEncryption = NO` in both apps (HTTPS/WSS only), so uploads skip the export-compliance question.
 - [x] Version 0.1 from `MARKETING_VERSION`; `just upload-ios` stamps `CFBundleVersion` with a timestamp, so every upload is unique.
-- [x] `just upload-ios` archives a Release build and uploads it: Hearvia 0.1 (202610161055) uploaded 2026-10-16. Mac needs the sandbox first.
-- [ ] Re-check a Release build on the phone first (no Developer tools, no file sharing, no diagnostics log; see "Verify on iPhone").
-- [ ] App Privacy answers in App Store Connect from `docs/release.md`.
-- [ ] Privacy policy at https://hewigovens.github.io/hearvia/privacy.html: `site/` and `.github/workflows/pages.yml` are ready; after pushing, set the repo's Pages source to GitHub Actions and enter the URL in App Store Connect.
-- [ ] TestFlight test information: what to test, feedback email, how to add an OpenAI or Gemini key, and that a free-tier Gemini key's traffic may be used by Google.
-- [ ] Internal group: you plus a couple of devices; then an external group through Beta App Review.
+- [x] `just upload-ios` archives a Release build and uploads it: Hearvia 0.1 (202610161055) uploaded 2026-10-16.
+- [x] Privacy policy (`site/privacy.html`) covers the on-device, cloud and TranslateGemma translators, transcripts and permissions.
+
+Left for iPhone TestFlight (in order):
+
+- [ ] Push the stack (see Handoff), set the repo's Pages source to GitHub Actions, and check https://hewigovens.github.io/hearvia/privacy.html loads.
+- [ ] App Store Connect: privacy policy URL, and the App Privacy answers from `docs/release.md` (unchanged by TranslateGemma: Hearvia collects nothing from the download).
+- [ ] A Release build on the phone (see "Verify on iPhone"): no Developer tools, no file sharing, no diagnostics log; quick start, transcripts and TranslateGemma work.
+- [ ] New upload with `just upload-ios`. It is the first archive with MLX (HearviaLLM) and the increased-memory-limit entitlement: check the archive builds and the distribution profile picks up the capability.
+- [ ] TestFlight test information: what to test, feedback email, how to add an OpenAI or Gemini key, that a free-tier Gemini key's traffic may be used by Google, and that TranslateGemma is a 2.2 GB download for 8 GB iPhones that works while Hearvia is on screen.
+- [ ] Internal group: you plus a couple of devices; then an external group through Beta App Review (needs the privacy URL and test information).
+
+Left for Mac TestFlight:
+
+- [ ] Sandboxed Mac: speak into the microphone (Microphone source) and save an API key in Settings → Translators; both untested so far.
+- [ ] Mac upload: a `just upload-mac` like `upload-ios` (Mac App Store export), then a Mac TestFlight build.
 
 ## Verify on iPhone (built, not yet tested)
 
@@ -43,6 +54,7 @@ Goal: internal testers first (no review), then an external group. Keys are bring
 - [ ] Language pickers: on-device lists the system's languages, the cloud engines the fixed 13; switching to a cloud engine with an unsupported subtitle language falls back to English (unit-tested).
 - [ ] Silence pause/resume and "show original" off on iOS (Realtime restarts when the toggle changes while listening).
 - [ ] A Release build on the phone: no Developer tools in Settings, no Files sharing, no diagnostics log file.
+- [ ] Home: the play button breathes while idle (checked on Mac only).
 - [ ] Bundle ID is `dev.hewig.hearvia` on both platforms: delete the old "Hearvia PoC" install; Keychain key and settings start fresh. Translation preferences also moved to `hearvia.engine` / `hearvia.sourceLanguage` / `hearvia.targetLanguage`, so languages reset once.
 
 - [ ] Quick start: add the Hearvia widget (small and medium), the Control Center control and "Start Hearvia" in Shortcuts, and try both icon quick actions (long-press the app icon); each opens the app and starts listening (other apps still show the iOS sharing sheet). Check a cold launch, and that onboarding comes first on a fresh install.

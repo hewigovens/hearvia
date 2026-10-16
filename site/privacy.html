@@ -18,6 +18,7 @@
   <p>Hearvia listens only while you have started it, and only to the source you chose: other apps' sound or the microphone. On iPhone, listening to other apps uses iOS screen sharing; Hearvia keeps only the sound and discards the screen images immediately. Hearvia never records audio to a file.</p>
   <ul>
     <li><strong>On-device translator.</strong> Speech recognition and translation run on your device with Apple's frameworks. Nothing leaves your device.</li>
+    <li><strong>TranslateGemma.</strong> If you download this translator, Hearvia fetches its model files once from Hugging Face (huggingface.co); like any download, that request shows Hugging Face your IP address. Speech recognition and translation then run on your device, and nothing you hear leaves it.</li>
     <li><strong>OpenAI Realtime or Gemini Live.</strong> If you choose one of these translators, the audio Hearvia hears is streamed to OpenAI or Google to produce the subtitles, using the API key you entered. Hearvia sends it nowhere else. The provider handles it under its own terms and privacy policy (<a href="https://openai.com/policies/privacy-policy/">OpenAI</a>, <a href="https://policies.google.com/privacy">Google</a>); for example, providers may keep API inputs for a limited time for abuse monitoring, and Google may use traffic from free-tier Gemini API keys to improve its products.</li>
   </ul>
 
