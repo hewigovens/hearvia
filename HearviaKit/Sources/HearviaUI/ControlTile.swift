@@ -19,8 +19,8 @@ public struct ControlTile: View {
     }
 
     #if os(macOS)
-        private let height: CGFloat = 84, padding: CGFloat = 10, radius: CGFloat = 12, iconRow: CGFloat = 18
-        private let symbolFont = Font.system(size: 15, weight: .medium), valueFont = Font.system(size: 13, weight: .semibold)
+        private let height: CGFloat = 92, padding: CGFloat = 12, radius: CGFloat = 12, iconRow: CGFloat = 20
+        private let symbolFont = Font.system(size: 16, weight: .medium), valueFont = Font.system(size: 14, weight: .semibold)
     #else
         private let height: CGFloat = 104, padding: CGFloat = 14, radius: CGFloat = 18, iconRow: CGFloat = 24
         private let symbolFont = Font.system(size: 20, weight: .medium), valueFont = Font.system(size: 16, weight: .semibold)

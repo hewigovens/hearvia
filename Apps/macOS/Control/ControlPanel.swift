@@ -29,10 +29,10 @@ struct ControlPanel: View {
             Divider()
             footer
         }
-        .padding(.horizontal, 14)
+        .padding(.horizontal, 16)
         .padding(.top, inMenuBar ? 14 : -26) // The window hides its title bar; the header sits beside the traffic lights.
         .padding(.bottom, 14)
-        .frame(width: 340)
+        .frame(width: 480) // Tile values like "All system audio" and "TranslateGemma" fit on one line.
         .fixedSize(horizontal: false, vertical: true)
         .animation(.spring(duration: 0.5, bounce: 0.15), value: model.capturing)
         .background(Color.hvGround)
@@ -48,6 +48,7 @@ struct ControlPanel: View {
             Spacer()
             SettingsLink { Image(systemName: "gearshape").font(.system(size: 14)).foregroundStyle(Color.hvMuted) }
                 .buttonStyle(.borderless)
+                .focusable(false) // Otherwise it takes the window's first focus ring; ⌘, still opens Settings.
                 .help("Settings")
                 .accessibilityLabel("Settings")
         }
