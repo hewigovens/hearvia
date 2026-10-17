@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "HearviaKit",
-    platforms: [.iOS("27.0"), .macOS("27.0")],
+    platforms: [.iOS("27.0"), .macOS("26.4")],
     products: [
         // One product for the apps; each file imports only the modules it uses.
         .library(name: "HearviaKit", targets: ["HearviaCore", "HearviaAudio", "HearviaEngines", "HearviaSession", "HearviaUI"]),

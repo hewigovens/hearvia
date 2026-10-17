@@ -8,7 +8,7 @@ options:
   bundleIdPrefix: dev.hewig
   deploymentTarget:
     iOS: "27.0"
-    macOS: "27.0"
+    macOS: "26.4"
 settings:
   base:
     SWIFT_VERSION: "6.0"

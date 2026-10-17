@@ -6,8 +6,7 @@ final class OnDeviceSpeech: SpeechInput, @unchecked Sendable {
     let results: AsyncThrowingStream<SpeechResult, Error>
     private let analyzer: SpeechAnalyzer
     private let input: AsyncStream<AnalyzerInput>.Continuation
-    private let converter: AnalyzerInputConverter
-    private let format = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: PCM16Resampler.sampleRate, channels: 1, interleaved: true)!
+    private let convert: (AVAudioPCMBuffer) throws -> [AnalyzerInput]
     private let reader: Task<Void, Never>
 
     convenience init(language: String, progress: (@Sendable (Double) -> Void)? = nil) async throws {
@@ -26,7 +25,18 @@ final class OnDeviceSpeech: SpeechInput, @unchecked Sendable {
     }
 
     private init(transcribers: [SpeechTranscriber], languages: [String]) async throws {
-        converter = try await AnalyzerInputConverter.converter(compatibleWith: transcribers)
+        if #available(macOS 27, *) {
+            let converter = try await AnalyzerInputConverter.converter(compatibleWith: transcribers)
+            convert = { try converter.convert($0, at: nil) }
+        } else {
+            guard let target = await SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith: transcribers),
+                  let converter = AVAudioConverter(from: PCM16Resampler.outputFormat, to: target)
+            else { throw AVAudioConverter.ConversionError.unsupported }
+            convert = { buffer in
+                let out = try converter.convert(buffer)
+                return out.frameLength > 0 ? [AnalyzerInput(buffer: out)] : []
+            }
+        }
         let (stream, input) = AsyncStream<AnalyzerInput>.makeStream()
         self.input = input
         let analyzer = SpeechAnalyzer(modules: transcribers)
@@ -50,12 +60,12 @@ final class OnDeviceSpeech: SpeechInput, @unchecked Sendable {
 
     func append(_ chunk: Data) throws {
         let frames = AVAudioFrameCount(chunk.count / 2)
-        guard frames > 0, let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frames) else { return }
+        guard frames > 0, let buffer = AVAudioPCMBuffer(pcmFormat: PCM16Resampler.outputFormat, frameCapacity: frames) else { return }
         buffer.frameLength = frames
         chunk.withUnsafeBytes { raw in
             buffer.int16ChannelData![0].update(from: raw.bindMemory(to: Int16.self).baseAddress!, count: Int(frames))
         }
-        for item in try converter.convert(buffer, at: nil) {
+        for item in try convert(buffer) {
             input.yield(item)
         }
     }

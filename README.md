@@ -1,7 +1,7 @@
 # Hearvia
 
 ![iOS](https://img.shields.io/badge/iOS-27-blue)
-![macOS](https://img.shields.io/badge/macOS-27-blue)
+![macOS](https://img.shields.io/badge/macOS-26.4-blue)
 ![License](https://img.shields.io/badge/license-BSL--1.1-green)
 [![CI](https://github.com/hewigovens/hearvia/actions/workflows/ci.yml/badge.svg)](https://github.com/hewigovens/hearvia/actions/workflows/ci.yml)
 
@@ -30,7 +30,7 @@
 
 ## Get Hearvia
 
-Hearvia is in internal testing on TestFlight; a public beta is coming. It needs iOS 27 or macOS 27. Updates are on the [website](https://hewigovens.github.io/hearvia/).
+Hearvia is in internal testing on TestFlight; a public beta is coming. It needs iOS 27 or macOS 26.4. Updates are on the [website](https://hewigovens.github.io/hearvia/).
 
 To build it yourself, see [CONTRIBUTING.md](CONTRIBUTING.md).
 

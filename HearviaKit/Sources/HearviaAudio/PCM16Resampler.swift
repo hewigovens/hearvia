@@ -16,29 +16,13 @@ public final class PCM16Resampler {
     public func append(_ buffer: AVAudioPCMBuffer) throws -> [Data] {
         guard buffer.frameLength > 0 else { return [] }
         if inputFormat != buffer.format {
-            guard let c = AVAudioConverter(from: buffer.format, to: Self.outputFormat) else { throw ResamplerError.unsupported }
+            guard let c = AVAudioConverter(from: buffer.format, to: Self.outputFormat) else { throw AVAudioConverter.ConversionError.unsupported }
             c.downmix = true // average channels rather than taking the left one
             converter = c
             inputFormat = buffer.format
         }
-        guard let converter else { throw ResamplerError.unsupported }
-        let ratio = Self.sampleRate / buffer.format.sampleRate
-        let capacity = AVAudioFrameCount(Double(buffer.frameLength) * ratio) + 64
-        guard let out = AVAudioPCMBuffer(pcmFormat: Self.outputFormat, frameCapacity: capacity) else { throw ResamplerError.allocation }
-        var consumed = false
-        var error: NSError?
-        let status = converter.convert(to: out, error: &error) { _, inputStatus in
-            if consumed {
-                inputStatus.pointee = .noDataNow
-                return nil
-            }
-            consumed = true
-            inputStatus.pointee = .haveData
-            return buffer
-        }
-        if status == .error {
-            throw error ?? ResamplerError.conversion
-        }
+        guard let converter else { throw AVAudioConverter.ConversionError.unsupported }
+        let out = try converter.convert(buffer)
         if out.frameLength > 0, let samples = out.int16ChannelData {
             pending.append(UnsafeBufferPointer(start: samples[0], count: Int(out.frameLength)))
         }
@@ -59,6 +43,4 @@ public final class PCM16Resampler {
         }
         return chunks
     }
-
-    public enum ResamplerError: Error { case unsupported, allocation, conversion }
 }

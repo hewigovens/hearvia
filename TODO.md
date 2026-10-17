@@ -28,6 +28,7 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 - [ ] Microphone source end to end in the sandboxed build, launched from Finder (from a terminal, macOS asks for the terminal's microphone access).
 - [ ] Save an API key in Settings → Translators in a Release build (Debug builds also read keys from `.env`).
 - [ ] A long session rotates without losing text: OpenAI Realtime near 60 minutes, Gemini Live every few minutes (log event `translation_rotated`).
+- [ ] On a macOS 26.4 Mac (none here; everything so far ran on 27): microphone source and the on-device translator end to end. Those two take the 26 fallbacks (`installTap` with a buffer copy in `MicrophoneCapture`, `AVAudioConverter` to `SpeechAnalyzer.bestAvailableAudioFormat` in `OnDeviceSpeech`); also check that the process tap, model downloads and Auto spoken language behave as on 27.
 
 ## Engineering
 
@@ -50,4 +51,5 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 - TranslateGemma removed (decided 2026-10-17). On 24 English sentences the 4B model (MLX, 0.5 s per sentence on Mac, 1.4–1.9 s on iPhone) read more naturally than Apple's translator but changed facts in about 1 in 8; 12B (6.7 GB, 1.1 s) made no meaning errors but left English words untranslated and needs 7 GB. Apple's on-device translator was literal but accurate at 0.03 s. Code is in jj history (HearviaLLM, wqonquuz onward) if a later model is worth another look.
 - Keys: free + bring-your-own-key for TestFlight and the App Store for now (decided 2026-10-15 and 2026-10-17). A paid tier could come later: a token server (App Attest + StoreKit check, short-lived provider tokens, the app still connects straight to OpenAI/Google) with minutes sold through In-App Purchase; on-device stays free.
 - Hybrid "ChatGPT plan" mode: on-device speech + Responses API text translation (`gpt-6-luna`, effort none; ~3–5 s behind sentence end). Plan tokens can't do realtime audio; commercial use needs OpenAI's approval. Probe: `scripts/chatgpt_plan_probe.py`.
+- Deployment targets: macOS 26.4 (TranslationSession(installedSource:target:preferredStrategy:) sets the floor), iOS 27 (decided 2026-10-18). iOS can't go lower: ScreenCaptureKit on iOS (other apps' audio) and the PiP renderer's `AVSampleBufferVideoRenderer.Receiver` are iOS 27 only, so iOS 26 would be microphone-only without PiP subtitles.
 - iOS limitations: the screen-sharing picker appears every session; own-audio exclusion is broken on iOS 27.0.1.
