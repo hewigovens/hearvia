@@ -30,12 +30,14 @@ Done:
 Left for iPhone TestFlight (in order):
 
 - [x] Stack pushed; GitHub Pages serves `docs/` from `main` and https://hewigovens.github.io/hearvia/privacy.html loads (2026-10-16).
-- [ ] App Store Connect: privacy policy URL, and the App Privacy answers from `docs/release.md` (unchanged by TranslateGemma: Hearvia collects nothing from the download).
+- [x] App Store Connect privacy policy URL set on the app record (2026-10-17).
+- [ ] App Privacy answers from `docs/release.md` (unchanged by TranslateGemma: Hearvia collects nothing from the download). Needs an Apple ID web session (`asc web privacy plan/apply`) or the App Store Connect website; the API key can't set them.
 - [ ] A Release build on the phone (see "Verify on iPhone"): no Developer tools, no file sharing, no diagnostics log; quick start, transcripts and TranslateGemma work.
 - [x] Internal TestFlight group "Internal" (internal, access to all builds; `TESTFLIGHT_GROUP=Internal` in `.env`) with hewigovens@gmail.com as tester (2026-10-16).
 - [x] iOS 0.1 (202610161709) and Mac 0.1 (202610161713) uploaded with `just testflight` / `just testflight-macos`, processed and in Internal with What to Test notes (2026-10-16). The iOS one is the first archive with MLX and the increased-memory-limit entitlement.
 - [ ] Install both from TestFlight and run the "Verify on iPhone" / "Verify on Mac" checks on these Release builds.
-- [ ] TestFlight test information: what to test, feedback email, how to add an OpenAI or Gemini key, that a free-tier Gemini key's traffic may be used by Google, and that TranslateGemma is a 2.2 GB download for 8 GB iPhones with background translation on supported devices while iOS grants access.
+- [x] TestFlight test information (en-US): description with what to try, keys, the Gemini free-tier note and TranslateGemma; website and privacy URL (2026-10-17).
+- [ ] TestFlight feedback email (required for external testing); not set yet.
 - [ ] Internal group: you plus a couple of devices; then an external group through Beta App Review (needs the privacy URL and test information).
 
 Left for Mac TestFlight:
