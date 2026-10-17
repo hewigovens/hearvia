@@ -51,7 +51,11 @@ private struct GeneralSettings: View {
             Section {
                 Toggle(isOn: $translator.savesTranscripts) {
                     Text("Save transcripts")
-                    Text("Kept on this Mac only. Open Transcripts to export or copy one.")
+                    Text("Open Transcripts to export or copy one.")
+                }
+                Toggle(isOn: Bindable(translator.history).syncsWithICloud) {
+                    Text("Sync with iCloud")
+                    Text(translator.history.storageNote(device: "Mac"))
                 }
                 Button("Delete All Transcripts", role: .destructive) { translator.history.deleteAll() }
                     .disabled(translator.history.transcripts.isEmpty)

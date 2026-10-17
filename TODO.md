@@ -25,6 +25,7 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 - [ ] Language pickers: on-device lists the system's languages, OpenAI Realtime the fixed 13, Gemini Live 76; switching to an engine without the subtitle language falls back to English (unit-tested).
 - [ ] Silence pause/resume, and "show original" off (Realtime restarts when the toggle changes while listening).
 - [ ] Quick start: the widget (small and medium), the Control Center control, "Start Hearvia" in Shortcuts and both Home Screen quick actions each open the app and start listening (other apps still show the iOS sharing sheet). Cold launch, and onboarding first on a fresh install.
+- [ ] Transcripts sync with iCloud (Settings → Transcripts → Sync with iCloud on both devices): an iPhone session appears on the Mac and the other way round; a delete on one removes it on the other; turning sync off keeps this device's copies.
 - [ ] Transcripts: a session appears after Stop (and after leaving the app mid-session); export a .txt to Files; swipe to delete; "Save transcripts" off keeps nothing.
 - [ ] Gemini Live in the app: rotation every ~7–9 minutes, silence pause and resume, a language change mid-session.
 - [ ] Delete the old "Hearvia PoC" install if it's still there (different bundle ID; settings and Keychain start fresh).
@@ -52,7 +53,7 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 
 ## Release
 
-- [ ] Notarize a Developer ID build for distribution outside the App Store (needs a Developer ID Application certificate and a notarytool profile); see `docs/release.md`.
+- [ ] Optional, only for downloads outside the Mac App Store: notarize a Developer ID build (needs a Developer ID Application certificate and a notarytool profile); see `docs/release.md`. The App Store build only needs the sandbox, which is in place.
 - [ ] Liquid Glass icon via Icon Composer (`.icon`) instead of the PNG asset sets.
 
 ## Ideas and decisions

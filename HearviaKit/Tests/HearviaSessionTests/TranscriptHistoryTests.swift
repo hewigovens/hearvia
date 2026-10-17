@@ -8,7 +8,7 @@ struct TranscriptHistoryTests {
     let directory = FileManager.default.temporaryDirectory.appending(path: "hearvia-history-\(UUID().uuidString)")
 
     @Test func keepsTranscriptsNewestFirstAcrossLaunches() {
-        let history = TranscriptHistory(directory: directory)
+        let history = TranscriptHistory(directory: directory, cloudContainer: nil)
         var older = Transcript(startedAt: Date(timeIntervalSince1970: 100))
         older.append(source: "a", translation: "A")
         var newer = Transcript(startedAt: Date(timeIntervalSince1970: 200))
@@ -17,11 +17,11 @@ struct TranscriptHistoryTests {
         history.save(newer)
         history.save(Transcript()) // empty: not kept
 
-        let reloaded = TranscriptHistory(directory: directory)
+        let reloaded = TranscriptHistory(directory: directory, cloudContainer: nil)
         #expect(reloaded.transcripts.map(\.id) == [newer.id, older.id])
 
         reloaded.delete(newer)
-        #expect(TranscriptHistory(directory: directory).transcripts.map(\.id) == [older.id])
+        #expect(TranscriptHistory(directory: directory, cloudContainer: nil).transcripts.map(\.id) == [older.id])
     }
 
     @Test func aStoppedRunIsSavedWithItsSentences() async throws {

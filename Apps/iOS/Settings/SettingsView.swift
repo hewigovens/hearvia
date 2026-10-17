@@ -46,12 +46,15 @@ struct SettingsView: View {
                     Toggle(isOn: Bindable(model.translation).savesTranscripts) {
                         Label("Save transcripts", icon: "doc.text", color: .green)
                     }
+                    Toggle(isOn: Bindable(model.translation.history).syncsWithICloud) {
+                        Label("Sync with iCloud", icon: "icloud", color: .blue)
+                    }
                     Button(role: .destructive) { model.translation.history.deleteAll() } label: {
                         Label("Delete All Transcripts", icon: "trash", color: .red)
                     }
                     .disabled(model.translation.history.transcripts.isEmpty)
                 } header: { Text("Transcripts") } footer: {
-                    Text("Kept on this iPhone only. Open one from the transcript button on the home screen to export or share it.")
+                    Text(model.translation.history.storageNote(device: "iPhone") + " Open one from the transcript button on the home screen to export or share it.")
                 }
                 .listRowBackground(Color.hvSurface)
 
