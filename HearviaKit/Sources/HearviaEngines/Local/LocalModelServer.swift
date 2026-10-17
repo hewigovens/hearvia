@@ -46,7 +46,7 @@ public struct LocalModelServer: Sendable, Equatable {
         }
         let from = LanguageName.english(source), to = LanguageName.english(target)
         return "Translate this live speech subtitle from \(from) to \(to). Reply with only the \(to) translation: no notes, "
-            + "quotes or alternatives. Keep names and numbers exactly.\n\n\(text)"
+            + "quotes or alternatives. Translate every word, including names and numbers, but keep their meaning exact.\n\n\(text)"
     }
 
     /// Drops the reasoning some models print before the answer.
