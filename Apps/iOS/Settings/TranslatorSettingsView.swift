@@ -9,16 +9,20 @@ struct TranslatorSettingsView: View {
     var body: some View {
         Form {
             Section {
-                SecureField("sk-…", text: $translator.openAIKey)
-                    .textInputAutocapitalization(.never).autocorrectionDisabled()
+                LabeledContent {
+                    SecureField("sk-…", text: $translator.openAIKey)
+                        .textInputAutocapitalization(.never).autocorrectionDisabled()
+                } label: { SettingsIcon("waveform", .teal) }
             } header: { Text("OpenAI Realtime") } footer: {
                 Text("Only used by the OpenAI Realtime translator. Kept in this iPhone's Keychain.")
             }
             .listRowBackground(Color.hvSurface)
 
             Section {
-                SecureField("AIza…", text: $translator.geminiKey)
-                    .textInputAutocapitalization(.never).autocorrectionDisabled()
+                LabeledContent {
+                    SecureField("AIza…", text: $translator.geminiKey)
+                        .textInputAutocapitalization(.never).autocorrectionDisabled()
+                } label: { SettingsIcon("sparkle", .blue) }
             } header: { Text("Gemini Live") } footer: {
                 Text("Only used by the Gemini Live translator. Get a free key at [aistudio.google.com](https://aistudio.google.com/apikey). Kept in this iPhone's Keychain.")
             }
