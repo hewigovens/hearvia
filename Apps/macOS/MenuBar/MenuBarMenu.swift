@@ -12,7 +12,7 @@ struct MenuBarMenu: View {
         Button(model.capturing ? "Stop Listening" : "Start Listening") {
             Task { await model.toggleListening() }
         }
-        Text("\(model.source.label) · \(model.translator.languagePair) · \(model.translator.engine.title)")
+        Text("\(model.source.label) · \(model.translator.languagePair) · \(model.translator.engine.shortTitle)")
         Divider()
         Toggle("Show Subtitle Overlay", isOn: $settings.overlayVisible)
         Divider()

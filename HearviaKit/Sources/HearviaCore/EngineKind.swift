@@ -19,7 +19,15 @@ public enum EngineKind: String, CaseIterable, Identifiable, Sendable, Codable {
         case .onDevice: "On-device"
         case .realtime: "OpenAI Realtime"
         case .gemini: "Gemini Live"
-        case .local: "Local model"
+        case .local: "Local LLM"
+        }
+    }
+    /// For tiles and one-line summaries, where the full name would wrap.
+    public var shortTitle: String {
+        switch self {
+        case .realtime: "OpenAI"
+        case .gemini: "Gemini"
+        default: title
         }
     }
     /// One line for pickers.

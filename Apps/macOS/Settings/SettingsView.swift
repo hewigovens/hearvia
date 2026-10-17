@@ -81,7 +81,7 @@ private struct TranslatorSettings: View {
             }
             Section {
                 LocalModelSettingsView(translator: translator)
-            } header: { Text("Local model (experimental)") } footer: {
+            } header: { Text("Local LLM (experimental)") } footer: {
                 Text("Hearvia recognizes speech on this Mac, then sends each finished sentence to this server for translation. Works with Ollama, LM Studio, Unsloth Studio or another OpenAI-compatible server.")
                     .foregroundStyle(Color.hvMuted)
             }

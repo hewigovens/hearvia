@@ -39,7 +39,8 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 ## Engineering
 
 - [x] Local model translator with Index-Translate-9B (Q8_0) in Unsloth Studio on the Mac Studio, from this Mac over the network (2026-10-17): no meaning errors in Chinese or Japanese on the 24-sentence set, 0.36 s (zh) / 0.43 s (ja) median per sentence; live subtitles in the sandboxed Mac app. Only "where we landed" came out literal. The Mac asks for Local Network access on first use.
-- [ ] Local model translator from the iPhone over the network, and with Ollama / LM Studio. With a slow model, consider translating finished sentences only, since in-progress text is re-sent as it changes.
+- [x] Local LLM translator from the iPhone over the network: a Japanese podcast (other apps) → Chinese with Index-Translate-9B on the Mac Studio works well (2026-10-17).
+- [ ] Local LLM translator with Ollama / LM Studio. With a slow model, consider translating finished sentences only, since in-progress text is re-sent as it changes.
 
 - [ ] iOS UI tests for the redesigned UI. This Mac has no iOS 27 simulator runtime (several GB to download); GitHub's `xcode-27` image has one.
 - [ ] Tune the cloud silence threshold (about −40 dBFS peak, `CloudTiming.silencePeak`): videos with background music may never pause.

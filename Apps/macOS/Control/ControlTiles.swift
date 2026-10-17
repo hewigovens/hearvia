@@ -21,7 +21,7 @@ struct ControlTiles: View {
                 ControlTile(symbol: "character.bubble", caption: "Languages", value: translator.languagePair, wraps: false)
             }
             Menu { engineChoices } label: {
-                ControlTile(symbol: translator.engine.symbol, caption: "Translator", value: translator.engine.title, ready: ready)
+                ControlTile(symbol: translator.engine.symbol, caption: "Translator", value: translator.engine.shortTitle, ready: ready)
             }
         }
         .menuStyle(.button)

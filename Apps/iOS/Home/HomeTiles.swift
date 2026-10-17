@@ -23,7 +23,7 @@ struct HomeTiles: View {
                 ControlTile(symbol: "character.bubble", caption: "Languages", value: translator.languagePair, wraps: false)
             }
             Button { present(.translator) } label: {
-                ControlTile(symbol: translator.engine.symbol, caption: "Translator", value: translator.engine.title, ready: ready)
+                ControlTile(symbol: translator.engine.symbol, caption: "Translator", value: translator.engine.shortTitle, ready: ready)
             }
         }
         .buttonStyle(.plain)

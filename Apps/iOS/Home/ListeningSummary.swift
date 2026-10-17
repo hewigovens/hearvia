@@ -13,7 +13,7 @@ struct ListeningSummary: View {
                     .scaleEffect(0.75, anchor: .leading)
                     .frame(width: 60, alignment: .leading)
                 if model.errorMessage.isEmpty {
-                    Text("\(model.settings.input.title) · \(model.translation.languagePair) · \(model.translation.engine.title)")
+                    Text("\(model.settings.input.title) · \(model.translation.languagePair) · \(model.translation.engine.shortTitle)")
                         .foregroundStyle(Color.hvMuted)
                 } else {
                     Text(model.errorMessage).foregroundStyle(.red)

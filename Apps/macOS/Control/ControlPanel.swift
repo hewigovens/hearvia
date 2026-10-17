@@ -13,7 +13,7 @@ struct ControlPanel: View {
             header
             ListenHero(model: model)
             if model.capturing {
-                Text("\(model.source.label) · \(model.translator.languagePair) · \(model.translator.engine.title)")
+                Text("\(model.source.label) · \(model.translator.languagePair) · \(model.translator.engine.shortTitle)")
                     .font(.caption).foregroundStyle(Color.hvMuted).lineLimit(1)
                     .frame(maxWidth: .infinity)
                     .transition(.opacity)
@@ -32,7 +32,7 @@ struct ControlPanel: View {
         .padding(.horizontal, 16)
         .padding(.top, inMenuBar ? 14 : -26) // The window hides its title bar; the header sits beside the traffic lights.
         .padding(.bottom, 14)
-        .frame(width: 480) // Tile values like "All system audio" and "OpenAI Realtime" fit on one line.
+        .frame(width: 480) // Tile values like "All system audio" fit on one line.
         .fixedSize(horizontal: false, vertical: true)
         .animation(.spring(duration: 0.5, bounce: 0.15), value: model.capturing)
         .background(Color.hvGround)
