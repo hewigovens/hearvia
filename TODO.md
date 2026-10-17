@@ -12,7 +12,7 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 ## Next: TestFlight
 
 - [ ] Upload new builds (`just testflight`, `just testflight-macos`) and install both from TestFlight.
-- [ ] Run the checks below on those Release builds: no Developer tools, no Files sharing and no diagnostics log on iPhone; quick start, transcripts and TranslateGemma work.
+- [ ] Run the checks below on those Release builds: no Developer tools, no Files sharing and no diagnostics log on iPhone; quick start and transcripts work.
 - [ ] Add a couple more internal testers; then an external group through Beta App Review (privacy URL, test information, feedback email and App Privacy are all set).
 
 ## Check on iPhone
@@ -26,10 +26,8 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 - [ ] Silence pause/resume, and "show original" off (Realtime restarts when the toggle changes while listening).
 - [ ] Quick start: the widget (small and medium), the Control Center control, "Start Hearvia" in Shortcuts and both Home Screen quick actions each open the app and start listening (other apps still show the iOS sharing sheet). Cold launch, and onboarding first on a fresh install.
 - [ ] Transcripts: a session appears after Stop (and after leaving the app mid-session); export a .txt to Files; swipe to delete; "Save transcripts" off keeps nothing.
-- [ ] TranslateGemma with Hearvia on screen: microphone mode with no network, a few minutes of speech; and the 2.2 GB download in Settings → Translators (the test phone has the model copied in already).
 - [ ] Gemini Live in the app: rotation every ~7–9 minutes, silence pause and resume, a language change mid-session.
 - [ ] Delete the old "Hearvia PoC" install if it's still there (different bundle ID; settings and Keychain start fresh).
-- Skipped for now: background TranslateGemma with live capture, speech recognition and PiP together; the test iPhone has no background GPU support.
 
 ## Check on Mac
 
@@ -45,8 +43,6 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 - [ ] Transcript lines are cut at sentence punctuation in the translation, so original/translation pairing is approximate.
 - [ ] Gemini Live en → ja drops the last clause of a clip ("…smaller than expected"), and en → nl / pt cut the end too; recheck when the model leaves preview.
 - [ ] Gemini Live: offer Traditional Chinese (`zh-Hant`) once the pickers can name scripts.
-- [ ] TranslateGemma quality: 2 of 8 English test sentences came out wrong in Chinese ("fell asleep 20 minutes faster" → "slept 20 minutes"; "Activation went up" garbled). Compare with the built-in translator on real speech before calling it "better".
-- [ ] `TranslationSession` is still not Sendable in the 27 SDK, so `OnDeviceTextTranslator` and `OnDeviceModelsView` keep `nonisolated(unsafe)`; revisit with a later SDK.
 - [ ] Mac menu-bar-only launch closes the control window by polling for it (`MenuBarLabel.closeLaunchWindow`) because `.defaultLaunchBehavior` was unreliable; replace if SwiftUI gets a dependable way.
 - [ ] svourztr is one large change (kit modules + four parallel work streams); split it in JayJay if separate commits are wanted.
 
@@ -57,7 +53,8 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 
 ## Ideas and decisions
 
+- TranslateGemma removed (decided 2026-10-17). On 24 English sentences the 4B model (MLX, 0.5 s per sentence on Mac, 1.4–1.9 s on iPhone) read more naturally than Apple's translator but changed facts in about 1 in 8; 12B (6.7 GB, 1.1 s) made no meaning errors but left English words untranslated and needs 7 GB. Apple's on-device translator was literal but accurate at 0.03 s. Code is in jj history (HearviaLLM, wqonquuz onward) if a later model is worth another look.
+
 - Keys: free + bring-your-own-key for TestFlight and the App Store for now (decided 2026-10-15 and 2026-10-17). A paid tier could come later: a token server (App Attest + StoreKit check, short-lived provider tokens, the app still connects straight to OpenAI/Google) with minutes sold through In-App Purchase; on-device stays free.
 - Hybrid "ChatGPT plan" mode: on-device speech + Responses API text translation (`gpt-6-luna`, effort none; ~3–5 s behind sentence end). Plan tokens can't do realtime audio; commercial use needs OpenAI's approval. Probe: `scripts/chatgpt_plan_probe.py`.
-- TranslateGemma on iPhone is for in-app use (decided 2026-10-16): offline microphone translation with Hearvia on screen; background translation only where iOS grants background GPU time.
 - iOS limitations: the screen-sharing picker appears every session; own-audio exclusion is broken on iOS 27.0.1.

@@ -16,10 +16,6 @@ struct StartPrompt: View {
                 Text("Tap to start").font(.title3.weight(.semibold))
                 Text("Other apps keep playing. Hearvia never plays sound.")
                     .font(.footnote).foregroundStyle(Color.hvMuted)
-                if model.translation.engine == .gemma, !model.backgroundTranslation.isSupported {
-                    Text("Keep Hearvia open for TranslateGemma on this device.")
-                        .font(.footnote).foregroundStyle(Color.hvMuted)
-                }
             }
             if !model.errorMessage.isEmpty {
                 Text(model.errorMessage).font(.footnote).foregroundStyle(.red)

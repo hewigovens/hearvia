@@ -23,13 +23,9 @@ struct ListeningSummary: View {
             .font(.footnote)
             .lineLimit(1)
             .padding(.horizontal, 4)
-            if model.translation.engine == .gemma {
-                BackgroundTranslationStatus(access: model.backgroundTranslation)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
             if !model.pip.active {
                 VStack(spacing: 12) {
-                    if model.capture.running, model.translation.engine != .gemma || model.backgroundTranslation.isGranted {
+                    if model.capture.running {
                         Text("Now open the app you want to watch or listen to. Subtitles follow you in a floating window.")
                             .font(.footnote).foregroundStyle(Color.hvMuted).multilineTextAlignment(.center)
                     }

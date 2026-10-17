@@ -5,7 +5,6 @@ import SwiftUI
 /// API keys for the cloud translators and the on-device models, one page under Settings.
 struct TranslatorSettingsView: View {
     @Bindable var translator: LiveTranslator
-    let backgroundTranslation: BackgroundGPUAccess
 
     var body: some View {
         Form {
@@ -31,16 +30,6 @@ struct TranslatorSettingsView: View {
                 Text("For the languages chosen on the home screen. Downloaded once, then work offline.")
             }
             .listRowBackground(Color.hvSurface)
-
-            if let gemma = translator.downloadable(for: .gemma), gemma.isSupported {
-                Section {
-                    DownloadableEngineRow(gemma)
-                    BackgroundTranslationStatus(access: backgroundTranslation)
-                } footer: {
-                    Text("Google's open translation model, run on this device with no internet. [Gemma Terms of Use](https://ai.google.dev/gemma/terms).")
-                }
-                .listRowBackground(Color.hvSurface)
-            }
         }
         .scrollContentBackground(.hidden)
         .background(Color.hvGround)

@@ -22,7 +22,6 @@
 - **Never gets in the way.** Hearvia doesn't play sound or pause anything; what you're watching keeps playing.
 - **Your choice of translator:**
   - **On-device:** Apple's speech recognition and translation. Free, private, and offline once the languages are downloaded.
-  - **TranslateGemma:** Google's open TranslateGemma 4B, run on your device with MLX. Offline, with better translations; a 2.2 GB download for 8 GB devices. On iPhone it keeps translating behind other apps where iOS allows background GPU work, and otherwise while Hearvia is open.
   - **OpenAI Realtime** and **Gemini Live:** cloud translators with the lowest lag, using your own API key.
 - **Transcripts** of each session stay on your device until you export them.
 - **Quick start** on iPhone from a widget, Control Center, Shortcuts or the app icon.

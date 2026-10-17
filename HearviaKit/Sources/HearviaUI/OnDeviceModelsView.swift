@@ -7,7 +7,6 @@ import Translation
 public struct OnDeviceModelsView: View {
     let source: String
     let target: String
-    let translates: Bool
     @State private var speech: OnDeviceModels.Availability?
     @State private var text: OnDeviceModels.Availability?
     @State private var speechProgress: Double?
@@ -16,11 +15,9 @@ public struct OnDeviceModelsView: View {
     /// Set when the translation download sheet finishes: "" on success, otherwise the error.
     @State private var downloadOutcome: String?
 
-    /// `translates: false` shows only speech recognition, for engines that bring their own translator.
-    public init(source: String, target: String, translates: Bool = true) {
+    public init(source: String, target: String) {
         self.source = source
         self.target = target
-        self.translates = translates
     }
 
     public var body: some View {
@@ -28,7 +25,7 @@ public struct OnDeviceModelsView: View {
             row("Speech recognition · \(LanguageName.localized(source))", speech, progress: speechProgress) {
                 Task { await downloadSpeech() }
             }
-            if translates, source != target {
+            if source != target {
                 row("Translation · \(LanguageName.localized(source)) → \(LanguageName.localized(target))", text, progress: nil) {
                     failure = ""
                     download = OnDeviceModels.translationDownload(from: source, to: target)

@@ -35,7 +35,6 @@ extension AppModel {
     }
 
     func stopListening() async {
-        backgroundTranslation.stop()
         if micRunning || micStarting {
             microphone.stop()
             micRunning = false

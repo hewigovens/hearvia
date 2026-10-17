@@ -9,7 +9,7 @@ Hearvia uses [Jujutsu](https://github.com/jj-vcs/jj) for version control, not gi
 
 ## Setup
 
-Needs macOS 27, Xcode 27 (with the Metal Toolchain: `xcodebuild -downloadComponent MetalToolchain`), [XcodeGen](https://github.com/yonaskolb/XcodeGen), [just](https://github.com/casey/just), SwiftFormat and SwiftLint:
+Needs macOS 27, Xcode 27, [XcodeGen](https://github.com/yonaskolb/XcodeGen), [just](https://github.com/casey/just), SwiftFormat and SwiftLint:
 
 ```sh
 brew install xcodegen just swiftformat swiftlint
@@ -27,8 +27,6 @@ HearviaKit/      Swift package shared by both apps, one product with five module
   HearviaSession LiveTranslator: preferences and the running engine, observable text and transcript
   HearviaUI      colors, appearance, icon mark, buttons, tiles, transcript list, model downloads
   hearvia-translate: CLI that streams an audio file through any engine
-HearviaLLM/      Swift package for open-weight models (kept out of HearviaKit so its tests stay MLX-free)
-  HearviaGemma   TranslateGemma download, MLX translator and engine; gemma-bench times it per sentence
 Apps/iOS/        App, Home, Onboarding, Settings, Capture (ScreenCaptureKit), Subtitles (PiP), QuickStart, Developer
 Apps/macOS/      App, Control, Overlay, Transcript, Settings, MenuBar, Capture (Core Audio process tap)
 agents/          architecture, SwiftUI, design, testing, version-control and run/debug guides
@@ -64,7 +62,6 @@ just translate TestMedia/speech/en.aiff zh --gemini         # Gemini Live (needs
 just translate TestMedia/speech/ja.aiff en --on-device=ja   # on-device
 ```
 
-TranslateGemma has its own benchmark; see [agents/run-debug.md](agents/run-debug.md).
 
 ### App icon
 

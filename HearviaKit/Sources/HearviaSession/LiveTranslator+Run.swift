@@ -19,7 +19,7 @@ public extension LiveTranslator {
         stats = TranslatorStats()
         let request = EngineRequest(sourceLanguage: sourceLanguage, targetLanguage: targetLanguage, apiKey: apiKey,
                                     transcribesSource: transcribesSource)
-        let engine = downloadable(for: engine)?.makeEngine(request) ?? makeEngine(engine, request)
+        let engine = makeEngine(engine, request)
         running = engine
         listener = Task { [weak self] in
             for await update in engine.updates {

@@ -50,15 +50,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install XcodeGen
         run: brew install xcodegen
-      # MLX (HearviaLLM) compiles Metal shaders.
-      - name: Metal Toolchain
-        run: |
-          xcodebuild -showComponent MetalToolchain | grep -q "Status: installed" || xcodebuild -downloadComponent MetalToolchain
-      - uses: actions/cache@v4
-        with:
-          path: .build/SourcePackages
-          key: spm-${{ hashFiles('HearviaLLM/Package.resolved', 'project.yml') }}
-          restore-keys: spm-
       - name: Generate project
         run: |
           sh scripts/gen_dev_secrets.sh
@@ -67,6 +58,5 @@ jobs:
         run: >
           xcodebuild ${{ matrix.action }}
           -project Hearvia.xcodeproj -scheme ${{ matrix.scheme }} -destination '${{ matrix.destination }}'
-          -clonedSourcePackagesDirPath .build/SourcePackages
           -skipMacroValidation -skipPackagePluginValidation
           CODE_SIGNING_ALLOWED=NO -quiet

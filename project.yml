@@ -22,8 +22,6 @@ settings:
 packages:
   HearviaKit:
     path: HearviaKit
-  HearviaLLM:
-    path: HearviaLLM
 targets:
   Hearvia:
     type: application
@@ -36,8 +34,6 @@ targets:
     dependencies:
       - package: HearviaKit
         product: HearviaKit
-      - package: HearviaLLM
-        product: HearviaGemma
       - target: HearviaWidgets
     preBuildScripts:
       - name: Generate dev secrets
@@ -56,8 +52,7 @@ targets:
         NSMicrophoneUsageDescription: Hearvia listens to the microphone to show live translated subtitles of speech around you.
         NSSpeechRecognitionUsageDescription: Hearvia turns speech into text on this device to show subtitles.
         ITSAppUsesNonExemptEncryption: false # Only HTTPS/WSS.
-        UIBackgroundModes: [screen-capture, audio, processing]
-        BGTaskSchedulerPermittedIdentifiers: [dev.hewig.hearvia.gemma.*]
+        UIBackgroundModes: [screen-capture, audio]
         # Long-press the app icon; handled by QuickActionSceneDelegate.
         UIApplicationShortcutItems:
           - UIApplicationShortcutItemType: dev.hewig.hearvia.start.otherApps
@@ -75,7 +70,6 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: dev.hewig.hearvia
         GENERATE_INFOPLIST_FILE: NO
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        CODE_SIGN_ENTITLEMENTS: Apps/iOS/Hearvia.entitlements
     attributes:
       SystemCapabilities:
         com.apple.BackgroundModes:
@@ -113,8 +107,6 @@ targets:
     dependencies:
       - package: HearviaKit
         product: HearviaKit
-      - package: HearviaLLM
-        product: HearviaGemma
     preBuildScripts:
       - name: Generate dev secrets
         script: sh "$SRCROOT/scripts/gen_dev_secrets.sh"

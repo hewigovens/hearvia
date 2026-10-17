@@ -14,4 +14,4 @@
 --stripunusedargs closure-only
 --disable modifierOrder,redundantSelf,wrapMultilineStatementBraces,blankLinesBetweenScopes
 --header strip
---exclude HearviaKit/.build,HearviaLLM/.build,build,Archive,Hearvia.xcodeproj
+--exclude HearviaKit/.build,build,Archive,Hearvia.xcodeproj

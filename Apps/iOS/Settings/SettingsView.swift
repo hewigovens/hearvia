@@ -42,7 +42,7 @@ struct SettingsView: View {
                 .listRowBackground(Color.hvSurface)
 
                 Section {
-                    NavigationLink { TranslatorSettingsView(translator: model.translation, backgroundTranslation: model.backgroundTranslation) } label: {
+                    NavigationLink { TranslatorSettingsView(translator: model.translation) } label: {
                         LabeledContent { Text(model.translation.engine.title) } label: {
                             Label("Translators", systemImage: "character.bubble")
                         }

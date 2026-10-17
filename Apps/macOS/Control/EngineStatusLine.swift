@@ -14,11 +14,7 @@ struct EngineStatusLine: View {
                     .buttonStyle(.link).font(.caption)
             } else if !translator.engine.isCloud, modelsMissing {
                 VStack(alignment: .leading, spacing: 6) {
-                    if let model = translator.downloadable(for: translator.engine), !model.isDownloaded {
-                        DownloadableEngineRow(model)
-                    }
-                    OnDeviceModelsView(source: translator.sourceLanguage, target: translator.targetLanguage,
-                                       translates: translator.engine == .onDevice)
+                    OnDeviceModelsView(source: translator.sourceLanguage, target: translator.targetLanguage)
                 }
                 .font(.caption)
                 .padding(10)

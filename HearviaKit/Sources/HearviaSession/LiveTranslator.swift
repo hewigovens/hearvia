@@ -29,7 +29,7 @@ public final class LiveTranslator {
     /// The chosen engine's key; empty for on-device.
     public var apiKey: String {
         switch engine {
-        case .onDevice, .gemma: ""
+        case .onDevice: ""
         case .realtime: openAIKey
         case .gemini: geminiKey
         }
@@ -62,18 +62,14 @@ public final class LiveTranslator {
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private let secrets: any SecretStore
     @ObservationIgnored let makeEngine: EngineFactory
-    /// Engines whose models the app downloads and runs itself; `makeEngine` covers the rest.
-    @ObservationIgnored let downloadable: [any DownloadableEngine]
 
     /// `fallbackKeys` stand in for keys not saved yet (Debug builds pass the ones from `.env`).
     public init(fallbackKeys: [EngineKind: String] = [:], defaults: UserDefaults = .standard, secrets: any SecretStore = KeychainStore(),
-                history: TranscriptHistory = TranscriptHistory(), downloadable: [any DownloadableEngine] = [],
-                makeEngine: @escaping EngineFactory = LiveTranslator.makeEngine) {
+                history: TranscriptHistory = TranscriptHistory(), makeEngine: @escaping EngineFactory = LiveTranslator.makeEngine) {
         self.defaults = defaults
         self.secrets = secrets
         self.history = history
         self.makeEngine = makeEngine
-        self.downloadable = downloadable
         savesTranscripts = defaults.object(forKey: Keys.savesTranscripts) as? Bool ?? true
         func key(_ engine: EngineKind) -> String {
             secrets.read(account: engine.keyAccount!) ?? fallbackKeys[engine] ?? ""
@@ -93,9 +89,6 @@ public final class LiveTranslator {
         case .gemini: CloudEngine.gemini(targetLanguage: request.targetLanguage, apiKey: request.apiKey,
                                          transcribesSource: request.transcribesSource)
         case .onDevice: OnDeviceEngine(sourceLanguage: request.sourceLanguage, targetLanguage: request.targetLanguage)
-        // Runs on MLX, outside the kit: only a `DownloadableEngine` the app passes in can make it.
-        case .gemma: OnDeviceEngine(sourceLanguage: request.sourceLanguage, targetLanguage: request.targetLanguage,
-                                    translatorName: "none") { throw OnDeviceError.translatorUnavailable(EngineKind.gemma.title) }
         }
     }
 
