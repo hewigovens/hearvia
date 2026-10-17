@@ -15,7 +15,7 @@ Needs macOS 27, Xcode 27 (with the Metal Toolchain: `xcodebuild -downloadCompone
 brew install xcodegen just swiftformat swiftlint
 ```
 
-The signing team in `project.yml` is the maintainer's; replace `DEVELOPMENT_TEAM` to build for another account.
+To sign, copy `project.local.yml.example` to `project.local.yml` (gitignored) and set your team ID; `just generate` picks it up. Without it the apps still build unsigned (as in CI).
 
 ## Layout
 

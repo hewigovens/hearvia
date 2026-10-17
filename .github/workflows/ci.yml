@@ -62,7 +62,7 @@ jobs:
       - name: Generate project
         run: |
           sh scripts/gen_dev_secrets.sh
-          xcodegen generate
+          INCLUDE_LOCAL_PROJECT_YML=NO xcodegen generate
       - name: Build
         run: >
           xcodebuild ${{ matrix.action }}

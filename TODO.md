@@ -1,13 +1,13 @@
 # TODO
 
-Open work first, grouped by what it needs; finished work is logged at the end. State as of 2026-10-17.
+Open work, grouped by what it needs. Finished work lives in `jj log`. State as of 2026-10-17.
 
 ## Handoff
 
 - Version control: jj only, in the default workspace (no sibling workspaces); `git` only for gaps jj doesn't cover, never index-writing commands. See `agents/version-control.md`. Codex sometimes works in the same checkout: check `jj op log` and `jj diff --stat` for edits you didn't make before describing or pushing.
 - `main` on `origin` (github.com/hewigovens/hearvia) is at llmkkzrp (2026-10-17). `jj log -r 'main::@'` shows what isn't pushed yet; publish with `jj bookmark set main -r <rev>` and `jj git push --bookmark main`.
 - Checks: `just format lint build test` locally; CI (`.github/workflows/ci.yml`, GitHub's `xcode-27` image) runs the kit tests, SwiftFormat, SwiftLint and unsigned builds of both apps on every push and pull request.
-- Releases: `just testflight` / `just testflight-macos` upload to the "Internal" TestFlight group (`docs/release.md`). The builds there (iOS 202610161709, Mac 202610161713) predate the 2026-10-17 changes.
+- Releases: `just testflight` / `just testflight-macos` upload to the internal TestFlight group (`docs/release.md`). The builds there predate the 2026-10-17 changes.
 
 ## Next: TestFlight
 
@@ -61,27 +61,3 @@ Open work first, grouped by what it needs; finished work is logged at the end. S
 - Hybrid "ChatGPT plan" mode: on-device speech + Responses API text translation (`gpt-6-luna`, effort none; ~3–5 s behind sentence end). Plan tokens can't do realtime audio; commercial use needs OpenAI's approval. Probe: `scripts/chatgpt_plan_probe.py`.
 - TranslateGemma on iPhone is for in-app use (decided 2026-10-16): offline microphone translation with Hearvia on screen; background translation only where iOS grants background GPU time.
 - iOS limitations: the screen-sharing picker appears every session; own-audio exclusion is broken on iOS 27.0.1.
-
-## Done (log)
-
-App Store Connect and TestFlight
-- App record "Hearvia" (Apple ID 6823200947, SKU `hearvia`), iOS + macOS, one bundle ID `dev.hewig.hearvia` for both (universal purchase later); widget App ID `dev.hewig.hearvia.widgets`. (2026-10-15/16)
-- `ITSAppUsesNonExemptEncryption = NO`; version 0.1, timestamp build numbers.
-- `scripts/testflight.sh` (ported from AnyTime, adapted to asc 5.14); internal group "Internal" with access to all builds; iOS and Mac 0.1 uploaded and processed. (2026-10-16)
-- Privacy policy and landing page on GitHub Pages (`docs/`); privacy URL on the app record; App Privacy published: Audio Data only, not linked, no tracking, App Functionality; TestFlight test information and feedback email hi@hewig.dev. (2026-10-16/17)
-
-Apps
-- Redesigned one-button main screens, tile sheets, transcript history, aligned onboarding; quick start widget, Control Center control, Shortcuts and Home Screen quick actions on iPhone. (2026-10-15/16)
-- Transcripts kept on device and exported as .txt on both platforms. (2026-10-16)
-- Mac: App Sandbox (all system audio, one app's audio, Gemini Live and the TranslateGemma download work sandboxed); hardened runtime; wider control panel; whole-line overlay clipping checked at three sizes; "Show in menu bar only" switches live both ways. (2026-10-16/17)
-- Mac status item: a menu (Start/Stop, setup, overlay, Open Hearvia, Transcripts, Settings, Quit) beside the Dock icon and control window; the control panel in menu-bar-only mode. Checked at launch and after switching live, both ways. (2026-10-17)
-- Breathing play button (checked on Mac). (2026-10-16)
-
-Translators
-- Gemini Live behind a provider-neutral cloud engine; CLI-verified en → zh, ja, nl, pt; 76 subtitle languages; `pt` sent as `pt-BR`. (2026-10-15/17)
-- Cloud engines: pause after 25 s of silence with 1.6 s pre-roll, rotate before expiry, skip input transcription when "show original" is off, separate text across sessions. (unit-tested)
-- TranslateGemma 4B (`HearviaLLM`, MLX) as a downloadable translator on 8 GB devices. Mac: 1.3 s load, ~0.5 s per sentence, 2.8 GB peak. iPhone 16 Pro (Release): 6.1 GB free with the increased-memory-limit entitlement, 1.7 s load, 1.4–1.8 s per sentence. Background GPU on iOS via continued-processing tasks where supported; a clear pause message elsewhere. (2026-10-16/17)
-
-Code health and tooling
-- HearviaKit modules with unit tests (cloud reconnect/backoff, pause, rotation; on-device engine; session); `installAudioTap`; Developer tools Debug-only and using per-engine languages.
-- CI on GitHub's Xcode 27 image; README for users, CONTRIBUTING.md, BSL 1.1 license, screenshots. (2026-10-16/17)

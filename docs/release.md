@@ -50,7 +50,7 @@ just testflight                 # iOS: upload the .ipa with asc
 just testflight-macos           # Mac: upload the .pkg with altool, then asc for processing and distribution
 ```
 
-- `.env` (gitignored) holds `ASC_APP_ID=6823200947` and the App Store Connect API key: `APP_STORE_CONNECT_KEY_NAME`, `APP_STORE_CONNECT_KEY_ID`, `APP_STORE_CONNECT_ISSUER_ID`, `APP_STORE_CONNECT_KEY_PATH` (a `.p8` outside the repo, shared with the AnyTime and Inspect repos). Never print or commit them.
+- `.env` (gitignored) holds `ASC_APP_ID` (the app's App Store Connect ID) and the App Store Connect API key: `APP_STORE_CONNECT_KEY_NAME`, `APP_STORE_CONNECT_KEY_ID`, `APP_STORE_CONNECT_ISSUER_ID`, `APP_STORE_CONNECT_KEY_PATH` (a `.p8` outside the repo, shared with the AnyTime and Inspect repos). Never print or commit them.
 - Optional: `TESTFLIGHT_GROUP` (group name or ID; the build is added to it and the script waits for processing), `TESTFLIGHT_NOTES` ("What to Test"), `TESTFLIGHT_NOTIFY`, `TESTFLIGHT_WAIT`, `TESTFLIGHT_TIMEOUT`, `TESTFLIGHT_BUILD_NUMBER`.
 - An internal group with access to all builds (like "Internal") receives every processed build by itself; the script doesn't try to add builds to it.
 - Build numbers default to a timestamp (`yyyyMMddHHmm`): unique per upload and across iOS and Mac, which share the one App Store Connect record.
@@ -88,7 +88,7 @@ The only sandbox denials logged were disk-space probes (`system-info vfs.disk-sp
 
 Credentials needed:
 
-- A **Developer ID Application** certificate for team `V28VJH6B6S` in the login keychain (the project currently signs with Apple Development).
+- A **Developer ID Application** certificate for the team in `project.local.yml` in the login keychain (the project currently signs with Apple Development).
 - An app-specific password for the Apple ID, or an App Store Connect API key (key ID, issuer ID, `.p8` file), stored once with `xcrun notarytool store-credentials hearvia-notary ...`.
 
 Steps:
@@ -97,7 +97,7 @@ Steps:
 xcodegen generate
 xcodebuild -project Hearvia.xcodeproj -scheme HearviaMac -configuration Release \
   -archivePath build/HearviaMac.xcarchive archive
-# ExportOptions.plist: method developer-id, teamID V28VJH6B6S, signingStyle automatic
+# ExportOptions.plist: method developer-id, teamID <your team>, signingStyle automatic
 xcodebuild -exportArchive -archivePath build/HearviaMac.xcarchive \
   -exportOptionsPlist ExportOptions.plist -exportPath build/export
 codesign --verify --strict --deep --verbose=2 build/export/Hearvia.app

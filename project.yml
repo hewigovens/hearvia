@@ -1,5 +1,9 @@
 # Generate the Xcode project with `xcodegen generate` (Hearvia.xcodeproj is not checked in).
 name: Hearvia
+# Signing team and other per-developer settings: copy project.local.yml.example to project.local.yml (gitignored).
+include:
+  - path: project.local.yml
+    enable: ${INCLUDE_LOCAL_PROJECT_YML}
 options:
   bundleIdPrefix: dev.hewig
   deploymentTarget:
@@ -12,7 +16,6 @@ settings:
     IPHONEOS_DEPLOYMENT_TARGET: "27.0"
     TARGETED_DEVICE_FAMILY: "1,2"
     CODE_SIGN_STYLE: Automatic
-    DEVELOPMENT_TEAM: V28VJH6B6S
     MARKETING_VERSION: "0.1"
     # Debug builds stay at 1; `just upload-ios` passes a timestamp so every upload is unique.
     CURRENT_PROJECT_VERSION: "1"

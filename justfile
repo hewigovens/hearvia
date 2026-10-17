@@ -1,6 +1,6 @@
 set shell := ["bash", "-euo", "pipefail", "-c"]
 
-device := env_var_or_default("HEARVIA_DEVICE", "00008140-001E58C6117B001C")
+device := env_var_or_default("HEARVIA_DEVICE", "")
 
 default:
   @just --list
@@ -8,7 +8,7 @@ default:
 # Generate Hearvia.xcodeproj from project.yml
 generate:
   sh scripts/gen_dev_secrets.sh # The project lists its output, which a fresh clone doesn't have yet.
-  xcodegen generate
+  if [ -f project.local.yml ]; then INCLUDE_LOCAL_PROJECT_YML=YES xcodegen generate; else INCLUDE_LOCAL_PROJECT_YML=NO xcodegen generate; fi
 
 # Build both apps
 build: generate
@@ -25,6 +25,7 @@ test:
 
 # Build, install and launch on the paired iPhone
 install-ios: generate
+  @test -n "{{device}}" || { echo "Set HEARVIA_DEVICE to the iPhone's UDID (xcrun devicectl list devices)."; exit 1; }
   xcodebuild -project Hearvia.xcodeproj -scheme Hearvia -destination 'generic/platform=iOS' -quiet build
   xcrun devicectl device install app --device {{device}} "$(xcodebuild -project Hearvia.xcodeproj -scheme Hearvia -destination 'generic/platform=iOS' -showBuildSettings 2>/dev/null | awk '/ BUILT_PRODUCTS_DIR/{print $3}')/Hearvia.app"
   xcrun devicectl device process launch --terminate-existing --device {{device}} dev.hewig.hearvia

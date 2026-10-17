@@ -1,0 +1,4 @@
+# Copy to project.local.yml (gitignored) and set your Apple Developer team ID; `just generate` includes it.
+settings:
+  base:
+    DEVELOPMENT_TEAM: YOUR_TEAM_ID

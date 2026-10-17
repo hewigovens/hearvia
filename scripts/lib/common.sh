@@ -144,5 +144,9 @@ generate_xcode_project() {
   cd "$repo_root"
   log "Generating Xcode project..."
   sh scripts/gen_dev_secrets.sh
-  xcodegen generate
+  if [[ -f project.local.yml ]]; then
+    INCLUDE_LOCAL_PROJECT_YML=YES xcodegen generate
+  else
+    INCLUDE_LOCAL_PROJECT_YML=NO xcodegen generate
+  fi
 }

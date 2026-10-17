@@ -11,6 +11,7 @@ xcuserdata/
 .env.*
 Apps/Shared/DevSecrets.generated.swift
 .asc/
+project.local.yml
 
 # Local-only material: PoC device logs, recordings and screenshots
 Archive/
