@@ -123,5 +123,5 @@ Left for Mac TestFlight:
 - [x] Unit tests for the cloud engine's reconnect/backoff, pause and rotation (fake socket).
 - [x] Moved off the deprecated `installTap` to `installAudioTap`.
 - [ ] `TranslationSession` is still not Sendable in the 27 SDK, so `OnDeviceTextTranslator` and `OnDeviceModelsView` keep `nonisolated(unsafe)`; revisit with a later SDK.
-- [ ] `Apps/iOS/Developer/DeveloperView.swift` still offers only `Languages.supported`.
+- [x] Developer tools' target language uses the same per-engine list as the home screen (2026-10-17).
 - [ ] Mac menu-bar-only launch closes the control window by polling for it (`MenuBarLabel.closeLaunchWindow`) because `.defaultLaunchBehavior` was unreliable; replace if SwiftUI gets a dependable way.

@@ -1,5 +1,6 @@
 #if DEBUG
     import HearviaCore
+    import HearviaUI
     import SwiftUI
 
     struct DeveloperView: View {
@@ -75,7 +76,8 @@
                 Toggle("Translate while capturing", isOn: $model.translationEnabled)
                 Picker("Target language", selection: Binding(get: { model.translation.targetLanguage },
                                                              set: { language in Task { await model.translation.setTargetLanguage(language) } })) {
-                    ForEach(Languages.supported, id: \.self) { Text($0).tag($0) }
+                    ForEach(OnDeviceLanguages.shared.subtitleChoices(for: model.translation.engine, including: model.translation.targetLanguage),
+                            id: \.self) { Text(LanguageName.of($0)).tag($0) }
                 }
                 SecureField("OpenAI API key", text: Bindable(model.translation).openAIKey)
                     .textInputAutocapitalization(.never).autocorrectionDisabled()
