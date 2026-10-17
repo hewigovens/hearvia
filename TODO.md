@@ -72,9 +72,10 @@ Left for Mac TestFlight:
 - [x] Redesigned control window, ready and listening (screenshots 2026-10-15); overlay hover ✕ and Start, drag, and the Visible chip bringing it back (2026-10-15).
 - [ ] The menu bar popover (same panel as the window) opened from the status item, in both themes.
 - [ ] Microphone source end to end. Launch the app from Finder/`open` (launching the binary from a terminal makes macOS ask for the terminal app's microphone access instead of Hearvia's).
-- [ ] Settings → "Show in menu bar only" toggled live both ways; Dock-icon click reopens the control window; Dock menu Start/Stop and Show overlay.
+- [x] Settings → "Show in menu bar only" toggled live both ways: the app switches between a Dock app and a menu-bar app and keeps its windows (2026-10-17).
+- [ ] Dock-icon click reopens the control window; Dock menu Start/Stop and Show overlay (need full screen control or a hand check).
 - [ ] Session rotation in a real session close to 60 minutes (log event `translation_rotated`).
-- [ ] Overlay: the faded top edge of the translation can leave a faint trace of a clipped line; check at other font sizes.
+- [x] Overlay: overflowing text is clipped to whole lines instead of faded; the fade washed out the newest line at the largest size. Checked at the smallest, default and largest sizes (2026-10-17).
 
 - [x] Transcripts on Mac: a session is saved on quit and listed in the Transcripts window with Export, Copy and Delete (2026-10-16).
 

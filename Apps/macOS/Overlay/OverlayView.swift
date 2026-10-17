@@ -46,13 +46,13 @@ struct OverlayView: View {
                     // Two whole lines: a fraction of a line more would show a sliver of the line above.
                     tail(Text(Self.tail(translator.source, 300))
                         .font(.system(size: originalSize))
-                        .foregroundStyle(.white.opacity(0.7)), fade: 0)
+                        .foregroundStyle(.white.opacity(0.7)), lineHeight: Self.lineHeight(ofSystemFontSize: originalSize))
                         .frame(maxHeight: 2 * Self.lineHeight(ofSystemFontSize: originalSize))
                         .layoutPriority(2) // Keeps its two lines when the translation overflows.
                 }
                 tail(Text(Self.tail(translator.translation, 400))
                     .font(.system(size: settings.overlayFontSize, weight: .semibold))
-                    .foregroundStyle(.white), fade: 0.4 * Self.lineHeight(ofSystemFontSize: settings.overlayFontSize))
+                    .foregroundStyle(.white), lineHeight: Self.lineHeight(ofSystemFontSize: settings.overlayFontSize))
                     .layoutPriority(1)
             }
         }
@@ -67,24 +67,23 @@ struct OverlayView: View {
 
     /// Text at its natural height when it fits, so original and translation sit together at the bottom;
     /// otherwise the newest lines pinned to the bottom of the space offered, older lines clipped off the top.
-    /// The non-scrollable ScrollView gives the text unlimited height but clips it; `fade` hides the part-line
-    /// clipped at the top, since the space offered isn't a whole number of lines.
-    private func tail(_ text: some View, fade: CGFloat) -> some View {
+    /// The non-scrollable ScrollView gives the text unlimited height but clips it, to a whole number of lines so no
+    /// part-line shows at the top (a fade there covered the newest line when only about one line fit).
+    private func tail(_ text: some View, lineHeight: CGFloat) -> some View {
         let centered = text.multilineTextAlignment(.center).frame(maxWidth: .infinity)
         return ViewThatFits(in: .vertical) {
             centered.fixedSize(horizontal: false, vertical: true)
-            ScrollView {
-                centered
-            }
-            .scrollDisabled(true)
-            .scrollIndicators(.hidden)
-            .defaultScrollAnchor(.bottom)
-            .defaultScrollAnchor(.bottom, for: .sizeChanges)
-            .mask {
-                VStack(spacing: 0) {
-                    LinearGradient(colors: [.clear, .black], startPoint: .top, endPoint: .bottom).frame(height: fade)
-                    Color.black
+            GeometryReader { proxy in
+                let lines = max(1, (proxy.size.height / lineHeight).rounded(.down))
+                ScrollView {
+                    centered
                 }
+                .scrollDisabled(true)
+                .scrollIndicators(.hidden)
+                .defaultScrollAnchor(.bottom)
+                .defaultScrollAnchor(.bottom, for: .sizeChanges)
+                .frame(height: min(proxy.size.height, lines * lineHeight))
+                .frame(maxHeight: .infinity, alignment: .bottom)
             }
         }
     }
