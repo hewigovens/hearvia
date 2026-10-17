@@ -12,6 +12,7 @@ final class AppModel {
     let capture: CaptureController
     let pip: PiPController
     let translation: LiveTranslator
+    let backgroundTranslation: BackgroundGPUAccess
     var audio = ProbeSnapshot()
     var scene = "active"
     var tickCount = 0
@@ -51,8 +52,12 @@ final class AppModel {
         session = AudioSessionController(log: log)
         capture = CaptureController(log: log, session: session)
         pip = PiPController(log: log, session: session)
+        let backgroundTranslation = BackgroundTranslation.make(log: log)
+        self.backgroundTranslation = backgroundTranslation
         translation = LiveTranslator(fallbackKeys: [.realtime: DevSecrets.openAIKey, .gemini: DevSecrets.geminiKey],
-                                     downloadable: [GemmaEngine()])
+                                     downloadable: [GemmaEngine(canUseBackgroundGPU: { [weak backgroundTranslation] in
+                                         backgroundTranslation?.isGranted == true
+                                     })])
         capture.probe.translationFeed = translation.feed
         capture.probe.levelMeter = meter
         if let label = ProcessInfo.processInfo.environment["HEARVIA_EXPERIMENT"] {
@@ -73,6 +78,7 @@ final class AppModel {
         translation.onLog = { [log] name, fields in log.event(name, fields) }
         pip.onClose = { [weak self] in Task { await self?.stopListening() } }
         followShowsOriginal()
+        followBackgroundTranslation()
     }
 
     /// The original-language text is billed separately by Realtime, so it is only requested while shown.
@@ -93,6 +99,7 @@ final class AppModel {
         audio = await capture.probe.read()
         tickCount += 1
         await syncListeningState()
+        await syncBackgroundTranslation()
         await renderSubtitle()
         pip.finishRestore()
     }
@@ -106,6 +113,7 @@ final class AppModel {
             translation.saveTranscript() // iOS may end a backgrounded app without warning.
         }
         if phase == .active {
+            backgroundTranslation.resume()
             capture.probe.markBackground(false)
             pip.finishRestore()
         }

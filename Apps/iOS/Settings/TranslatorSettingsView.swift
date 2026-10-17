@@ -35,7 +35,7 @@ struct TranslatorSettingsView: View {
                 Section {
                     DownloadableEngineRow(gemma)
                 } footer: {
-                    Text("Google's open translation model, run on this iPhone for better translations than the built-in one, with no internet. It translates while Hearvia is on screen and pauses behind other apps, where iOS doesn't let it use the GPU. [Gemma Terms of Use](https://ai.google.dev/gemma/terms).")
+                    Text("Google's open translation model, run on this iPhone with no internet. \(BackgroundTranslation.isSupported ? "Translation can continue behind other apps while iOS allows it. Open Hearvia to resume if it pauses." : "On this iPhone, translation pauses behind other apps.") [Gemma Terms of Use](https://ai.google.dev/gemma/terms).")
                 }
                 .listRowBackground(Color.hvSurface)
             }

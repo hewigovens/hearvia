@@ -11,41 +11,61 @@ import Tokenizers
 /// by the model container.
 public final class GemmaTranslator: Sendable {
     private let container: ModelContainer
+    private let canUseBackgroundGPU: @MainActor @Sendable () -> Bool
 
-    private init(container: ModelContainer) {
+    private init(container: ModelContainer, canUseBackgroundGPU: @escaping @MainActor @Sendable () -> Bool) {
         self.container = container
+        self.canUseBackgroundGPU = canUseBackgroundGPU
     }
 
     /// Loads the weights from `TranslateGemma.directory` (download them first).
-    public static func load() async throws -> GemmaTranslator {
+    public static func load(canUseBackgroundGPU: @escaping @MainActor @Sendable () -> Bool = { false }) async throws -> GemmaTranslator {
+        try await checkGPUAccess(canUseBackgroundGPU)
         guard TranslateGemma.isDownloaded else { throw GemmaError.notDownloaded }
         guard TranslateGemma.hasFreeMemory else { throw GemmaError.notEnoughMemory }
         // MLX keeps freed GPU buffers for reuse; one sentence at a time doesn't need that, and iOS counts it.
         Memory.cacheLimit = 32 * 1024 * 1024
         let configuration = ModelConfiguration(directory: TranslateGemma.directory, extraEOSTokens: ["<end_of_turn>"])
-        let container = try await LLMModelFactory.shared.loadContainer(from: LocalWeights(), using: TransformersLoader(),
-                                                                       configuration: configuration)
-        return GemmaTranslator(container: container)
+        do {
+            let container = try await withError {
+                try await LLMModelFactory.shared.loadContainer(from: LocalWeights(), using: TransformersLoader(), configuration: configuration)
+            }
+            return GemmaTranslator(container: container, canUseBackgroundGPU: canUseBackgroundGPU)
+        } catch let MLXError.caught(message) where message.contains("BackgroundExecutionNotPermitted") {
+            throw GemmaError.inBackground
+        }
     }
 
     /// Greedy translation of `text` from `source` to `target` (language codes such as "en", "zh").
     public func translate(_ text: String, from source: String, to target: String) async throws -> String {
-        // iOS rejects GPU work from background apps; a run that tried anyway fails every token until the length cap.
-        if await Self.isInBackground {
-            throw GemmaError.inBackground
-        }
+        try await Self.checkGPUAccess(canUseBackgroundGPU)
         let prompt = Self.prompt(text, from: source, to: target)
         // A translation rarely needs more than ~3 tokens per source character; the cap only stops runaway output.
         let parameters = GenerateParameters(maxTokens: max(32, text.count * 3), temperature: 0)
+        let canUseBackgroundGPU = canUseBackgroundGPU
         do {
             // MLX's default error handler ends the process; this makes a failed GPU command buffer a Swift error.
             return try await withError {
                 try await container.perform { context in
+                    try await Self.checkGPUAccess(canUseBackgroundGPU)
                     let input = LMInput(tokens: MLXArray(context.tokenizer.encode(text: prompt, addSpecialTokens: false)))
+                    let iterator = try TokenIterator(input: input, model: context.model, parameters: parameters)
+                    let (generations, task) = MLXLMCommon.generateTask(promptTokenCount: input.text.tokens.size,
+                                                                       modelConfiguration: context.configuration,
+                                                                       tokenizer: context.tokenizer, iterator: iterator)
                     var output = ""
-                    for await generation in try MLXLMCommon.generate(input: input, parameters: parameters, context: context) {
-                        output += generation.chunk ?? ""
+                    do {
+                        for await generation in generations {
+                            try await Self.checkGPUAccess(canUseBackgroundGPU)
+                            output += generation.chunk ?? ""
+                        }
+                    } catch {
+                        task.cancel()
+                        await task.value // Keep MLX's error handler installed until GPU work has stopped.
+                        throw error
                     }
+                    await task.value
+                    try await Self.checkGPUAccess(canUseBackgroundGPU)
                     return output.trimmingCharacters(in: .whitespacesAndNewlines)
                 }
             }
@@ -54,11 +74,12 @@ public final class GemmaTranslator: Sendable {
         }
     }
 
-    @MainActor private static var isInBackground: Bool {
+    @MainActor private static func checkGPUAccess(_ canUseBackgroundGPU: @MainActor @Sendable () -> Bool) throws {
+        try Task.checkCancellation()
         #if os(iOS)
-            UIApplication.shared.applicationState == .background
-        #else
-            false
+            if UIApplication.shared.applicationState == .background, !canUseBackgroundGPU() {
+                throw GemmaError.inBackground
+            }
         #endif
     }
 

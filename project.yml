@@ -53,7 +53,8 @@ targets:
         NSMicrophoneUsageDescription: Hearvia listens to the microphone to show live translated subtitles of speech around you.
         NSSpeechRecognitionUsageDescription: Hearvia turns speech into text on this device to show subtitles.
         ITSAppUsesNonExemptEncryption: false # Only HTTPS/WSS.
-        UIBackgroundModes: [screen-capture, audio]
+        UIBackgroundModes: [screen-capture, audio, processing]
+        BGTaskSchedulerPermittedIdentifiers: [dev.hewig.hearvia.gemma.*]
         # Long-press the app icon; handled by QuickActionSceneDelegate.
         UIApplicationShortcutItems:
           - UIApplicationShortcutItemType: dev.hewig.hearvia.start.otherApps

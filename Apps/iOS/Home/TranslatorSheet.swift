@@ -19,8 +19,7 @@ struct TranslatorSheet: View {
         }
     }
 
-    /// iOS keeps background apps off the GPU, so TranslateGemma only translates while Hearvia is on screen.
     private func detail(_ engine: EngineKind) -> String {
-        engine == .gemma ? "Offline · better translation · only while Hearvia is open" : engine.tagline
+        engine == .gemma && !BackgroundTranslation.isSupported ? "Offline · only while Hearvia is open" : engine.tagline
     }
 }

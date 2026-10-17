@@ -14,7 +14,11 @@ public final class GemmaEngine: DownloadableEngine {
     public private(set) var progress: Double?
     public private(set) var failure = ""
 
-    public init() {}
+    private let canUseBackgroundGPU: @MainActor @Sendable () -> Bool
+
+    public init(canUseBackgroundGPU: @escaping @MainActor @Sendable () -> Bool = { false }) {
+        self.canUseBackgroundGPU = canUseBackgroundGPU
+    }
 
     public var isSupported: Bool {
         TranslateGemma.hasDeviceMemory
@@ -40,8 +44,9 @@ public final class GemmaEngine: DownloadableEngine {
 
     public func makeEngine(_ request: EngineRequest) -> any TranslationEngine {
         let source = request.sourceLanguage, target = request.targetLanguage
+        let canUseBackgroundGPU = canUseBackgroundGPU
         return OnDeviceEngine(sourceLanguage: source, targetLanguage: target, translatorName: TranslateGemma.repo) {
-            let translator = try await GemmaTranslator.load()
+            let translator = try await GemmaTranslator.load(canUseBackgroundGPU: canUseBackgroundGPU)
             return { try await translator.translate($0, from: source, to: target) }
         }
     }
