@@ -106,11 +106,10 @@ struct OnDeviceEngineTests {
         await engine.start(audio: AsyncStream { $0.finish() })
         speech.say("hello there.", final: true)
         speech.say("how are you?", final: true)
-        try await waitUntil { recorder.sentences.count == 2 }
+        try await waitUntil { recorder.updates.last == .text(source: "hello there. how are you?", translation: "HELLO THERE. HOW ARE YOU?") }
         #expect(recorder.updates.prefix(2) == [.status(.loadingModels), .status(.translating(onDevice: true))])
         #expect(recorder.sentences == [.sentence(source: "hello there.", translation: "HELLO THERE."),
                                        .sentence(source: "how are you?", translation: "HOW ARE YOU?")])
-        #expect(recorder.updates.last == .text(source: "hello there. how are you?", translation: "HELLO THERE. HOW ARE YOU?"))
         await engine.stop()
     }
 
@@ -163,9 +162,9 @@ struct OnDeviceEngineTests {
         await engine.start(audio: AsyncStream { $0.finish() })
         speech.say("こんにちは", final: false)
         speech.say("こんにちは。", final: true)
-        try await waitUntil { !recorder.sentences.isEmpty }
+        // The text update follows the sentence; wait for it rather than the sentence alone.
+        try await waitUntil { recorder.updates.last == .text(source: "こんにちは。", translation: "こんにちは。") }
         #expect(recorder.sentences == [.sentence(source: "", translation: "こんにちは。")])
-        #expect(recorder.updates.last == .text(source: "こんにちは。", translation: "こんにちは。"))
         await engine.stop()
     }
 
