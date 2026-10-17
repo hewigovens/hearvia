@@ -13,6 +13,8 @@ public struct OnDeviceModelsView: View {
     @State private var speechProgress: Double?
     @State private var download: TranslationSession.Configuration?
     @State private var failure = ""
+    /// Set when the translation download sheet finishes: "" on success, otherwise the error.
+    @State private var downloadOutcome: String?
 
     /// `translates: false` shows only speech recognition, for engines that bring their own translator.
     public init(source: String, target: String, translates: Bool = true) {
@@ -28,6 +30,7 @@ public struct OnDeviceModelsView: View {
             }
             if translates, source != target {
                 row("Translation · \(LanguageName.localized(source)) → \(LanguageName.localized(target))", text, progress: nil) {
+                    failure = ""
                     download = OnDeviceModels.translationDownload(from: source, to: target)
                 }
             }
@@ -35,13 +38,19 @@ public struct OnDeviceModelsView: View {
                 Text(failure).font(.footnote).foregroundStyle(.red)
             }
         }
-        .task(id: "\(source)>\(target)") { await refresh() }
-        .translationTask(download) { session in
-            // Same SDK gap as OnDeviceTextTranslator; the session is used only here, for the system download sheet.
-            nonisolated(unsafe) let session = session
-            do { try await session.prepareTranslation() } catch { failure = error.localizedDescription }
-            download = nil
-            await refresh()
+        .task(id: "\(source)>\(target)>\(download == nil)") { await refresh() }
+        // The session isn't Sendable and `prepareTranslation` is `@concurrent` (27 SDK), so the work stays off the
+        // main actor and only the outcome comes back.
+        .translationTask(download) { @concurrent [outcome = $downloadOutcome] session in
+            var message = ""
+            do { try await session.prepareTranslation() } catch { message = error.localizedDescription }
+            await MainActor.run { outcome.wrappedValue = message }
+        }
+        .onChange(of: downloadOutcome) { _, outcome in
+            guard let outcome else { return }
+            failure = outcome
+            download = nil // Refreshes the rows.
+            downloadOutcome = nil
         }
     }
 
@@ -61,12 +70,12 @@ public struct OnDeviceModelsView: View {
     }
 
     private func refresh() async {
-        failure = ""
         speech = await OnDeviceModels.speech(source)
         text = await OnDeviceModels.translation(from: source, to: target)
     }
 
     private func downloadSpeech() async {
+        failure = ""
         speechProgress = 0
         do {
             try await OnDeviceModels.downloadSpeech(source) { p in Task { @MainActor in speechProgress = p } }

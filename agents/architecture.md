@@ -63,7 +63,7 @@ capture (app) → AudioFeed → TranslationEngine → EngineUpdate stream → Li
 - `LiveTranslator`, engines, `AppModel`, `AppSettings` are `@MainActor`.
 - Audio callbacks run on capture queues and only touch `Sendable` sinks (`AudioFeed.push`, `LevelMeter.measure`).
 - Stale results are dropped by identity, not counters: `LiveTranslator` ignores updates from any engine other than the running one, and an engine ignores its own async results once stopped.
-- `OpenAIRealtimeClient` and `GeminiLiveClient` are actors; `OnDeviceTextTranslator` is an actor wrapping a non-Sendable `TranslationSession`.
+- `OpenAIRealtimeClient` and `GeminiLiveClient` are actors; `TranslationSession` isn't Sendable and its methods are `@concurrent`, so `OnDeviceTextTranslator` keeps it as a local in one task fed by an AsyncStream, and `OnDeviceModelsView` runs the download sheet's `prepareTranslation` in a `@concurrent` closure that hands back only a String. No `nonisolated(unsafe)`.
 
 ## Adding an engine
 
