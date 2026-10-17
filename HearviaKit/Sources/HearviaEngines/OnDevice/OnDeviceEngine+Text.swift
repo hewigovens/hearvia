@@ -21,9 +21,10 @@ extension OnDeviceEngine {
             finalQueue = []
             pendingVolatile = nil
             if result.isFinal, !text.isEmpty {
+                finalTranslation = SubtitleText.bounded(SubtitleText.join(finalTranslation, text, language: targetLanguage))
                 continuation.yield(.sentence(source: "", translation: text))
             }
-            continuation.yield(.text(source: currentSource, translation: currentSource))
+            continuation.yield(.text(source: currentSource, translation: SubtitleText.join(finalTranslation, volatileSource, language: targetLanguage)))
             return
         }
         continuation.yield(.text(source: currentSource, translation: currentTranslation))

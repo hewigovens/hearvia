@@ -17,8 +17,10 @@ public final class OnDeviceLanguages {
         }
     }
 
+    /// "" is Auto-detect, offered first where Hearvia recognizes speech itself.
     public func spokenChoices(for engine: EngineKind, including selected: String) -> [String] {
-        Languages.choices(for: engine, onDevice: spoken, including: selected)
+        let choices = Languages.choices(for: engine, onDevice: spoken, including: selected).filter { !$0.isEmpty }
+        return engine.detectsSpokenLanguage ? choices : [""] + choices
     }
 
     /// A local model isn't limited to Apple's translation languages.

@@ -10,8 +10,8 @@ final class ScriptedSpeech: SpeechInput, @unchecked Sendable {
         (results, continuation) = AsyncThrowingStream.makeStream()
     }
 
-    func say(_ text: String, final: Bool) {
-        continuation.yield(SpeechResult(text: text, isFinal: final))
+    func say(_ text: String, final: Bool, language: String = "") {
+        continuation.yield(SpeechResult(text: text, isFinal: final, language: language))
     }
 
     func append(_: Data) throws {}
@@ -163,6 +163,25 @@ struct OnDeviceEngineTests {
         // The text update follows the sentence; wait for it rather than the sentence alone.
         try await waitUntil { recorder.updates.last == .text(source: "こんにちは。", translation: "こんにちは。") }
         #expect(recorder.sentences == [.sentence(source: "", translation: "こんにちは。")])
+        await engine.stop()
+    }
+
+    @Test func autoTranslatesFromTheDetectedLanguage() async throws {
+        let translator = translator
+        let translatorFrom: @Sendable (String) async throws -> Translate? = { source in
+            guard source != "fr" else { return nil }
+            return { text in try await translator.translate("\(source):\(text)") }
+        }
+        let engine = OnDeviceEngine(sourceLanguage: "", targetLanguage: "fr") { [speech] _ in
+            var models = OnDeviceModelSet(speech: speech, translate: nil, strategy: "auto")
+            models.translator = translatorFrom
+            return models
+        }
+        let recorder = Recorder(engine)
+        await engine.start(audio: AsyncStream { $0.finish() })
+        speech.say("hello.", final: true, language: "en")
+        try await waitUntil { recorder.sentences == [.sentence(source: "hello.", translation: "EN:HELLO.")] }
+        #expect(recorder.updates.contains(.log("ondevice_language_detected", ["language": "en"])))
         await engine.stop()
     }
 

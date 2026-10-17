@@ -19,6 +19,7 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 
 - [ ] Microphone with OpenAI Realtime and with the on-device translator, while another app plays: subtitles appear and the other app isn't ducked or paused.
 - [ ] Quick start from a cold launch: the widget, the Control Center control and "Start Hearvia" in Shortcuts each open the app and start listening.
+- [ ] Auto spoken language (on-device and Local LLM) with a real podcast: picks the language within a sentence or two; a language change mid-session is picked up after the next finished sentence.
 - [ ] Leaving the app while listening starts the floating window ("Float when I leave Hearvia"), and Back to app doesn't stop listening.
 - [ ] Transcripts: a session is saved after Stop and after leaving the app mid-session; with Sync with iCloud on, a Mac session appears on the iPhone and a delete on one device removes it on the other (iPhone → Mac works, 2026-10-18).
 

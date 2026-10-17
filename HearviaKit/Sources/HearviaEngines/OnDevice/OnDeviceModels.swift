@@ -1,3 +1,4 @@
+import HearviaCore
 import Speech
 import Translation
 
@@ -39,14 +40,24 @@ public enum OnDeviceModels {
         Locale.Language(identifier: code == "zh" ? "zh-Hans" : code == "pt" ? "pt-BR" : code)
     }
 
-    static func transcriber(_ code: String) async throws -> SpeechTranscriber {
+    static func transcriber(_ code: String, confidence: Bool = false) async throws -> SpeechTranscriber {
         var locale = await SpeechTranscriber.supportedLocale(equivalentTo: speechLocale(code))
         if locale == nil { // Languages outside the region map: take any supported variant.
             locale = await SpeechTranscriber.supportedLocales.first { $0.language.languageCode?.identifier == code }
         }
         guard let locale else { throw OnDeviceError.speechUnsupported(code) }
         return SpeechTranscriber(locale: locale, transcriptionOptions: [],
-                                 reportingOptions: [.volatileResults, .fastResults], attributeOptions: [])
+                                 reportingOptions: [.volatileResults, .fastResults], attributeOptions: confidence ? [.transcriptionConfidence] : [])
+    }
+
+    /// Every recognizer runs at once until one wins, so Auto tries at most four: installed languages, the user's own first.
+    public static func autoCandidates() async -> [String] {
+        guard SpeechTranscriber.isAvailable else { return [] }
+        let installed = await Set(SpeechTranscriber.installedLocales.compactMap { $0.language.languageCode?.identifier })
+        let preferred = Locale.preferredLanguages.compactMap { Locale(identifier: $0).language.languageCode?.identifier }
+        let ordered = preferred + Languages.supported + installed.sorted()
+        var seen = Set<String>()
+        return Array(ordered.filter { installed.contains($0) && seen.insert($0).inserted }.prefix(4))
     }
 
     public static func speech(_ code: String) async -> Availability {
@@ -69,6 +80,9 @@ public enum OnDeviceModels {
     }
 
     public static func isReady(from source: String, to target: String) async -> Bool {
+        if source.isEmpty {
+            return await !autoCandidates().isEmpty
+        }
         let speech = await speech(source)
         let text = await translation(from: source, to: target)
         return speech == .installed && text == .installed

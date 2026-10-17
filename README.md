@@ -21,7 +21,7 @@
 - **Hears other apps.** On iPhone, a floating window shows subtitles over videos, podcasts and calls. On Mac, an overlay follows all system audio or a single app.
 - **Never gets in the way.** Hearvia doesn't play sound or pause anything; what you're watching keeps playing.
 - **Your choice of translator:**
-  - **On-device:** Apple's speech recognition and translation. Free, private, and offline once the languages are downloaded.
+  - **On-device:** Apple's speech recognition and translation. Free, private, and offline once the languages are downloaded. The spoken language can be detected automatically among the ones you've downloaded.
   - **OpenAI Realtime** and **Gemini Live:** cloud translators with the lowest lag, using your own API key.
   - **Local model (experimental):** Apple speech recognition, then each sentence goes to a model you run yourself with Ollama, LM Studio, Unsloth Studio or another OpenAI-compatible server, on your Mac or your network.
 - **Transcripts** of each session stay on your device, or sync through your own iCloud to your other devices if you turn it on.

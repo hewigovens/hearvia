@@ -65,7 +65,7 @@ struct ControlTiles: View {
             }
         }
         .pickerStyle(.menu)
-        if !translator.engine.detectsSpokenLanguage {
+        if !translator.engine.detectsSpokenLanguage, !translator.sourceLanguage.isEmpty {
             Button("Swap Languages", systemImage: "arrow.left.arrow.right") {
                 let spoken = translator.sourceLanguage, target = translator.targetLanguage
                 Task {

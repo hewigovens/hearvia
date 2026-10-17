@@ -10,19 +10,37 @@ final class OnDeviceSpeech: SpeechInput, @unchecked Sendable {
     private let format = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: PCM16Resampler.sampleRate, channels: 1, interleaved: true)!
     private let reader: Task<Void, Never>
 
-    init(language: String, progress: (@Sendable (Double) -> Void)? = nil) async throws {
+    convenience init(language: String, progress: (@Sendable (Double) -> Void)? = nil) async throws {
         try await OnDeviceModels.downloadSpeech(language, progress: progress)
-        let transcriber = try await OnDeviceModels.transcriber(language)
-        converter = try await AnalyzerInputConverter.converter(compatibleWith: [transcriber])
+        try await self.init(transcribers: [OnDeviceModels.transcriber(language)], languages: [language])
+    }
+
+    /// Auto: recognizes with each installed candidate until one is clearly right (see +Detection).
+    convenience init(detecting languages: [String]) async throws {
+        guard !languages.isEmpty else { throw OnDeviceError.noSpeechModels }
+        var transcribers: [SpeechTranscriber] = []
+        for language in languages {
+            try await transcribers.append(OnDeviceModels.transcriber(language, confidence: true))
+        }
+        try await self.init(transcribers: transcribers, languages: languages)
+    }
+
+    private init(transcribers: [SpeechTranscriber], languages: [String]) async throws {
+        converter = try await AnalyzerInputConverter.converter(compatibleWith: transcribers)
         let (stream, input) = AsyncStream<AnalyzerInput>.makeStream()
         self.input = input
-        analyzer = SpeechAnalyzer(modules: [transcriber])
+        let analyzer = SpeechAnalyzer(modules: transcribers)
+        self.analyzer = analyzer
         let (results, output) = AsyncThrowingStream<SpeechResult, Error>.makeStream()
         self.results = results
         reader = Task {
+            if transcribers.count > 1 {
+                await Self.detect(transcribers, languages: languages, analyzer: analyzer, output: output)
+                return
+            }
             do {
-                for try await result in transcriber.results {
-                    output.yield(SpeechResult(text: String(result.text.characters), isFinal: result.isFinal))
+                for try await result in transcribers[0].results {
+                    output.yield(SpeechResult(result, language: languages[0]))
                 }
                 output.finish()
             } catch { output.finish(throwing: error) }

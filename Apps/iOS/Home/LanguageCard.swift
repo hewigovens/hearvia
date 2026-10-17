@@ -10,6 +10,10 @@ struct LanguageCard: View {
         translator.engine.detectsSpokenLanguage
     }
 
+    private var canSwap: Bool {
+        !autoDetects && !translator.sourceLanguage.isEmpty
+    }
+
     var body: some View {
         HStack(spacing: 4) {
             Menu {
@@ -18,7 +22,7 @@ struct LanguageCard: View {
                     ForEach(OnDeviceLanguages.shared.spokenChoices(for: translator.engine, including: translator.sourceLanguage), id: \.self) { Text(LanguageName.of($0)).tag($0) }
                 }
             } label: {
-                LanguageField(caption: "Spoken", value: autoDetects ? "Auto-detect" : LanguageName.short(translator.sourceLanguage), alignment: .leading)
+                LanguageField(caption: "Spoken", value: autoDetects || translator.sourceLanguage.isEmpty ? "Auto-detect" : LanguageName.short(translator.sourceLanguage), alignment: .leading)
             }
             .disabled(autoDetects)
             Button(action: swap) {
@@ -27,8 +31,8 @@ struct LanguageCard: View {
                     .frame(width: 44, height: 44)
                     .background(Color.hvSurfaceRaised, in: .circle)
             }
-            .disabled(autoDetects)
-            .opacity(autoDetects ? 0.4 : 1)
+            .disabled(!canSwap)
+            .opacity(canSwap ? 1 : 0.4)
             .accessibilityLabel("Swap languages")
             Menu {
                 Picker("Subtitles in", selection: Binding(get: { translator.targetLanguage },

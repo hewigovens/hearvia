@@ -9,11 +9,13 @@ public final class OnDeviceEngine: TranslationEngine {
 
     public let updates: AsyncStream<EngineUpdate>
     let continuation: AsyncStream<EngineUpdate>.Continuation
-    let sourceLanguage: String
+    /// Empty on Auto until the speech input settles on a language; changes when the speaker does.
+    private(set) var sourceLanguage: String
     let targetLanguage: String
     private let load: ModelLoader
+    private var translator: (@Sendable (String) async throws -> Translate?)?
     var running = false
-    var translate: (@Sendable (String) async throws -> String)?
+    var translate: Translate?
     var kick: AsyncStream<Void>.Continuation?
     private var speech: (any SpeechInput)?
     private var tasks: [Task<Void, Never>] = []
@@ -33,6 +35,13 @@ public final class OnDeviceEngine: TranslationEngine {
 
     private static func loadModels(_ source: String, _ target: String,
                                    progress: @escaping @Sendable (Double) -> Void) async throws -> OnDeviceModelSet {
+        if source.isEmpty {
+            return try await detecting(strategy: "auto") { source in
+                guard source != target else { return nil }
+                let translator = try await OnDeviceTextTranslator(source: source, target: target)
+                return { try await translator.translate($0) }
+            }
+        }
         guard source != target else {
             return try await OnDeviceModelSet(speech: OnDeviceSpeech(language: source, progress: progress), translate: nil, strategy: "none")
         }
@@ -46,12 +55,18 @@ public final class OnDeviceEngine: TranslationEngine {
                                   model: String) -> OnDeviceEngine {
         OnDeviceEngine(sourceLanguage: sourceLanguage, targetLanguage: targetLanguage) { progress in
             guard !model.isEmpty else { throw LocalModelError.noModel }
-            let speech = try await OnDeviceSpeech(language: sourceLanguage, progress: progress)
-            let translate: @Sendable (String) async throws -> String = {
-                try await server.translate($0, from: sourceLanguage, to: targetLanguage, model: model)
+            guard !sourceLanguage.isEmpty else {
+                return try await detecting(strategy: model) { server.translator(from: $0, to: targetLanguage, model: model) }
             }
-            return OnDeviceModelSet(speech: speech, translate: sourceLanguage == targetLanguage ? nil : translate, strategy: model)
+            let speech = try await OnDeviceSpeech(language: sourceLanguage, progress: progress)
+            return OnDeviceModelSet(speech: speech, translate: server.translator(from: sourceLanguage, to: targetLanguage, model: model), strategy: model)
         }
+    }
+
+    private static func detecting(strategy: String, translator: @escaping @Sendable (String) async throws -> Translate?) async throws -> OnDeviceModelSet {
+        var models = try await OnDeviceModelSet(speech: OnDeviceSpeech(detecting: OnDeviceModels.autoCandidates()), translate: nil, strategy: strategy)
+        models.translator = translator
+        return models
     }
 
     init(sourceLanguage: String, targetLanguage: String, load: @escaping ModelLoader) {
@@ -95,6 +110,7 @@ public final class OnDeviceEngine: TranslationEngine {
         let speech = models.speech
         self.speech = speech
         translate = models.translate
+        translator = models.translator
         let (kicks, kick) = AsyncStream<Void>.makeStream(bufferingPolicy: .bufferingNewest(1))
         self.kick = kick
         continuation.yield(.status(.translating(onDevice: true)))
@@ -111,6 +127,10 @@ public final class OnDeviceEngine: TranslationEngine {
             Task { [weak self] in
                 do {
                     for try await result in speech.results {
+                        if !result.detection.isEmpty {
+                            self?.continuation.yield(.log("ondevice_detection", ["result": result.detection]))
+                        }
+                        try await self?.adopt(result.language)
                         self?.handleSpeech(result)
                     }
                 } catch { self?.fail(error) }
@@ -121,6 +141,15 @@ public final class OnDeviceEngine: TranslationEngine {
                 }
             }
         ]
+    }
+
+    private func adopt(_ language: String) async throws {
+        guard !language.isEmpty, language != sourceLanguage, let translator else { return }
+        sourceLanguage = language
+        volatileSource = ""
+        pendingVolatile = nil
+        continuation.yield(.log("ondevice_language_detected", ["language": language]))
+        translate = try await translator(language)
     }
 
     func fail(_ error: Error) {

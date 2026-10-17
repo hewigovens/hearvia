@@ -4,7 +4,7 @@ import HearviaAudio
 import HearviaEngines
 
 // Streams an audio file through an engine at real-time pace and prints the text as it arrives.
-// Usage: hearvia-translate <audio-file> [target-lang=zh] [--fast] [--gemini | --on-device=<spoken-lang>]
+// Usage: hearvia-translate <audio-file> [target-lang=zh] [--fast] [--gemini | --on-device=<spoken-lang or auto>]
 // OpenAI Realtime by default (it also reports lag); --fast sends the audio as quickly as possible.
 
 /// `name` from the environment, else from the nearest `.env` up to four directories above.
@@ -25,14 +25,14 @@ func secret(_ name: String) -> String? {
 }
 
 let args = CommandLine.arguments.dropFirst().filter { !$0.hasPrefix("--") }
-guard let path = args.first else { print("usage: hearvia-translate <audio-file> [lang] [--fast] [--gemini | --on-device=<spoken-lang>]")
+guard let path = args.first else { print("usage: hearvia-translate <audio-file> [lang] [--fast] [--gemini | --on-device=<spoken-lang or auto>]")
     exit(2)
 }
 let language = args.dropFirst().first ?? "zh"
 let realtime = !CommandLine.arguments.contains("--fast")
 
 if let flag = CommandLine.arguments.first(where: { $0.hasPrefix("--on-device") }) {
-    let spoken = flag.split(separator: "=").dropFirst().first.map(String.init) ?? "en"
+    let spoken = flag.split(separator: "=").dropFirst().first.map(String.init).map { $0 == "auto" ? "" : $0 } ?? "en"
     try await runOnDevice(path: path, spoken: spoken, target: language)
     exit(0)
 }

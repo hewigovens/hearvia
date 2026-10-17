@@ -6,7 +6,14 @@ public extension LiveTranslator {
         switch engine {
         case .realtime, .gemini: !apiKey.isEmpty
         case .onDevice: await OnDeviceModels.isReady(from: sourceLanguage, to: targetLanguage)
-        case .local: localModel.isEmpty ? false : await OnDeviceModels.speech(sourceLanguage) == .installed
+        case .local:
+            if localModel.isEmpty {
+                false
+            } else if sourceLanguage.isEmpty {
+                await !OnDeviceModels.autoCandidates().isEmpty
+            } else {
+                await OnDeviceModels.speech(sourceLanguage) == .installed
+            }
         }
     }
 

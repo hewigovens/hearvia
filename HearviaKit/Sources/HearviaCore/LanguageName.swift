@@ -2,17 +2,19 @@ import Foundation
 
 public enum LanguageName {
     public static func of(_ code: String) -> String {
+        guard !code.isEmpty else { return "Auto-detect" }
         let native = short(code)
         let local = localized(code)
         return native.localizedCaseInsensitiveCompare(local) == .orderedSame ? native : "\(native) · \(local)"
     }
 
     public static func short(_ code: String) -> String {
-        (Locale(identifier: code).localizedString(forLanguageCode: code) ?? code).capitalized
+        guard !code.isEmpty else { return "Auto" }
+        return (Locale(identifier: code).localizedString(forLanguageCode: code) ?? code).capitalized
     }
 
     public static func pair(source: String, target: String) -> String {
-        "\(source.isEmpty ? "Auto" : short(source)) → \(short(target))"
+        "\(short(source)) → \(short(target))"
     }
 
     /// The English name, for prompts: "Japanese", "Chinese".

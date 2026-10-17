@@ -38,6 +38,12 @@ public struct LocalModelServer: Sendable, Equatable {
         return Self.cleaned(reply.choices.first?.message.content ?? "")
     }
 
+    /// nil when the spoken and subtitle languages are the same.
+    func translator(from source: String, to target: String, model: String) -> Translate? {
+        guard source != target else { return nil }
+        return { [self] text in try await translate(text, from: source, to: target, model: model) }
+    }
+
     static func prompt(_ text: String, from source: String, to target: String, model: String) -> String {
         if model.localizedCaseInsensitiveContains("index-translate") {
             // The prompt from the Index-Translate model card, with the target named in Chinese.

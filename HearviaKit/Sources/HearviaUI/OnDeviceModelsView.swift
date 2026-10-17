@@ -10,6 +10,9 @@ public struct OnDeviceModelsView: View {
     let translates: Bool
     @State private var speech: OnDeviceModels.Availability?
     @State private var text: OnDeviceModels.Availability?
+    /// Auto: the installed speech languages it chooses from, and each one's translation into `target`.
+    @State private var candidates: [String]?
+    @State private var autoText: [String: OnDeviceModels.Availability] = [:]
     @State private var speechProgress: Double?
     @State private var download: TranslationSession.Configuration?
     @State private var failure = ""
@@ -25,13 +28,14 @@ public struct OnDeviceModelsView: View {
 
     public var body: some View {
         Group {
-            row("Speech recognition · \(LanguageName.localized(source))", speech, progress: speechProgress) {
-                Task { await downloadSpeech() }
-            }
-            if translates, source != target {
-                row("Translation · \(LanguageName.localized(source)) → \(LanguageName.localized(target))", text, progress: nil) {
-                    failure = ""
-                    download = OnDeviceModels.translationDownload(from: source, to: target)
+            if source.isEmpty {
+                autoRows
+            } else {
+                row("Speech recognition · \(LanguageName.localized(source))", speech, progress: speechProgress) {
+                    Task { await downloadSpeech() }
+                }
+                if translates, source != target {
+                    translationRow(from: source, text)
                 }
             }
             if !failure.isEmpty {
@@ -53,6 +57,31 @@ public struct OnDeviceModelsView: View {
         }
     }
 
+    @ViewBuilder private var autoRows: some View {
+        HStack {
+            Text("Speech recognition · Auto")
+            Spacer()
+            if let candidates {
+                Text(candidates.isEmpty ? "None downloaded" : candidates.map(LanguageName.short).joined(separator: ", "))
+                    .foregroundStyle(candidates.isEmpty ? .red : .green)
+            } else {
+                Text("Checking…").foregroundStyle(.secondary)
+            }
+        }
+        if translates {
+            ForEach((candidates ?? []).filter { $0 != target }, id: \.self) { language in
+                translationRow(from: language, autoText[language])
+            }
+        }
+    }
+
+    private func translationRow(from language: String, _ status: OnDeviceModels.Availability?) -> some View {
+        row("Translation · \(LanguageName.localized(language)) → \(LanguageName.localized(target))", status, progress: nil) {
+            failure = ""
+            download = OnDeviceModels.translationDownload(from: language, to: target)
+        }
+    }
+
     private func row(_ title: String, _ status: OnDeviceModels.Availability?, progress: Double?, action: @escaping () -> Void) -> some View {
         HStack {
             Text(title)
@@ -69,6 +98,14 @@ public struct OnDeviceModelsView: View {
     }
 
     private func refresh() async {
+        if source.isEmpty {
+            let languages = await OnDeviceModels.autoCandidates()
+            for language in languages {
+                autoText[language] = await OnDeviceModels.translation(from: language, to: target)
+            }
+            candidates = languages
+            return
+        }
         speech = await OnDeviceModels.speech(source)
         text = await OnDeviceModels.translation(from: source, to: target)
     }
