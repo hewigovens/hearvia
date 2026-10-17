@@ -39,6 +39,7 @@ struct TranscriptView: View {
         } detail: {
             if let shown {
                 TranscriptList(lines: shown.lines, originalFont: .callout, translationFont: .title3)
+                    .id(shown.id) // A fresh scroll position per transcript; a long one's offset left a short one blank.
                     .padding(20)
                     .navigationTitle(shown.title)
                     .navigationSubtitle(shown.summary)
