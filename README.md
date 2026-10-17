@@ -1,76 +1,43 @@
 # Hearvia
 
+![iOS](https://img.shields.io/badge/iOS-27-blue)
+![macOS](https://img.shields.io/badge/macOS-27-blue)
+![License](https://img.shields.io/badge/license-BSL--1.1-green)
 [![CI](https://github.com/hewigovens/hearvia/actions/workflows/ci.yml/badge.svg)](https://github.com/hewigovens/hearvia/actions/workflows/ci.yml)
 
-Live translated subtitles for anything you hear, on iPhone and Mac. Hearvia listens to other apps' audio or the microphone and shows subtitles on top of whatever you're doing: a floating Picture-in-Picture strip on iOS, a draggable overlay on macOS.
+**Live translated subtitles for anything you hear, on iPhone and Mac.** Hearvia listens to other apps' audio or the microphone and shows subtitles on top of whatever you're doing: videos, podcasts, calls, or the person in front of you.
 
-- **Input:** other apps (iOS: ScreenCaptureKit full-display audio; macOS: Core Audio process tap, all apps or one app) or the **microphone** (AVAudioEngine, no voice processing).
-- **Translator:**
-  - **On-device**: Speech `SpeechTranscriber` + Translation framework. Free, private, offline once the models are downloaded. Each finished sentence is translated, and the sentence still being spoken is re-translated as it changes.
-  - **OpenAI Realtime**: `gpt-realtime-translate` over WebSocket. Lowest lag and best quality. Needs an API key; about $2/hour.
-  - **Gemini Live**: `gemini-3.5-live-translate-preview` over the Live API. Free tier for testing; needs a Gemini API key.
-  - **TranslateGemma**: Apple speech recognition + Google's open TranslateGemma 4B, run with MLX. A 2.2 GB download for 8 GB devices; offline. On iPhone it translates while Hearvia is on screen (iOS keeps background apps off the GPU).
-- **Look:** dark Periwinkle by default, Paper light optional (Settings → Appearance). Design canvas: <https://claude.ai/artifact/CG6JL1sBWvjKd1YFZGK3bM>.
+<p align="center">
+  <img src="docs/screenshots/iphone.png" alt="Hearvia on iPhone" width="260">
+  &nbsp;&nbsp;
+  <img src="docs/screenshots/mac.png" alt="Hearvia on Mac" width="420">
+</p>
+<p align="center">
+  <img src="docs/screenshots/mac-overlay.png" alt="The Mac subtitle overlay translating English speech into Chinese" width="720">
+</p>
 
-Requires iOS 27 / macOS 27 and Xcode 27.
+## Features
 
-## Layout
+- **Hears other apps.** On iPhone, a floating window shows subtitles over videos, podcasts and calls. On Mac, an overlay follows all system audio or a single app.
+- **Never gets in the way.** Hearvia doesn't play sound or pause anything; what you're watching keeps playing.
+- **Your choice of translator:**
+  - **On-device:** Apple's speech recognition and translation. Free, private, and offline once the languages are downloaded.
+  - **TranslateGemma:** Google's open TranslateGemma 4B, run on your device with MLX. Offline, with better translations; a 2.2 GB download for 8 GB devices. On iPhone it keeps translating behind other apps where iOS allows background GPU work, and otherwise while Hearvia is open.
+  - **OpenAI Realtime** and **Gemini Live:** cloud translators with the lowest lag, using your own API key.
+- **Transcripts** of each session stay on your device until you export them.
+- **Quick start** on iPhone from a widget, Control Center, Shortcuts or the app icon.
+- **Private by default:** no accounts, no analytics, no tracking. See the [privacy policy](https://hewigovens.github.io/hearvia/privacy.html).
 
-```
-HearviaKit/      Swift package shared by both apps, one product with five modules
-  HearviaCore    languages, engine kinds, status, transcript and sentence segmentation, Keychain
-  HearviaAudio   capture feed, resampler, microphone capture, level meter
-  HearviaEngines TranslationEngine protocol; Realtime (WebSocket) and on-device (SpeechAnalyzer + Translation)
-  HearviaSession LiveTranslator: preferences and the running engine, observable text and transcript
-  HearviaUI      colors, appearance, icon mark, buttons, segmented control, transcript list, model downloads
-  hearvia-translate: CLI that streams an audio file through any engine
-HearviaLLM/      Swift package for open-weight models (kept out of HearviaKit so its tests stay MLX-free)
-  HearviaGemma   TranslateGemma download, MLX translator and engine; gemma-bench times it per sentence
-Apps/iOS/      App, Home, Onboarding, Settings, Capture (ScreenCaptureKit), Subtitles (PiP), Developer (PoC tools)
-Apps/macOS/    App, Control, Overlay, Transcript, Settings, MenuBar, Capture (Core Audio process tap)
-agents/        architecture, SwiftUI, design, testing, version-control and run/debug guides (start at AGENTS.md)
-docs/          release notes; also the GitHub Pages site
-               (index.html, privacy.html: https://hewigovens.github.io/hearvia/)
-scripts/       gen_dev_secrets.sh, make_icons.swift, chatgpt_plan_probe.py
-TestMedia/     speech samples for the CLI
-```
+## Get Hearvia
 
-Architecture and conventions: [AGENTS.md](AGENTS.md).
+Hearvia is in internal testing on TestFlight; a public beta is coming. It needs iOS 27 or macOS 27. Updates are on the [website](https://hewigovens.github.io/hearvia/).
 
-## Build
+To build it yourself, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Needs Xcode 27, [XcodeGen](https://github.com/yonaskolb/XcodeGen), [just](https://github.com/casey/just), SwiftFormat and SwiftLint (`brew install xcodegen just swiftformat swiftlint`).
+## Feedback
 
-```sh
-just generate      # Hearvia.xcodeproj from project.yml (not checked in); schemes Hearvia (iOS) and HearviaMac
-just build         # both apps
-just test          # HearviaKit unit tests
-just run-mac       # launch the Mac app with JSON event logging
-just install-ios   # build, install and launch on the paired iPhone (HEARVIA_DEVICE=<udid>)
-just format lint
-```
+Report bugs and ideas in [GitHub issues](https://github.com/hewigovens/hearvia/issues).
 
-The signing team in `project.yml` is this workspace's; replace `DEVELOPMENT_TEAM` for another account.
+## License
 
-CI (`.github/workflows/ci.yml`, GitHub's `xcode-27` image) runs the kit tests, SwiftFormat and SwiftLint, and unsigned builds of both apps on every push to `main` and every pull request.
-
-### Development API key
-
-Put `OPENAI_API_KEY=sk-…` and/or `GEMINI_API_KEY=AIza…` (free from [Google AI Studio](https://aistudio.google.com/apikey)) in `.env` (gitignored). The pre-build script `scripts/gen_dev_secrets.sh` writes them into `Apps/Shared/DevSecrets.generated.swift` for **Debug builds only**, as fallbacks when no key is saved in the Keychain. Never ship a build with them.
-
-### Try the engines without the apps
-
-```sh
-just translate TestMedia/speech/en.aiff zh                  # OpenAI Realtime (needs .env)
-just translate TestMedia/speech/en.aiff zh --gemini         # Gemini Live (needs GEMINI_API_KEY)
-just translate TestMedia/speech/ja.aiff en --on-device=ja   # on-device
-```
-
-### App icon
-
-`just icons` renders the iOS (default, dark, tinted) and macOS icon sets from the same geometry as `HearviaMark` in `HearviaKit/Sources/HearviaUI/HearviaMark.swift`.
-
-## More
-
-- [TODO.md](TODO.md): open work.
-- [docs/release.md](docs/release.md): TestFlight, sandbox and App Store privacy notes.
+[BSL 1.1](LICENSE): free to use, modify and redistribute; paid app store distribution requires permission. Converts to Apache-2.0 on 2030-10-17.
