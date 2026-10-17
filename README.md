@@ -23,6 +23,7 @@
 - **Your choice of translator:**
   - **On-device:** Apple's speech recognition and translation. Free, private, and offline once the languages are downloaded.
   - **OpenAI Realtime** and **Gemini Live:** cloud translators with the lowest lag, using your own API key.
+  - **Local model (experimental):** Apple speech recognition, then each sentence goes to a model you run yourself with Ollama, LM Studio, Unsloth Studio or another OpenAI-compatible server, on your Mac or your network.
 - **Transcripts** of each session stay on your device until you export them.
 - **Quick start** on iPhone from a widget, Control Center, Shortcuts or the app icon.
 - **Private by default:** no accounts, no analytics, no tracking. See the [privacy policy](https://hewigovens.github.io/hearvia/privacy.html).

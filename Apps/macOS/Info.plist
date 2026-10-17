@@ -24,8 +24,15 @@
 	<false/>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.productivity</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 	<key>NSAudioCaptureUsageDescription</key>
 	<string>Hearvia listens to other apps' audio to show live translated subtitles.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Hearvia connects to the translation model you run on your local network (Local model translator).</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Hearvia listens to the microphone to show live translated subtitles.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>

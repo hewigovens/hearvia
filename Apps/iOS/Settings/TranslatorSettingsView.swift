@@ -30,6 +30,13 @@ struct TranslatorSettingsView: View {
                 Text("For the languages chosen on the home screen. Downloaded once, then work offline.")
             }
             .listRowBackground(Color.hvSurface)
+
+            Section {
+                LocalModelSettingsView(translator: translator)
+            } header: { Text("Local model (experimental)") } footer: {
+                Text("Hearvia recognizes speech on this iPhone, then sends each finished sentence to this server for translation: Ollama, LM Studio, Unsloth Studio or another OpenAI-compatible server. Use your Mac's address on the same network (such as http://my-mac.local:11434/v1), with the server set to accept network connections.")
+            }
+            .listRowBackground(Color.hvSurface)
         }
         .scrollContentBackground(.hidden)
         .background(Color.hvGround)

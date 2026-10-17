@@ -8,6 +8,8 @@ public enum EngineKind: String, CaseIterable, Identifiable, Sendable, Codable {
     case realtime
     /// gemini-3.5-live-translate over the Live API: free tier for testing, paid per minute after.
     case gemini
+    /// SpeechTranscriber + a chat model on the user's own server (Ollama, LM Studio, Unsloth Studio). Experimental.
+    case local
 
     public var id: String {
         rawValue
@@ -17,6 +19,7 @@ public enum EngineKind: String, CaseIterable, Identifiable, Sendable, Codable {
         case .onDevice: "On-device"
         case .realtime: "OpenAI Realtime"
         case .gemini: "Gemini Live"
+        case .local: "Local model"
         }
     }
     /// One line for pickers.
@@ -25,6 +28,7 @@ public enum EngineKind: String, CaseIterable, Identifiable, Sendable, Codable {
         case .onDevice: "Free · private · works offline"
         case .realtime: "Fastest · best quality · ~$2/hour"
         case .gemini: "Free to try · ~$2.20/hour after"
+        case .local: "Experimental · your Ollama, LM Studio or Unsloth"
         }
     }
     /// Runs in the cloud: needs an API key and streams audio to the provider.
@@ -35,12 +39,13 @@ public enum EngineKind: String, CaseIterable, Identifiable, Sendable, Codable {
     public var detectsSpokenLanguage: Bool {
         isCloud
     }
-    /// Where this engine's API key is kept; nil for on-device.
+    /// Where this engine's API key is kept; nil for on-device. A local server's key is optional.
     public var keyAccount: String? {
         switch self {
         case .onDevice: nil
         case .realtime: "openai-api-key"
         case .gemini: "gemini-api-key"
+        case .local: "local-model-api-key"
         }
     }
 }

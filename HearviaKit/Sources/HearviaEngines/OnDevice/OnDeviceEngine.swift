@@ -44,6 +44,19 @@ public final class OnDeviceEngine: TranslationEngine {
         return OnDeviceModelSet(speech: speech, translate: translate, strategy: translator.strategy)
     }
 
+    /// Apple speech recognition with each sentence translated by a model on the user's own server.
+    public static func localModel(sourceLanguage: String, targetLanguage: String, server: LocalModelServer,
+                                  model: String) -> OnDeviceEngine {
+        OnDeviceEngine(sourceLanguage: sourceLanguage, targetLanguage: targetLanguage) { progress in
+            guard !model.isEmpty else { throw LocalModelError.noModel }
+            let speech = try await OnDeviceSpeech(language: sourceLanguage, progress: progress)
+            let translate: @Sendable (String) async throws -> String = {
+                try await server.translate($0, from: sourceLanguage, to: targetLanguage, model: model)
+            }
+            return OnDeviceModelSet(speech: speech, translate: sourceLanguage == targetLanguage ? nil : translate, strategy: model)
+        }
+    }
+
     init(sourceLanguage: String, targetLanguage: String, load: @escaping ModelLoader) {
         self.sourceLanguage = sourceLanguage
         self.targetLanguage = targetLanguage

@@ -24,6 +24,13 @@
 	<false/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Hearvia connects to the translation model you run on your local network (Local model translator).</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Hearvia listens to the microphone to show live translated subtitles of speech around you.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>

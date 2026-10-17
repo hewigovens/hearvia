@@ -11,6 +11,10 @@ public extension LiveTranslator {
             error = "Add an API key for \(engine.title) in Settings, or switch to on-device translation."
             return
         }
+        guard engine != .local || !localModel.isEmpty else {
+            error = LocalModelError.noModel.localizedDescription
+            return
+        }
         isActive = true
         error = ""
         source = ""
@@ -18,7 +22,7 @@ public extension LiveTranslator {
         transcript = Transcript(engine: engine, sourceLanguage: engine.detectsSpokenLanguage ? "" : sourceLanguage, targetLanguage: targetLanguage)
         stats = TranslatorStats()
         let request = EngineRequest(sourceLanguage: sourceLanguage, targetLanguage: targetLanguage, apiKey: apiKey,
-                                    transcribesSource: transcribesSource)
+                                    transcribesSource: transcribesSource, localServer: localServer, localModel: localModel)
         let engine = makeEngine(engine, request)
         running = engine
         listener = Task { [weak self] in

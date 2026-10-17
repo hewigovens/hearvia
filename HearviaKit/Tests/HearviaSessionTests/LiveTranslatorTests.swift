@@ -85,6 +85,19 @@ final class Harness {
 
 @MainActor
 struct LiveTranslatorTests {
+    @Test func localModelNeedsAModelThenPassesItsServer() async {
+        let harness = Harness(apiKey: nil)
+        let translator = harness.translator
+        await translator.setEngine(.local)
+        await translator.start()
+        #expect(!translator.isActive && harness.engines.isEmpty && !translator.error.isEmpty)
+        translator.localServerURL = "http://localhost:1234/v1"
+        translator.localModel = "qwen3:8b"
+        await translator.start()
+        let request = try? #require(harness.engines.first?.request)
+        #expect(request?.localModel == "qwen3:8b" && request?.localServer.baseURL == "http://localhost:1234/v1")
+    }
+
     @Test func realtimeNeedsAnAPIKey() async {
         let harness = Harness(apiKey: nil)
         let translator = harness.translator

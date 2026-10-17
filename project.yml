@@ -51,6 +51,8 @@ targets:
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSMicrophoneUsageDescription: Hearvia listens to the microphone to show live translated subtitles of speech around you.
         NSSpeechRecognitionUsageDescription: Hearvia turns speech into text on this device to show subtitles.
+        NSLocalNetworkUsageDescription: Hearvia connects to the translation model you run on your local network (Local model translator).
+        NSAppTransportSecurity: { NSAllowsLocalNetworking: true } # Local model servers speak plain HTTP.
         ITSAppUsesNonExemptEncryption: false # Only HTTPS/WSS.
         UIBackgroundModes: [screen-capture, audio]
         # Long-press the app icon; handled by QuickActionSceneDelegate.
@@ -122,6 +124,8 @@ targets:
         NSAudioCaptureUsageDescription: Hearvia listens to other apps' audio to show live translated subtitles.
         NSMicrophoneUsageDescription: Hearvia listens to the microphone to show live translated subtitles.
         NSSpeechRecognitionUsageDescription: Hearvia turns speech into text on this Mac to show subtitles.
+        NSLocalNetworkUsageDescription: Hearvia connects to the translation model you run on your local network (Local model translator).
+        NSAppTransportSecurity: { NSAllowsLocalNetworking: true } # Local model servers speak plain HTTP.
     settings:
       base:
         PRODUCT_NAME: Hearvia

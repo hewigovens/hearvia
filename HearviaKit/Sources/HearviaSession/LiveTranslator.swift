@@ -26,10 +26,23 @@ public final class LiveTranslator {
     public var geminiKey: String {
         didSet { secrets.write(geminiKey, account: EngineKind.gemini.keyAccount!) }
     }
-    /// The chosen engine's key; empty for on-device.
+    /// The local model server: its address (OpenAI-compatible `/v1`), optional key and chosen model.
+    public var localServerURL: String {
+        didSet { defaults.set(localServerURL, forKey: Keys.localServerURL) }
+    }
+    public var localKey: String {
+        didSet { secrets.write(localKey, account: EngineKind.local.keyAccount!) }
+    }
+    public var localModel: String {
+        didSet { defaults.set(localModel, forKey: Keys.localModel) }
+    }
+    public var localServer: LocalModelServer {
+        LocalModelServer(baseURL: localServerURL, apiKey: localKey)
+    }
+    /// The chosen cloud engine's key; empty for on-device and local models.
     public var apiKey: String {
         switch engine {
-        case .onDevice: ""
+        case .onDevice, .local: ""
         case .realtime: openAIKey
         case .gemini: geminiKey
         }
@@ -77,6 +90,9 @@ public final class LiveTranslator {
         let openAIKey = key(.realtime)
         self.openAIKey = openAIKey
         geminiKey = key(.gemini)
+        localKey = secrets.read(account: EngineKind.local.keyAccount!) ?? ""
+        localServerURL = defaults.string(forKey: Keys.localServerURL) ?? LocalModelServer.presets[0].baseURL
+        localModel = defaults.string(forKey: Keys.localModel) ?? ""
         engine = defaults.string(forKey: Keys.engine).flatMap(EngineKind.init) ?? (openAIKey.isEmpty ? .onDevice : .realtime)
         sourceLanguage = defaults.string(forKey: Keys.sourceLanguage) ?? "en"
         targetLanguage = defaults.string(forKey: Keys.targetLanguage) ?? "zh"
@@ -89,6 +105,8 @@ public final class LiveTranslator {
         case .gemini: CloudEngine.gemini(targetLanguage: request.targetLanguage, apiKey: request.apiKey,
                                          transcribesSource: request.transcribesSource)
         case .onDevice: OnDeviceEngine(sourceLanguage: request.sourceLanguage, targetLanguage: request.targetLanguage)
+        case .local: OnDeviceEngine.localModel(sourceLanguage: request.sourceLanguage, targetLanguage: request.targetLanguage,
+                                               server: request.localServer, model: request.localModel)
         }
     }
 
@@ -139,6 +157,8 @@ public final class LiveTranslator {
         static let sourceLanguage = "hearvia.sourceLanguage"
         static let targetLanguage = "hearvia.targetLanguage"
         static let savesTranscripts = "hearvia.savesTranscripts"
+        static let localServerURL = "hearvia.localServerURL"
+        static let localModel = "hearvia.localModel"
     }
 }
 
@@ -148,4 +168,6 @@ public struct EngineRequest: Sendable {
     public let targetLanguage: String
     public let apiKey: String
     public let transcribesSource: Bool
+    public var localServer = LocalModelServer(baseURL: "")
+    public var localModel = ""
 }

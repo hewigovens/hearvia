@@ -79,6 +79,12 @@ private struct TranslatorSettings: View {
             Section("On-device models") {
                 OnDeviceModelsView(source: translator.sourceLanguage, target: translator.targetLanguage)
             }
+            Section {
+                LocalModelSettingsView(translator: translator)
+            } header: { Text("Local model (experimental)") } footer: {
+                Text("Hearvia recognizes speech on this Mac, then sends each finished sentence to this server for translation. Works with Ollama, LM Studio, Unsloth Studio or another OpenAI-compatible server.")
+                    .foregroundStyle(Color.hvMuted)
+            }
         }
     }
 }

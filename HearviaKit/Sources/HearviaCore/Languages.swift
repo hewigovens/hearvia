@@ -33,6 +33,6 @@ public enum Languages {
 
     /// The subtitle languages a cloud engine takes; the common list stands in for the on-device engines until theirs load.
     static func subtitles(for engine: EngineKind) -> [String] {
-        engine == .gemini ? gemini : supported
+        engine == .gemini || engine == .local ? gemini : supported
     }
 }

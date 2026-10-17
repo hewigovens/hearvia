@@ -19,6 +19,11 @@ public enum LanguageName {
         "\(source.isEmpty ? "Auto" : short(source)) → \(short(target))"
     }
 
+    /// The English name, for prompts: "Japanese", "Chinese".
+    public static func english(_ code: String) -> String {
+        Locale(identifier: "en").localizedString(forLanguageCode: code) ?? code
+    }
+
     /// The name in the user's language, e.g. "Japanese".
     public static func localized(_ code: String) -> String {
         Locale.current.localizedString(forLanguageCode: code)?.capitalized ?? code

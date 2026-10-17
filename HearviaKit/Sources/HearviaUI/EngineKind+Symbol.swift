@@ -6,6 +6,7 @@ public extension EngineKind {
         case .onDevice: "cpu"
         case .realtime: "cloud"
         case .gemini: "sparkle"
+        case .local: "desktopcomputer"
         }
     }
 }
