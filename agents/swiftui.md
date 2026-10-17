@@ -30,7 +30,7 @@ Apps/macOS/
 ├── Overlay/      OverlayPanel (+ OverlayPointer), OverlayView
 ├── Settings/     SettingsView (tabs: General, Translators, Overlay, Diagnostics)
 ├── Transcript/   TranscriptView (Transcripts window: sidebar of sessions, export/copy/delete)
-└── MenuBar/      MenuBarLabel
+└── MenuBar/      MenuBarLabel, MenuBarMenu
 Apps/Shared/      DevSecrets.generated.swift (generated, optional in project.yml)
 ```
 

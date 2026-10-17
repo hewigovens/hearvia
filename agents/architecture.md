@@ -28,8 +28,9 @@ HearviaLLM (separate package, so the kit and its tests stay MLX-free; build with
   gemma-bench     CLI: downloads the model and times translating sentences one at a time
 Apps/iOS     SwiftUI shell: ScreenCaptureKit / mic capture, PiP subtitle strip, home, onboarding, settings
 Apps/macOS   SwiftUI shell: Core Audio process tap / mic capture, overlay panel, control window, menu bar,
-             Dock menu (AppDelegate), first-run permission explainer; launch work lives in MenuBarLabel
-             because the menu bar extra exists in both Dock and menu-bar-only modes
+             Dock menu (AppDelegate), first-run permission explainer. The status item is a menu (MenuBarMenu)
+             beside the Dock icon and the control panel in menu-bar-only mode, one MenuBarExtra per mode;
+             launch work runs once from MenuBarLabel, which both show
 ```
 
 Module dependencies (enforced by Package.swift):
