@@ -6,6 +6,7 @@ import SwiftUI
 /// The translators, and what the chosen one still needs.
 struct TranslatorSheet: View {
     let translator: LiveTranslator
+    let backgroundTranslation: BackgroundGPUAccess
     let openSettings: () -> Void
 
     var body: some View {
@@ -15,11 +16,11 @@ struct TranslatorSheet: View {
                     Task { await translator.setEngine(engine) }
                 }
             }
-            EngineStatus(translator: translator, openSettings: openSettings)
+            EngineStatus(translator: translator, backgroundTranslation: backgroundTranslation, openSettings: openSettings)
         }
     }
 
     private func detail(_ engine: EngineKind) -> String {
-        engine == .gemma && !BackgroundTranslation.isSupported ? "Offline · only while Hearvia is open" : engine.tagline
+        engine == .gemma && !backgroundTranslation.isSupported ? "Offline · only while Hearvia is open" : engine.tagline
     }
 }

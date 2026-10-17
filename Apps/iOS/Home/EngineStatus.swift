@@ -5,11 +5,12 @@ import SwiftUI
 /// One line when the chosen translator is ready; otherwise what's missing, with the fix inline.
 struct EngineStatus: View {
     let translator: LiveTranslator
+    let backgroundTranslation: BackgroundGPUAccess
     let openSettings: () -> Void
     @State private var ready: Bool?
 
     var body: some View {
-        Group {
+        VStack(alignment: .leading, spacing: 12) {
             if translator.engine.isCloud {
                 if translator.apiKey.isEmpty {
                     Button(action: openSettings) {
@@ -20,7 +21,7 @@ struct EngineStatus: View {
                     readyLine("Using your \(translator.engine.title) key")
                 }
             } else if ready == true {
-                readyLine(translator.engine == .gemma && !BackgroundTranslation.isSupported ? "Ready · translates while Hearvia is on screen" : "Speech and translation models ready")
+                readyLine("Speech and translation models ready")
             } else if ready == nil {
                 Label("Checking on-device models…", systemImage: "hourglass").font(.footnote).foregroundStyle(Color.hvMuted)
             } else {
@@ -34,6 +35,9 @@ struct EngineStatus: View {
                 .font(.subheadline)
                 .padding(14)
                 .background(Color.hvSurface, in: .rect(cornerRadius: 14, style: .continuous))
+            }
+            if translator.engine == .gemma {
+                BackgroundTranslationStatus(access: backgroundTranslation)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

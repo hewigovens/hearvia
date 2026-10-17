@@ -66,7 +66,7 @@ struct HomeView: View {
             case .settings: SettingsView(model: model) { presentation = .onboarding }
             case .source: SourceSheet()
             case .languages: LanguagesSheet(translator: model.translation)
-            case .translator: TranslatorSheet(translator: model.translation) { presentation = .settings }
+            case .translator: TranslatorSheet(translator: model.translation, backgroundTranslation: model.backgroundTranslation) { presentation = .settings }
             case .transcripts: TranscriptsSheet(translator: model.translation)
             case .onboarding: EmptyView()
             }

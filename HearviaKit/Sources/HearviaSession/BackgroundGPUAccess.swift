@@ -1,25 +1,31 @@
 import Foundation
+import Observation
 
 /// A background GPU grant for one user-started session; late callbacks cannot affect a newer session.
-@MainActor
+@MainActor @Observable
 public final class BackgroundGPUAccess {
+    public enum Status: Equatable, Sendable {
+        case unsupported, available, requesting, active, denied, expired
+    }
+
+    public let isSupported: Bool
+    public private(set) var status: Status
     public var isGranted: Bool {
-        progress != nil
+        status == .active
     }
     public private(set) var requestID: String?
-    private let supported: Bool
     private let identifierPattern: String
     private let submit: (String) async throws -> Void
     private let cancel: (String) -> Void
     private let log: (String, [String: String]) -> Void
-    private var declined = false
     private var progress: Progress?
     private var complete: ((Bool) -> Void)?
     private var lastChunks = 0
 
     public init(supported: Bool, identifierPattern: String, submit: @escaping (String) async throws -> Void, cancel: @escaping (String) -> Void,
                 log: @escaping (String, [String: String]) -> Void = { _, _ in }) {
-        self.supported = supported
+        isSupported = supported
+        status = supported ? .available : .unsupported
         self.identifierPattern = identifierPattern
         self.submit = submit
         self.cancel = cancel
@@ -37,9 +43,10 @@ public final class BackgroundGPUAccess {
             progress.completedUnitCount += Int64(consumed)
         }
         lastChunks = chunks
-        guard requestID == nil, !declined, supported, foreground else { return }
+        guard requestID == nil, status == .available, foreground else { return }
         let identifier = identifierPattern.replacingOccurrences(of: "*", with: UUID().uuidString)
         requestID = identifier
+        status = .requesting
         do {
             try await submit(identifier)
             if requestID != identifier {
@@ -47,19 +54,19 @@ public final class BackgroundGPUAccess {
             }
         } catch {
             guard requestID == identifier else { return }
-            finish(success: false)
-            declined = true
+            finish(success: false, status: .denied)
             log("background_gpu_declined", ["error": error.localizedDescription])
         }
     }
 
     public func resume() {
-        declined = false
+        if status == .denied || status == .expired {
+            status = .available
+        }
     }
 
     public func stop() {
-        finish(success: true)
-        declined = false
+        finish(success: true, status: isSupported ? .available : .unsupported)
         lastChunks = 0
     }
 
@@ -71,17 +78,17 @@ public final class BackgroundGPUAccess {
         self.complete = complete
         progress.totalUnitCount = 1
         progress.completedUnitCount = 0
+        status = .active
         log("background_gpu_started", [:])
     }
 
     public func expire(identifier: String) {
         guard requestID == identifier else { return }
-        finish(success: false)
-        declined = true
+        finish(success: false, status: .expired)
         log("background_gpu_expired", [:])
     }
 
-    private func finish(success: Bool) {
+    private func finish(success: Bool, status: Status) {
         let identifier = requestID
         let complete = complete
         requestID = nil
@@ -90,6 +97,7 @@ public final class BackgroundGPUAccess {
             progress.completedUnitCount = progress.totalUnitCount
         }
         progress = nil
+        self.status = status
         if let complete {
             complete(success)
         } else if let identifier {

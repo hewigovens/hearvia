@@ -5,6 +5,7 @@ import SwiftUI
 /// API keys for the cloud translators and the on-device models, one page under Settings.
 struct TranslatorSettingsView: View {
     @Bindable var translator: LiveTranslator
+    let backgroundTranslation: BackgroundGPUAccess
 
     var body: some View {
         Form {
@@ -34,8 +35,9 @@ struct TranslatorSettingsView: View {
             if let gemma = translator.downloadable(for: .gemma), gemma.isSupported {
                 Section {
                     DownloadableEngineRow(gemma)
+                    BackgroundTranslationStatus(access: backgroundTranslation)
                 } footer: {
-                    Text("Google's open translation model, run on this iPhone with no internet. \(BackgroundTranslation.isSupported ? "Translation can continue behind other apps while iOS allows it. Open Hearvia to resume if it pauses." : "On this iPhone, translation pauses behind other apps.") [Gemma Terms of Use](https://ai.google.dev/gemma/terms).")
+                    Text("Google's open translation model, run on this device with no internet. [Gemma Terms of Use](https://ai.google.dev/gemma/terms).")
                 }
                 .listRowBackground(Color.hvSurface)
             }
