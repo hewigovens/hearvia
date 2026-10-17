@@ -4,7 +4,7 @@ public enum Languages {
     public static let supported = ["zh", "en", "ja", "ko", "es", "fr", "de", "pt", "it", "ru", "hi", "id", "vi"]
 
     /// Languages written without spaces between words.
-    static let unspaced: Set<String> = ["zh", "ja", "yue", "th", "lo", "km", "my"]
+    public static let unspaced: Set<String> = ["zh", "ja", "yue", "th", "lo", "km", "my"]
 
     /// Picker choices for `engine`. On-device lists `onDevice` (empty until it loads), Realtime languages first;
     /// `selected` is always included so a picker never loses its current value.

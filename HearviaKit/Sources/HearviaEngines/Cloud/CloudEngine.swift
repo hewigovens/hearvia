@@ -43,6 +43,9 @@ public final class CloudEngine: TranslationEngine {
     var fatalProblem = false
     var source = ""
     var translation = ""
+    /// A new session's first deltas don't know what came before, so they get a separator.
+    var sessionStartedSource = false
+    var sessionStartedTranslation = false
     var segmenter = SentenceSegmenter()
 
     /// gpt-realtime-translate. `transcribesSource: false` skips the original-language text, which is billed separately.

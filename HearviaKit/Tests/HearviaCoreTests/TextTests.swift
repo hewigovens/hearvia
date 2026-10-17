@@ -8,6 +8,15 @@ import Testing
     #expect(SubtitleText.join("", "world", language: "en") == "world")
 }
 
+@Test func separatesANewSessionsTextByScript() {
+    #expect(SubtitleText.continuation(of: "than expected", with: "Good evening") == " Good evening")
+    #expect(SubtitleText.continuation(of: "than expected ", with: "Good evening") == "Good evening")
+    #expect(SubtitleText.continuation(of: "", with: "Good evening") == "Good evening")
+    #expect(SubtitleText.continuation(of: "比预期的要小。", with: "晚上好") == "晚上好")
+    #expect(SubtitleText.continuation(of: "おはよう", with: "Good") == "Good")
+    #expect(SubtitleText.continuation(of: "Hello.", with: "World", unspaced: true) == "World")
+}
+
 @Test func boundsLongText() {
     let text = String(repeating: "a", count: 2001)
     #expect(SubtitleText.bounded(text).count == 1500)

@@ -15,14 +15,16 @@ extension CloudEngine {
             lastProblem = ""
             failures = 0
             expiresAt = expires
+            sessionStartedSource = true
+            sessionStartedTranslation = true
             continuation.yield(.status(.translating(onDevice: false)))
             continuation.yield(.log("translation_session", ["provider": provider, "id": id, "expires": expires.map { "\($0)" } ?? ""]))
         case let .expiring(at):
             expiresAt = at
             continuation.yield(.log("translation_expiring", ["seconds_left": "\(Int(at.timeIntervalSince(timing.now())))"]))
         case .audioDelta: break
-        case let .sourceDelta(delta, _): appendSource(delta)
-        case let .translationDelta(delta, _): appendTranslation(delta)
+        case let .sourceDelta(delta, _): appendSource(startingSession(delta, isSource: true))
+        case let .translationDelta(delta, _): appendTranslation(startingSession(delta, isSource: false))
         case let .serverError(code, message, fatal):
             lastProblem = "\(code): \(message)"
             fatalProblem = fatalProblem || fatal
@@ -45,6 +47,18 @@ extension CloudEngine {
         case .closed: retiring = nil
         default: break
         }
+    }
+
+    private func startingSession(_ delta: String, isSource: Bool) -> String {
+        if isSource, sessionStartedSource {
+            sessionStartedSource = false
+            return SubtitleText.continuation(of: source, with: delta)
+        }
+        if !isSource, sessionStartedTranslation {
+            sessionStartedTranslation = false
+            return SubtitleText.continuation(of: translation, with: delta, unspaced: Languages.unspaced.contains(targetLanguage))
+        }
+        return delta
     }
 
     private func appendSource(_ delta: String) {

@@ -181,6 +181,22 @@ struct CloudEngineTests {
         try await eventually { self.harness.statuses.contains(.connecting(attempt: 1)) }
     }
 
+    @Test func separatesTextFromConsecutiveSessions() async throws {
+        await harness.start()
+        harness.sockets[0].send(.sessionStarted(id: "s1", expiresAt: nil))
+        harness.sockets[0].send(.sourceDelta("than expected", elapsedMs: nil))
+        harness.sockets[0].send(.translationDelta("比预期的要小。", elapsedMs: nil))
+        try await eventually { self.harness.engine.translation == "比预期的要小。" }
+        harness.sockets[0].send(.closed(reason: "rotated"))
+        try await eventually { self.harness.sockets.count == 2 }
+        harness.sockets[1].send(.sessionStarted(id: "s2", expiresAt: nil))
+        harness.sockets[1].send(.sourceDelta("Good evening", elapsedMs: nil))
+        harness.sockets[1].send(.translationDelta("晚上好", elapsedMs: nil))
+        try await eventually { self.harness.engine.translation.hasSuffix("晚上好") }
+        #expect(harness.engine.source == "than expected Good evening")
+        #expect(harness.engine.translation == "比预期的要小。晚上好")
+    }
+
     @Test func pausesOnSilenceAndResumesWithPreRoll() async throws {
         await harness.start()
         let first = try #require(harness.sockets.first)

@@ -90,7 +90,7 @@ Left for Mac TestFlight:
 - [x] Skip input transcription when "show original" is off.
 - [ ] Tune the silence threshold (about −40 dBFS peak, `CloudTiming.silencePeak`): videos with background music may never pause.
 - [ ] Transcript lines are cut at sentence punctuation in the translation, so original/translation pairing is approximate.
-- [ ] Source text from consecutive sessions (after a pause or rotation) is joined without a space ("…than expected Good evening").
+- [x] Text from consecutive sessions (after a pause or rotation) is separated again: a space for spaced scripts and target languages, none for Chinese, Japanese and Thai (2026-10-17).
 
 ## Product
 
