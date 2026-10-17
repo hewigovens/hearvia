@@ -2,7 +2,6 @@ import HearviaSession
 import HearviaUI
 import SwiftUI
 
-/// What the chosen translator still needs, with the fix inline; nothing once it is ready.
 struct EngineStatusLine: View {
     let translator: LiveTranslator
     @State private var modelsMissing = false

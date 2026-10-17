@@ -125,7 +125,6 @@ let timeout = Task { try await Task.sleep(for: .seconds(20))
 await receiver.value
 timeout.cancel()
 
-/// Feeds the file through the on-device engine at real-time pace, printing each subtitle change.
 @MainActor func runOnDevice(path: String, spoken: String, target: String) async throws {
     let engine = OnDeviceEngine(sourceLanguage: spoken, targetLanguage: target)
     let feed = AudioFeed()

@@ -1,6 +1,5 @@
 import AppKit
 
-/// Dock behavior: clicking the icon brings back the control window, and its menu mirrors the menu bar extra.
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     var model: AppModel?
@@ -28,7 +27,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 
-/// A menu item that runs a closure instead of a target-action selector.
 @MainActor
 final class ActionMenuItem: NSMenuItem {
     private let handler: @MainActor () -> Void

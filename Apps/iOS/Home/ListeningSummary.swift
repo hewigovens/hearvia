@@ -1,8 +1,6 @@
 import HearviaUI
 import SwiftUI
 
-/// Under the live subtitles: input level, source, languages and translator (or a translator error), and until
-/// the floating window is up, where to go next.
 struct ListeningSummary: View {
     let model: AppModel
 

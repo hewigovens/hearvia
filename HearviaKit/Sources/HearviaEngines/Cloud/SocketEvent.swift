@@ -1,14 +1,11 @@
 import Foundation
 
-/// What a `TranslationSocket` reports.
 public enum SocketEvent: Sendable, Equatable {
     /// The server accepted the session. `expiresAt` is when the provider will end the connection.
     case sessionStarted(id: String, expiresAt: Date?)
-    /// The server announced that it will end the connection at this time.
     case expiring(at: Date)
     /// Append-only source-language text (only when source transcription is on).
     case sourceDelta(String, elapsedMs: Int?)
-    /// Append-only translated text.
     case translationDelta(String, elapsedMs: Int?)
     /// Translated speech; subtitles-only clients ignore it but it is still billed.
     case audioDelta(bytes: Int, elapsedMs: Int?)

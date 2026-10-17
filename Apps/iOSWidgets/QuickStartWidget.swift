@@ -3,8 +3,7 @@ import HearviaUI
 import SwiftUI
 import WidgetKit
 
-/// Home Screen and Lock Screen widget that starts listening: the last source (small, Lock Screen) or a choice
-/// of source (medium). It shows no live state, so its timeline never changes.
+/// It shows no live state, so its timeline never changes.
 struct QuickStartWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "dev.hewig.hearvia.widget.start", provider: Provider()) { _ in
@@ -83,7 +82,6 @@ private struct QuickStartView: View {
     }
 }
 
-/// The accent pill used for every start action in the widget.
 private struct StartButton: View {
     let title: String
     let symbol: String

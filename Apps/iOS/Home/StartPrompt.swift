@@ -1,7 +1,6 @@
 import HearviaUI
 import SwiftUI
 
-/// Under the listen button while not listening: what a tap does, what iOS is waiting for, or what went wrong.
 struct StartPrompt: View {
     let model: AppModel
 

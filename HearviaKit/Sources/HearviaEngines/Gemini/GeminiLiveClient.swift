@@ -1,7 +1,6 @@
 import Foundation
 
-/// WebSocket client for the Gemini Live API (`BidiGenerateContent`) in translation mode. The target language is
-/// fixed per session, and audio is sent at the 16 kHz the Live API takes.
+/// The target language is fixed per session; audio is sent at the 16 kHz the Live API takes.
 public actor GeminiLiveClient: TranslationSocket {
     public nonisolated let events: AsyncStream<SocketEvent>
     private let continuation: AsyncStream<SocketEvent>.Continuation
@@ -114,7 +113,6 @@ public actor GeminiLiveClient: TranslationSocket {
         return events
     }
 
-    /// A protobuf JSON duration such as "12.5s".
     static func seconds(_ value: Any?) -> TimeInterval? {
         (value as? String).flatMap { TimeInterval($0.trimmingCharacters(in: CharacterSet(charactersIn: "s"))) }
     }

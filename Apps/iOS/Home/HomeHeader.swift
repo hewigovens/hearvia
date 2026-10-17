@@ -1,7 +1,6 @@
 import HearviaUI
 import SwiftUI
 
-/// The wordmark when ready; a live "Listening" pill with elapsed time while listening.
 struct HomeHeader: View {
     let model: AppModel
     let present: (HomePresentation) -> Void

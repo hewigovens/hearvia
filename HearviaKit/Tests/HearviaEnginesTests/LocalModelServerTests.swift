@@ -2,7 +2,6 @@ import Foundation
 @testable import HearviaEngines
 import Testing
 
-/// Answers every request with the next scripted response and records what was sent.
 final class StubServer: URLProtocol, @unchecked Sendable {
     nonisolated(unsafe) static var responses: [(status: Int, body: String)] = []
     nonisolated(unsafe) static var requests: [URLRequest] = []

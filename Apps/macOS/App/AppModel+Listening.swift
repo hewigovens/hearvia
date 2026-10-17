@@ -1,6 +1,5 @@
 extension AppModel {
-    /// Start or Stop from any control. Until the permission explainer has been shown, Start opens it
-    /// instead; the explainer's Continue then starts listening.
+    /// Until the permission explainer has been shown, Start opens it instead; the explainer's Continue then starts listening.
     func toggleListening() async {
         if capturing {
             await stop()

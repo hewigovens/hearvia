@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Recent input levels as a short bar meter, newest on the right.
 public struct LevelBars: View {
     let levels: [Float]
     public init(levels: [Float]) {

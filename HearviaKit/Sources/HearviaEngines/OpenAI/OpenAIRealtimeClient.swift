@@ -1,6 +1,5 @@
 import Foundation
 
-/// WebSocket client for OpenAI's `/v1/realtime/translations` endpoint.
 /// `credential` is an API key (development) or an ephemeral client secret (production).
 public actor OpenAIRealtimeClient: TranslationSocket {
     public nonisolated let events: AsyncStream<SocketEvent>
@@ -32,7 +31,6 @@ public actor OpenAIRealtimeClient: TranslationSocket {
         Task { await self.receiveLoop() }
     }
 
-    /// One 200 ms PCM16 24 kHz mono chunk.
     public func append(_ chunk: Data) async throws {
         try await send(["type": "session.input_audio_buffer.append", "audio": chunk.base64EncodedString()])
     }

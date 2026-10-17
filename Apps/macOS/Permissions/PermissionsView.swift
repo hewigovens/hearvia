@@ -1,7 +1,6 @@
 import HearviaUI
 import SwiftUI
 
-/// Shown before the first Start: what the macOS prompts that follow are for, so the user knows to allow them.
 struct PermissionsView: View {
     let model: AppModel
     @Environment(AppSettings.self) private var settings

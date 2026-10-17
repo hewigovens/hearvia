@@ -1,7 +1,6 @@
 import HearviaCore
 import SwiftUI
 
-/// Finished sentences, original above translation, kept scrolled to the newest line.
 public struct TranscriptList: View {
     let lines: [TranscriptLine]
     let originalFont: Font

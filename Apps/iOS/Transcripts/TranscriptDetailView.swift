@@ -2,7 +2,6 @@ import HearviaCore
 import HearviaUI
 import SwiftUI
 
-/// One transcript, with export (a .txt named after its start time) and, for saved ones, delete.
 struct TranscriptDetailView: View {
     let transcript: Transcript
     let delete: (() -> Void)?

@@ -2,12 +2,9 @@ import Foundation
 import HearviaCore
 import Observation
 
-/// Past transcripts, newest first, one JSON file each: in Application Support/Hearvia/Transcripts, or in the app's
-/// iCloud container while `syncsWithICloud` is on (see TranscriptHistory+iCloud).
 @MainActor @Observable
 public final class TranscriptHistory {
     public internal(set) var transcripts: [Transcript] = []
-    /// Keeps transcripts in iCloud so they appear on the user's other devices. Off by default.
     public var syncsWithICloud: Bool {
         didSet {
             guard syncsWithICloud != oldValue else { return }
@@ -19,7 +16,6 @@ public final class TranscriptHistory {
             }
         }
     }
-    /// True once transcripts live in iCloud; false when sync is off or iCloud isn't available.
     public internal(set) var isInICloud = false
 
     @ObservationIgnored let localDirectory: URL
@@ -45,7 +41,6 @@ public final class TranscriptHistory {
         }
     }
 
-    /// Adds or replaces `transcript`; an empty one isn't kept.
     public func save(_ transcript: Transcript) {
         guard !transcript.isEmpty else { return }
         transcripts.removeAll { $0.id == transcript.id }
@@ -66,7 +61,7 @@ public final class TranscriptHistory {
         directory.appending(path: "\(id.uuidString).json")
     }
 
-    /// Newest first; unreadable files (or iCloud placeholders not downloaded yet) are skipped.
+    /// Unreadable files and iCloud placeholders not downloaded yet are skipped.
     nonisolated static func read(_ folder: URL) -> [Transcript] {
         let files = (try? FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: nil)) ?? []
         return read(files: files.filter { $0.pathExtension == "json" })
@@ -81,8 +76,7 @@ public final class TranscriptHistory {
         .sorted { $0.startedAt > $1.startedAt }
     }
 
-    /// Coordinated, so iCloud never uploads a half-written file. Default protection: saves also happen while the
-    /// iPhone is locked.
+    /// Coordinated, so iCloud never uploads a half-written file. Default protection: saves also happen while the iPhone is locked.
     static func write(_ transcript: Transcript, to url: URL) {
         guard let data = try? JSONEncoder().encode(transcript) else { return }
         try? FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)

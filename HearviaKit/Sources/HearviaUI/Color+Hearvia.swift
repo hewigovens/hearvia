@@ -5,7 +5,6 @@ import SwiftUI
     import AppKit
 #endif
 
-/// Periwinkle (dark, default) and Paper light palettes from the design canvas.
 /// Subtitle surfaces stay dark in both themes.
 public extension Color {
     static let hvGround = Color(light: 0xF7F7F5, dark: 0x0E1020)

@@ -40,8 +40,7 @@ struct HearviaMacApp: App {
                 .environment(settings)
         }
 
-        // One status item per mode: a menu beside the Dock icon and control window, the control panel when
-        // Hearvia lives only in the menu bar.
+        // One status item per mode: a menu beside the Dock icon and control window, the control panel when Hearvia lives only in the menu bar.
         MenuBarExtra(isInserted: Binding(get: { !settings.menuBarOnly }, set: { _ in })) {
             MenuBarMenu(model: model)
                 .environment(settings)

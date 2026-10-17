@@ -2,7 +2,7 @@ import HearviaEngines
 import HearviaSession
 import SwiftUI
 
-/// Address, optional key and model for the local model translator. Place inside a Form section.
+/// Place inside a Form section.
 public struct LocalModelSettingsView: View {
     @Bindable var translator: LiveTranslator
     @State private var models: [String] = []

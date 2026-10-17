@@ -1,16 +1,13 @@
 import Foundation
 import HearviaCore
 
-/// A streaming cloud translator (OpenAI Realtime or Gemini Live) over a `TranslationSocket`. Translated audio is
-/// discarded. The socket reconnects with backoff, closes during long silences (both providers bill for streamed
-/// time) and is replaced before the provider ends the connection.
+/// Both providers bill for streamed time, so the socket closes during long silences; translated audio is discarded.
 @MainActor
 public final class CloudEngine: TranslationEngine {
     typealias SocketFactory = @MainActor (_ targetLanguage: String, _ transcribesSource: Bool) -> any TranslationSocket
 
     public let updates: AsyncStream<EngineUpdate>
     let continuation: AsyncStream<EngineUpdate>.Continuation
-    /// "OpenAI" or "Gemini", for messages.
     let provider: String
     let timing: CloudTiming
     let transcribesSource: Bool
@@ -18,9 +15,7 @@ public final class CloudEngine: TranslationEngine {
     var targetLanguage: String
     var running = false
 
-    /// Where audio goes; nil while paused or waiting to reconnect.
     var socket: (any TranslationSocket)?
-    /// Set once `socket` has connected; until then audio collects in `backlog`.
     var socketReady = false
     /// The previous socket after a pause or rotation, still delivering its last text until it closes.
     var retiring: (any TranslationSocket)?
@@ -31,9 +26,7 @@ public final class CloudEngine: TranslationEngine {
     var pump: Task<Void, Never>?
     var reconnectTask: Task<Void, Never>?
 
-    /// All reconnects, for the status line and stats.
     var reconnects = 0
-    /// Consecutive failed connections, for backoff and giving up; reset when a session starts.
     var failures = 0
     var chunksReceived = 0
     var chunksSent = 0
@@ -48,14 +41,13 @@ public final class CloudEngine: TranslationEngine {
     var sessionStartedTranslation = false
     var segmenter = SentenceSegmenter()
 
-    /// gpt-realtime-translate. `transcribesSource: false` skips the original-language text, which is billed separately.
+    /// `transcribesSource: false` skips the original-language text, which is billed separately.
     public static func openAI(targetLanguage: String, apiKey: String, transcribesSource: Bool = true) -> CloudEngine {
         CloudEngine(provider: "OpenAI", targetLanguage: targetLanguage, transcribesSource: transcribesSource, timing: CloudTiming()) {
             OpenAIRealtimeClient(configuration: OpenAIRealtimeConfiguration(targetLanguage: $0, transcribesSource: $1), credential: apiKey)
         }
     }
 
-    /// gemini-3.5-live-translate over the Live API.
     public static func gemini(targetLanguage: String, apiKey: String, transcribesSource: Bool = true) -> CloudEngine {
         CloudEngine(provider: "Gemini", targetLanguage: targetLanguage, transcribesSource: transcribesSource, timing: CloudTiming()) {
             GeminiLiveClient(configuration: GeminiLiveConfiguration(targetLanguage: $0, transcribesSource: $1), apiKey: apiKey)
@@ -106,7 +98,7 @@ public final class CloudEngine: TranslationEngine {
         retire(socket)
     }
 
-    /// Opens a new socket. `announce: false` keeps the status line quiet for a session rotation.
+    /// `announce: false` keeps the status line quiet for a session rotation.
     func connect(announce: Bool = true) async {
         guard running, !paused else { return }
         if announce {

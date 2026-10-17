@@ -3,7 +3,6 @@ import HearviaSession
 import HearviaUI
 import SwiftUI
 
-/// Listen to · Languages · Translator, each a menu of its choices.
 struct ControlTiles: View {
     @Bindable var model: AppModel
     @State private var ready: Bool?

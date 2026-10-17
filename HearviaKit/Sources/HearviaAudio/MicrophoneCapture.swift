@@ -1,7 +1,6 @@
 import AVFoundation
 
-/// Raw microphone input (no voice processing, so nearby speech and loudspeaker sound are kept).
-/// On iOS the caller activates a play-and-record AVAudioSession first.
+/// No voice processing, so nearby speech and loudspeaker sound are kept. On iOS the caller activates a play-and-record AVAudioSession first.
 public final class MicrophoneCapture: @unchecked Sendable {
     private let engine = AVAudioEngine()
     public private(set) var running = false

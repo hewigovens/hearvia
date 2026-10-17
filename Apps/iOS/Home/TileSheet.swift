@@ -1,7 +1,6 @@
 import HearviaUI
 import SwiftUI
 
-/// The sheet behind each home tile: a title over the choices, exactly as tall as its content.
 struct TileSheet<Content: View>: View {
     let title: String
     @ViewBuilder var content: Content

@@ -2,7 +2,6 @@ import Foundation
 import HearviaCore
 import Translation
 
-/// SpeechTranscriber → Translation framework, entirely on this device.
 /// Finished segments are translated once; the volatile tail is re-translated as it changes.
 @MainActor
 public final class OnDeviceEngine: TranslationEngine {
@@ -24,7 +23,6 @@ public final class OnDeviceEngine: TranslationEngine {
     var volatileTranslation = ""
     var finalQueue: [String] = []
     var pendingVolatile: String?
-    /// The translation error on screen, cleared by the next translation that works.
     var translationProblem = ""
 
     public convenience init(sourceLanguage: String, targetLanguage: String) {
@@ -44,7 +42,6 @@ public final class OnDeviceEngine: TranslationEngine {
         return OnDeviceModelSet(speech: speech, translate: translate, strategy: translator.strategy)
     }
 
-    /// Apple speech recognition with each sentence translated by a model on the user's own server.
     public static func localModel(sourceLanguage: String, targetLanguage: String, server: LocalModelServer,
                                   model: String) -> OnDeviceEngine {
         OnDeviceEngine(sourceLanguage: sourceLanguage, targetLanguage: targetLanguage) { progress in

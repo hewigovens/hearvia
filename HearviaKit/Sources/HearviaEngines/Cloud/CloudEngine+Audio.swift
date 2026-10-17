@@ -1,6 +1,5 @@
 import Foundation
 
-/// Audio routing: sending, buffering while (re)connecting, pausing on silence and rotating the session.
 extension CloudEngine {
     func consume(_ chunk: Data) async {
         guard running else { return }

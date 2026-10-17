@@ -2,7 +2,6 @@ import HearviaSession
 import HearviaUI
 import SwiftUI
 
-/// Listen to · Languages · Translator, each one tap from its choices.
 struct HomeTiles: View {
     let model: AppModel
     let present: (HomePresentation) -> Void

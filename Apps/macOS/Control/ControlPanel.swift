@@ -1,8 +1,6 @@
 import HearviaUI
 import SwiftUI
 
-/// Hearvia's main screen, shown in the menu bar popover and in the control window: the listen button over the
-/// setup tiles; while listening the tiles fold into one summary line.
 struct ControlPanel: View {
     let model: AppModel
     let inMenuBar: Bool

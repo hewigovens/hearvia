@@ -4,7 +4,6 @@ import CoreAudio
 enum AudioProcesses {
     static let system = AudioObjectID(kAudioObjectSystemObject)
 
-    /// Core Audio process objects (apps and helpers such as WebKit GPU or Chrome audio service).
     static func list() -> [AudioProcess] {
         let own = getpid()
         let ids = (try? CoreAudioProperty.readObjectList(system, kAudioHardwarePropertyProcessObjectList)) ?? []

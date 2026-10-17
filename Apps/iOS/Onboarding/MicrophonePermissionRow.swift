@@ -2,7 +2,6 @@ import AVFoundation
 import HearviaUI
 import SwiftUI
 
-/// Microphone access: ask in context, or send the user to Settings after a denial.
 struct MicrophonePermissionRow: View {
     @State private var permission = AVAudioApplication.shared.recordPermission
     @Environment(\.openURL) private var openURL

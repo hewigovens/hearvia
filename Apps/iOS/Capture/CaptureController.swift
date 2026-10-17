@@ -43,7 +43,7 @@ final class CaptureController: NSObject, SCContentSharingPickerObserver, SCStrea
         state = "Awaiting system consent"
         error = ""
         log.event("picker_presented", ["full_display": "true", "microphone_control": "\(offerMicrophone)", "exclude_own_audio": "\(excludeOwnAudio)"])
-        picker.present() // iOS full-display entry point in Apple's iOS 27 sample.
+        picker.present()
     }
 
     func stop() async {

@@ -1,7 +1,6 @@
 import Speech
 import Translation
 
-/// Model availability for the on-device engine, keyed by the app's language codes.
 public enum OnDeviceModels {
     public enum Availability: Sendable, Equatable {
         case unsupported, downloadable, downloading, installed
@@ -22,13 +21,11 @@ public enum OnDeviceModels {
         return Locale(identifier: map[code] ?? code)
     }
 
-    /// Languages SpeechTranscriber can recognize on this device's OS, as language codes.
     public static func spokenLanguages() async -> [String] {
         guard SpeechTranscriber.isAvailable else { return [] }
         return await codes(SpeechTranscriber.supportedLocales.map(\.language))
     }
 
-    /// Languages the Translation framework can translate into.
     public static func subtitleLanguages() async -> [String] {
         await codes(LanguageAvailability().supportedLanguages)
     }
@@ -62,7 +59,7 @@ public enum OnDeviceModels {
         }
     }
 
-    /// Downloads the speech model if needed; `progress` reports 0...1 from an arbitrary thread.
+    /// `progress` reports 0...1 from an arbitrary thread.
     public static func downloadSpeech(_ code: String, progress: (@Sendable (Double) -> Void)? = nil) async throws {
         let module = try await transcriber(code)
         guard let request = try await AssetInventory.assetInstallationRequest(supporting: [module]) else { return }
@@ -71,7 +68,6 @@ public enum OnDeviceModels {
         try await request.downloadAndInstall()
     }
 
-    /// Both the speech and translation models are installed, so the on-device engine can start offline.
     public static func isReady(from source: String, to target: String) async -> Bool {
         let speech = await speech(source)
         let text = await translation(from: source, to: target)

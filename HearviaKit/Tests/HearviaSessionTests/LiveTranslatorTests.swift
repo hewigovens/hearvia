@@ -4,7 +4,6 @@ import HearviaEngines
 @testable import HearviaSession
 import Testing
 
-/// An engine the test drives by hand.
 @MainActor
 final class FakeEngine: TranslationEngine {
     let kind: EngineKind

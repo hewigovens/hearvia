@@ -1,6 +1,4 @@
-/// Helpers for the running subtitle strings the engines build up.
 public enum SubtitleText {
-    /// Joins two pieces of text in `language`, with a space unless the language is written without one.
     public static func join(_ a: String, _ b: String, language: String) -> String {
         if a.isEmpty || b.isEmpty {
             return a + b
@@ -8,8 +6,7 @@ public enum SubtitleText {
         return Languages.unspaced.contains(language) ? a + b : a + " " + b
     }
 
-    /// `delta` as it continues `text` from a new session, which starts without a separator. `unspaced` is the target
-    /// language's rule; source text, whose language the cloud engines detect, passes nil to go by the script.
+    /// `delta` as it continues `text` from a new session, which starts without a separator. `unspaced` is the target language's rule; source text, whose language the cloud engines detect, passes nil to go by the script.
     public static func continuation(of text: String, with delta: String, unspaced: Bool? = nil) -> String {
         guard let last = text.last, let first = delta.first, !last.isWhitespace, !first.isWhitespace else { return delta }
         return (unspaced ?? (last.isUnspacedScript || first.isUnspacedScript)) ? delta : " " + delta
@@ -22,7 +19,6 @@ public enum SubtitleText {
 }
 
 private extension Character {
-    /// Han, kana and the Southeast Asian scripts that don't put spaces between words.
     var isUnspacedScript: Bool {
         unicodeScalars.contains { scalar in
             switch scalar.value {

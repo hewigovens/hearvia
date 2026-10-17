@@ -3,7 +3,6 @@ import HearviaCore
 @testable import HearviaEngines
 import Testing
 
-/// A translation socket the test drives by hand.
 final class FakeSocket: TranslationSocket, @unchecked Sendable {
     let targetLanguage: String
     let transcribesSource: Bool
@@ -115,7 +114,6 @@ final class CloudHarness {
         await engine.start(audio: audio)
     }
 
-    /// Sends one chunk and waits until the engine has taken it.
     func feed(_ chunk: Data) async throws {
         let before = engine.chunksReceived
         input.yield(chunk)

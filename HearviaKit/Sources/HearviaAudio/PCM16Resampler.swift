@@ -1,6 +1,5 @@
 import AVFoundation
 
-/// Converts any PCM buffer to the engines' input format (24 kHz mono PCM16) in fixed 200 ms chunks.
 /// Not thread-safe: call from one serial queue.
 public final class PCM16Resampler {
     public static let sampleRate = 24000.0

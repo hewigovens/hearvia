@@ -1,4 +1,3 @@
-/// Where a live translation run is, for status lines and diagnostics.
 public enum TranslatorStatus: Equatable, Sendable {
     case idle
     case needsAPIKey

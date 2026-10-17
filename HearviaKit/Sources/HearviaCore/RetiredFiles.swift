@@ -1,6 +1,5 @@
 import Foundation
 
-/// Files earlier builds left behind.
 public enum RetiredFiles {
     /// TranslateGemma's 2.2 GB of weights (removed 2026-10-17); a no-op once they're gone.
     public static func remove() {

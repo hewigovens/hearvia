@@ -3,7 +3,7 @@ import HearviaEngines
 import SwiftUI
 import Translation
 
-/// Status rows + download buttons for the on-device engine's two models. Place inside a Form/List section.
+/// Place inside a Form/List section.
 public struct OnDeviceModelsView: View {
     let source: String
     let target: String
@@ -39,8 +39,7 @@ public struct OnDeviceModelsView: View {
             }
         }
         .task(id: "\(source)>\(target)>\(download == nil)") { await refresh() }
-        // The session isn't Sendable and `prepareTranslation` is `@concurrent` (27 SDK), so the work stays off the
-        // main actor and only the outcome comes back.
+        // The session isn't Sendable and `prepareTranslation` is `@concurrent` (27 SDK), so the work stays off the main actor and only the outcome comes back.
         .translationTask(download) { @concurrent [outcome = $downloadOutcome] session in
             var message = ""
             do { try await session.prepareTranslation() } catch { message = error.localizedDescription }

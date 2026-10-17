@@ -1,6 +1,4 @@
-/// Cuts a pair of continuous text streams (original + translation) into transcript sentences.
-/// A sentence is committed when the translation ends one; the original is cut at its own last sentence end,
-/// so the pairing is approximate.
+/// A sentence is committed when the translation ends one; the original is cut at its own last sentence end, so the pairing is approximate.
 public struct SentenceSegmenter: Sendable {
     public static let sentenceEnds: Set<Character> = [".", "!", "?", "。", "！", "？", "…"]
 
@@ -13,7 +11,6 @@ public struct SentenceSegmenter: Sendable {
         source += delta
     }
 
-    /// Returns the finished sentence pair when `delta` completes one.
     public mutating func appendTranslation(_ delta: String) -> (source: String, translation: String)? {
         translation += delta
         guard let end = translation.lastIndex(where: Self.sentenceEnds.contains) else { return nil }

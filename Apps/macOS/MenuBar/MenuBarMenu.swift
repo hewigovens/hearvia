@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// The status item's menu while Hearvia is in the Dock, where the control window is the main UI. In menu-bar-only
-/// mode the status item opens the control panel instead.
 struct MenuBarMenu: View {
     let model: AppModel
     @Environment(AppSettings.self) private var settings

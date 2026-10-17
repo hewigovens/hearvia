@@ -1,8 +1,6 @@
 import Foundation
 import HearviaCore
 
-/// An OpenAI-compatible chat server the user runs: Ollama, LM Studio, Unsloth Studio and the like, on this machine or
-/// the local network. Hearvia sends it one finished sentence at a time to translate.
 public struct LocalModelServer: Sendable, Equatable {
     public var baseURL: String
     public var apiKey: String
@@ -12,8 +10,7 @@ public struct LocalModelServer: Sendable, Equatable {
         self.apiKey = apiKey
     }
 
-    /// Default addresses of the common servers; Unsloth Studio also needs its API key. On another machine, use its
-    /// address instead of localhost and start the server so it listens on the network.
+    /// Unsloth Studio also needs its API key. On another machine, use its address instead of localhost and start the server so it listens on the network.
     public static let presets: [(name: String, baseURL: String)] = [
         ("Ollama", "http://localhost:11434/v1"),
         ("LM Studio", "http://localhost:1234/v1"),
@@ -21,14 +18,12 @@ public struct LocalModelServer: Sendable, Equatable {
         ("llama.cpp server", "http://localhost:8080/v1")
     ]
 
-    /// The models the server offers (`GET /models`).
     public func models(session: URLSession = .shared) async throws -> [String] {
         let data = try await send(request(path: "models"), session: session)
         let list = try JSONDecoder().decode(ModelList.self, from: data)
         return list.data.map(\.id).sorted()
     }
 
-    /// One sentence through `model` (`POST /chat/completions`, greedy, no streaming).
     public func translate(_ text: String, from source: String, to target: String, model: String,
                           session: URLSession = .shared) async throws -> String {
         var request = try request(path: "chat/completions")

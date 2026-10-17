@@ -1,8 +1,6 @@
 import Translation
 
-/// Translates on one TranslationSession for an on-device run. The session isn't Sendable and its `translate` is
-/// `@concurrent` (iOS/macOS 27 SDK), so it lives as a local in one task; only strings cross in and out, one request
-/// at a time.
+/// Translates on one TranslationSession for an on-device run. The session isn't Sendable and its `translate` is `@concurrent` (iOS/macOS 27 SDK), so it lives as a local in one task; only strings cross in and out, one request at a time.
 final class OnDeviceTextTranslator: Sendable {
     let strategy: String
     private let requests: AsyncStream<Request>.Continuation

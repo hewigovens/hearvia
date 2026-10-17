@@ -1,7 +1,6 @@
 import HearviaUI
 import SwiftUI
 
-/// One macOS permission: what it's for, highlighted when it's the prompt Continue will trigger.
 struct PermissionRow: View {
     let symbol: String
     let title: String

@@ -2,7 +2,6 @@ import Foundation
 @testable import HearviaEngines
 import Testing
 
-/// Speech results pushed by the test instead of SpeechAnalyzer.
 final class ScriptedSpeech: SpeechInput, @unchecked Sendable {
     let results: AsyncThrowingStream<SpeechResult, Error>
     private let continuation: AsyncThrowingStream<SpeechResult, Error>.Continuation
@@ -61,7 +60,6 @@ actor ScriptedTranslator {
     }
 }
 
-/// Records everything an engine reports.
 @MainActor
 final class Recorder {
     private(set) var updates: [EngineUpdate] = []

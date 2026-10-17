@@ -2,7 +2,6 @@ import HearviaSession
 import HearviaUI
 import SwiftUI
 
-/// Explains what iOS will show (screen-sharing sheet, red indicator, floating window) before the user meets it.
 struct OnboardingView: View {
     let translator: LiveTranslator
     var done: () -> Void

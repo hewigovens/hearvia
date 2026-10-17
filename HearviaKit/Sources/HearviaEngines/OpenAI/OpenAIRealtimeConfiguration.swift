@@ -1,6 +1,5 @@
 import Foundation
 
-/// Session settings for OpenAI's Realtime translation socket.
 public struct OpenAIRealtimeConfiguration: Sendable {
     public var targetLanguage: String
     public var sourceTranscriptionModel: String?

@@ -1,8 +1,6 @@
 import HearviaUI
 import SwiftUI
 
-/// Ready: subtitle preview, a centred listen button and the setup tiles. Listening: the button shrinks to the
-/// bottom and the tiles give way to a status line; transcripts are one tap away in the header.
 struct HomeView: View {
     let model: AppModel
     @Environment(AppSettings.self) private var settings
@@ -79,8 +77,7 @@ struct HomeView: View {
         }
     }
 
-    /// A widget, control or Shortcut asked to start; wait until the app is in front. Before onboarding is done the
-    /// request is dropped rather than kept, so it can't start listening at some later, unexpected moment.
+    /// Before onboarding is done the request is dropped rather than kept, so it can't start listening at some later, unexpected moment.
     private func startIfRequested() {
         guard phase == .active, let request = QuickStart.shared.take(), settings.hasCompletedOnboarding else { return }
         presentation = nil

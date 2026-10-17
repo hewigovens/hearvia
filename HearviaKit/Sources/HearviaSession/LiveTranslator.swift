@@ -4,8 +4,6 @@ import HearviaCore
 import HearviaEngines
 import Observation
 
-/// The live subtitle pipeline both apps share: captured PCM → `feed` → engine → observable text and transcript.
-/// Owns the translation preferences (languages, engine, API keys) and one engine run at a time.
 @MainActor @Observable
 public final class LiveTranslator {
     public typealias EngineFactory = @MainActor (_ kind: EngineKind, _ request: EngineRequest) -> any TranslationEngine
@@ -26,7 +24,6 @@ public final class LiveTranslator {
     public var geminiKey: String {
         didSet { secrets.write(geminiKey, account: EngineKind.gemini.keyAccount!) }
     }
-    /// The local model server: its address (OpenAI-compatible `/v1`), optional key and chosen model.
     public var localServerURL: String {
         didSet { defaults.set(localServerURL, forKey: Keys.localServerURL) }
     }
@@ -39,7 +36,6 @@ public final class LiveTranslator {
     public var localServer: LocalModelServer {
         LocalModelServer(baseURL: localServerURL, apiKey: localKey)
     }
-    /// The chosen cloud engine's key; empty for on-device and local models.
     public var apiKey: String {
         switch engine {
         case .onDevice, .local: ""
@@ -47,8 +43,7 @@ public final class LiveTranslator {
         case .gemini: geminiKey
         }
     }
-    /// Whether a cloud engine also returns the original-language text, which OpenAI bills separately.
-    /// The apps follow their "show original speech" setting. Not persisted.
+    /// Whether a cloud engine also returns the original-language text, which OpenAI bills separately. The apps follow their "show original speech" setting. Not persisted.
     public private(set) var transcribesSource = true
 
     public internal(set) var isActive = false
@@ -58,7 +53,6 @@ public final class LiveTranslator {
     public internal(set) var translation = ""
     public internal(set) var transcript = Transcript()
     public internal(set) var stats = TranslatorStats()
-    /// Finished sessions' transcripts, kept on this device while `savesTranscripts` is on.
     public let history: TranscriptHistory
     public var savesTranscripts: Bool {
         didSet { defaults.set(savesTranscripts, forKey: Keys.savesTranscripts) }
@@ -136,8 +130,7 @@ public final class LiveTranslator {
         await restartIfActive()
     }
 
-    /// Restarts a running cloud engine so the change applies right away: turning the original on should show it
-    /// now, and turning it off should stop paying for it now. The on-device engine always has the original.
+    /// Restarts a running cloud engine so the change applies right away: turning the original on should show it now, and turning it off should stop paying for it now. The on-device engine always has the original.
     public func setTranscribesSource(_ transcribes: Bool) async {
         guard transcribes != transcribesSource else { return }
         transcribesSource = transcribes
@@ -162,7 +155,6 @@ public final class LiveTranslator {
     }
 }
 
-/// What an engine needs to start one run.
 public struct EngineRequest: Sendable {
     public let sourceLanguage: String
     public let targetLanguage: String

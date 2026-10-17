@@ -2,7 +2,6 @@ import AVFoundation
 import HearviaAudio
 import Speech
 
-/// SpeechAnalyzer fed with the shared 24 kHz PCM16 chunks.
 final class OnDeviceSpeech: SpeechInput, @unchecked Sendable {
     let results: AsyncThrowingStream<SpeechResult, Error>
     private let analyzer: SpeechAnalyzer

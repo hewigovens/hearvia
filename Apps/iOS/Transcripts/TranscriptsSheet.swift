@@ -3,7 +3,6 @@ import HearviaSession
 import HearviaUI
 import SwiftUI
 
-/// The session in progress, then saved sessions newest first. Swipe to delete; open one to read, share or export it.
 struct TranscriptsSheet: View {
     let translator: LiveTranslator
     @Environment(\.dismiss) private var dismiss

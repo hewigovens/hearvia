@@ -4,7 +4,6 @@ import HearviaCore
 import HearviaSession
 import Observation
 
-/// Owns capture and the translator; drives the overlay panel from `AppSettings`.
 @MainActor @Observable
 final class AppModel {
     let settings: AppSettings

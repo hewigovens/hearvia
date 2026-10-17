@@ -13,9 +13,7 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
     var frames = 0
     var renderSize = "Not reported"
     var restoreRequested = false
-    /// While armed, leaving the app starts PiP automatically (no extra tap needed).
     private(set) var autoStartArmed = false
-    /// The user closed the floating window with its ✕, rather than going back to the app or Hearvia stopping it.
     var onClose: (() -> Void)?
     let previewView = SubtitlePreviewView()
     var fontScale = 1.0 {
@@ -80,8 +78,7 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
             renderer?.setPlaying(true)
             controller.invalidatePlaybackState()
             log.event("pip_start_requested", ["possible": "\(possible)"])
-            // Readiness changed ~40 ms after activation on the device. Keep this user request
-            // pending while KVO catches up, rather than making the first tap fail.
+            // Readiness changed ~40 ms after activation on the device. Keep this user request pending while KVO catches up, rather than making the first tap fail.
             for _ in 0 ..< 30 {
                 if controller.isPictureInPicturePossible {
                     break
@@ -109,7 +106,7 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
         controller?.stopPictureInPicture()
     }
 
-    /// Called once capture is running. Playback + mix never interrupts the audio the user is listening to.
+    /// Playback + mix never interrupts the audio the user is listening to.
     func armAutoStart() async {
         guard let controller, !autoStartArmed else { return }
         do { try await session.acquire("pip") } catch { fail(error)
@@ -238,7 +235,6 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
             self.restoreRequested = true
             self.log.event("pip_restore_requested")
         }
-        // SwiftUI observes this flag and scrolls the inline view back into sight.
     }
 
     nonisolated func pictureInPictureController(_ controller: AVPictureInPictureController, setPlaying playing: Bool) {

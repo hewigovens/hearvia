@@ -2,8 +2,6 @@ import AppKit
 import HearviaUI
 import SwiftUI
 
-/// A compact strip while idle that grows to fill the panel once listening starts. Hovering shows ✕ and
-/// Start/Stop; dragging anywhere else moves the panel.
 struct OverlayView: View {
     let model: AppModel
     let pointer: OverlayPointer
@@ -65,10 +63,7 @@ struct OverlayView: View {
         return model.capturing ? "Listening… (\(model.translator.status.label))" : "Subtitles appear here"
     }
 
-    /// Text at its natural height when it fits, so original and translation sit together at the bottom;
-    /// otherwise the newest lines pinned to the bottom of the space offered, older lines clipped off the top.
-    /// The non-scrollable ScrollView gives the text unlimited height but clips it, to a whole number of lines so no
-    /// part-line shows at the top (a fade there covered the newest line when only about one line fit).
+    /// The non-scrollable ScrollView gives the text unlimited height but clips it, to a whole number of lines so no part-line shows at the top (a fade there covered the newest line when only about one line fit).
     private func tail(_ text: some View, lineHeight: CGFloat) -> some View {
         let centered = text.multilineTextAlignment(.center).frame(maxWidth: .infinity)
         return ViewThatFits(in: .vertical) {
@@ -102,7 +97,6 @@ struct OverlayView: View {
     }
 }
 
-/// Hover controls: ✕ hides the overlay (the popover's Visible brings it back), the centre button starts or stops.
 private struct OverlayButtons: View {
     let model: AppModel
     @Environment(AppSettings.self) private var settings

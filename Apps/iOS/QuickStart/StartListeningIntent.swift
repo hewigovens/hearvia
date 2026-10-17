@@ -1,8 +1,7 @@
 import AppIntents
 import Observation
 
-/// Opens Hearvia and starts listening: behind the Home Screen widget, the Control Center control, the Action
-/// button and Shortcuts. Compiled into the app and the widget extension; it always runs in the app.
+/// Compiled into the app and the widget extension; it always runs in the app.
 struct StartListeningIntent: AppIntent {
     static let title: LocalizedStringResource = "Start Listening"
     static let description = IntentDescription("Opens Hearvia and starts live subtitles.")
@@ -31,7 +30,6 @@ final class QuickStart {
     static let shared = QuickStart()
     var request: QuickStartRequest?
 
-    /// Returns the waiting request and clears it, so it is handled once.
     func take() -> QuickStartRequest? {
         defer { request = nil }
         return request

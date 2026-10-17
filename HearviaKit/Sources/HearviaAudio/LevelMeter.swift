@@ -1,6 +1,5 @@
 import AVFoundation
 
-/// Peak level since the last read, written from the audio queue.
 public final class LevelMeter: @unchecked Sendable {
     private let lock = NSLock()
     private var peak: Float = 0

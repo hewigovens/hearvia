@@ -1,7 +1,6 @@
 import HearviaUI
 import SwiftUI
 
-/// Onboarding card: symbol, title and a line of text, with an optional control on the right or content below.
 struct FeatureCard<Trailing: View, Footer: View>: View {
     let symbol: String
     let title: String
@@ -20,7 +19,7 @@ struct FeatureCard<Trailing: View, Footer: View>: View {
                 Spacer(minLength: 8)
                 trailing
             }
-            footer.padding(.leading, 42) // Under the title, past the symbol column.
+            footer.padding(.leading, 42)
         }
         .padding(16)
         .background(Color.hvSurface, in: .rect(cornerRadius: 16, style: .continuous))

@@ -3,7 +3,6 @@ import HearviaSession
 import HearviaUI
 import SwiftUI
 
-/// The two translators, and what the chosen one still needs.
 struct TranslatorSheet: View {
     let translator: LiveTranslator
     let openSettings: () -> Void

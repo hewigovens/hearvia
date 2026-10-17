@@ -1,7 +1,6 @@
 import Foundation
 
 extension AppModel {
-    /// Coalesce translation deltas into at most ~5 PiP frames per second.
     func scheduleRender() {
         guard !renderQueued else { return }
         renderQueued = true

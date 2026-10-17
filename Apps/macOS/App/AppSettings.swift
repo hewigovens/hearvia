@@ -3,7 +3,6 @@ import HearviaSession
 import HearviaUI
 import Observation
 
-/// User preferences owned by the Mac shell; translation languages and engine live on `LiveTranslator`.
 @MainActor @Observable
 final class AppSettings {
     private enum Keys {
@@ -47,7 +46,6 @@ final class AppSettings {
         didSet { defaults.set(overlayOpacity, forKey: Keys.overlayOpacity) }
     }
 
-    /// No Dock icon or app menu; Hearvia lives in the menu bar extra.
     var menuBarOnly: Bool {
         didSet {
             defaults.set(menuBarOnly, forKey: Keys.menuBarOnly)
@@ -58,7 +56,6 @@ final class AppSettings {
         }
     }
 
-    /// The permission explainer was shown, so Start goes straight to the system prompts.
     var hasExplainedPermissions: Bool {
         didSet { defaults.set(hasExplainedPermissions, forKey: Keys.hasExplainedPermissions) }
     }
@@ -77,8 +74,7 @@ final class AppSettings {
         hasExplainedPermissions = defaults.bool(forKey: Keys.hasExplainedPermissions)
     }
 
-    /// App-wide, so the menu bar popover and the overlay panel match the windows: the palette's dynamic colors
-    /// resolve against each window's AppKit appearance, which `preferredColorScheme` doesn't reach in the popover.
+    /// App-wide, so the menu bar popover and the overlay panel match the windows: the palette's dynamic colors resolve against each window's AppKit appearance, which `preferredColorScheme` doesn't reach in the popover.
     func applyAppearance() {
         NSApp.appearance = switch appearance {
         case .dark: NSAppearance(named: .darkAqua)

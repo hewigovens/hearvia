@@ -13,7 +13,7 @@ final class SubtitleRenderer {
     }
     private(set) var lastPTS = CMTime.invalid
     private(set) var frames = 0
-    /// User text size, 0.8–1.3; the frame size is fixed so larger text shows fewer lines.
+    /// The frame size is fixed, so larger text shows fewer lines.
     var fontScale = 1.0
     /// A 1.8:1 frame keeps the PiP window wider than a video tile but tall enough for three lines of text.
     static let aspectRatio = 1.8
@@ -32,7 +32,6 @@ final class SubtitleRenderer {
         synchronizer.setRate(playing ? 1 : 0, time: .invalid)
     }
 
-    /// Enqueues a freshly drawn frame; returns false when the layer flushed it.
     @discardableResult
     func render(subtitle: String, original: String? = nil, detail: String?) async throws -> Bool {
         let pixel = try makePixelBuffer()

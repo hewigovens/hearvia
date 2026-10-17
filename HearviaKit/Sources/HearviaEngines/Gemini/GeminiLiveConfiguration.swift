@@ -1,6 +1,5 @@
 import Foundation
 
-/// Session settings for Gemini Live translation.
 public struct GeminiLiveConfiguration: Sendable {
     public var targetLanguage: String
     public var transcribesSource: Bool
@@ -15,8 +14,7 @@ public struct GeminiLiveConfiguration: Sendable {
         self.transcribesSource = transcribesSource
     }
 
-    /// The first message on the socket. Speech already in the target language is echoed rather than skipped,
-    /// so it still gets subtitles; the echoed audio is discarded anyway.
+    /// The first message on the socket. Speech already in the target language is echoed rather than skipped, so it still gets subtitles; the echoed audio is discarded anyway.
     var setupMessage: [String: Any] {
         var setup: [String: Any] = [
             "model": "models/\(model)",

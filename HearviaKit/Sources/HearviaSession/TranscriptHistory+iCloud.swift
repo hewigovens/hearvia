@@ -1,10 +1,7 @@
 import Foundation
 import HearviaCore
 
-/// iCloud sync: transcripts move into the app's iCloud container (not shown in iCloud Drive) and a metadata query
-/// picks up the ones other devices add, change or delete.
 extension TranscriptHistory {
-    /// Where transcripts are kept, for the settings footer.
     public func storageNote(device: String) -> String {
         if isInICloud {
             return String(localized: "Synced with iCloud to your other devices. Deleting a transcript removes it everywhere.")
@@ -81,7 +78,7 @@ extension TranscriptHistory {
         }
     }
 
-    /// The container's Transcripts folder; nil without iCloud. Off the main thread: the first call can take a while.
+    /// Off the main thread: the first call can take a while.
     private static func cloudDirectory(_ container: String) async -> URL? {
         await Task.detached {
             FileManager.default.url(forUbiquityContainerIdentifier: container)?
@@ -89,7 +86,7 @@ extension TranscriptHistory {
         }.value
     }
 
-    /// Hands this device's transcripts to iCloud; ones already there win.
+    /// Ones already in iCloud win.
     private nonisolated static func move(from local: URL, to cloud: URL) {
         let manager = FileManager.default
         try? manager.createDirectory(at: cloud, withIntermediateDirectories: true)

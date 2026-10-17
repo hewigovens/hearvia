@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// The app icon's mark ("wave to words"), drawn on a 100-unit grid. Also used by the icon generator.
+/// Drawn on a 100-unit grid; also used by the icon generator.
 public struct HearviaMark: View {
     public enum Style: Sendable { case standard, dark, tinted }
     let style: Style

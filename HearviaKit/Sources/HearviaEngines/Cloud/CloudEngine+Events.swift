@@ -1,7 +1,6 @@
 import Foundation
 import HearviaCore
 
-/// Server events: text, errors, and what to do when a socket closes.
 extension CloudEngine {
     func handle(_ event: SocketEvent, from sender: any TranslationSocket) {
         guard running else { return }

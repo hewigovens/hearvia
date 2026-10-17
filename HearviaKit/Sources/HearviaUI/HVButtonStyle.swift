@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Filled pill button: accent for primary actions, surface with a hairline for secondary ones.
 public struct HVButtonStyle: ButtonStyle {
     public enum Kind: Sendable { case primary, secondary }
     let kind: Kind

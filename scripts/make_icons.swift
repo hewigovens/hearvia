@@ -19,7 +19,6 @@ let bars = [CGRect(x: 15, y: 40, width: 6, height: 20), CGRect(x: 25, y: 29, wid
 let translation = CGRect(x: 47, y: 38, width: 38, height: 9)
 let original = CGRect(x: 47, y: 53, width: 26, height: 9)
 
-/// Draws the mark into `box` (top-left origin units 0...100).
 func drawMark(_ ctx: CGContext, _ box: CGRect, _ p: Palette, cornerRadius: CGFloat) {
     let s = box.width / 100
     func r(_ u: CGRect) -> CGRect {

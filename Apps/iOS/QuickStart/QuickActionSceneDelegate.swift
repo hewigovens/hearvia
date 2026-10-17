@@ -1,6 +1,5 @@
 import UIKit
 
-/// Home Screen quick actions (long-press the app icon) become the same start request as the widget.
 /// A quick action arrives at scene connection on a cold launch, or later while the app is running.
 final class QuickActionSceneDelegate: NSObject, UIWindowSceneDelegate {
     func scene(_: UIScene, willConnectTo _: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {

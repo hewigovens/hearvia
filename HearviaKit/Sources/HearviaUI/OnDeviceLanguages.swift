@@ -2,7 +2,6 @@ import HearviaCore
 import HearviaEngines
 import Observation
 
-/// The on-device engine's spoken and subtitle languages, read from the system once and shared by every picker.
 /// Empty until loaded; `Languages.choices` falls back to the Realtime list meanwhile.
 @MainActor @Observable
 public final class OnDeviceLanguages {

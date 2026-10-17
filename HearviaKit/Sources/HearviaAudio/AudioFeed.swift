@@ -1,6 +1,5 @@
 import AVFoundation
 
-/// Thread-safe sink for captured PCM: resamples to 200 ms PCM16 chunks for whoever opened it.
 /// Ordering is preserved by the single AsyncStream consumer.
 public final class AudioFeed: @unchecked Sendable {
     private let lock = NSLock()
@@ -9,7 +8,6 @@ public final class AudioFeed: @unchecked Sendable {
 
     public init() {}
 
-    /// Starts a new chunk stream, ending the previous one.
     public func open() -> AsyncStream<Data> {
         let (stream, continuation) = AsyncStream<Data>.makeStream(bufferingPolicy: .bufferingNewest(150)) // 30 s backlog cap
         lock.withLock { self.continuation?.finish()

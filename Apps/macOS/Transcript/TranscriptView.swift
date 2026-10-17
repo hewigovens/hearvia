@@ -3,7 +3,6 @@ import HearviaSession
 import HearviaUI
 import SwiftUI
 
-/// Transcripts window: the session in progress and saved sessions in the sidebar; export, copy or delete the one shown.
 struct TranscriptView: View {
     let translator: LiveTranslator
     @State private var selection: UUID?

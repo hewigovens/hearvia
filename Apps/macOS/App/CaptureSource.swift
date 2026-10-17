@@ -11,8 +11,7 @@ enum CaptureSource: Hashable {
         }
     }
 
-    /// `--source=microphone`, `--source=all`, or a process ID, bundle ID or name to tap; with `--autostart` this
-    /// scripts a capture without the menus.
+    /// `--source=microphone`, `--source=all`, or a process ID, bundle ID or name to tap; with `--autostart` this scripts a capture without the menus.
     init?(launchArguments: [String], processes: [AudioProcess]) {
         guard let value = launchArguments.first(where: { $0.hasPrefix("--source=") })?.dropFirst("--source=".count) else { return nil }
         switch value {

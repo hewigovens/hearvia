@@ -2,7 +2,7 @@ import Foundation
 import HearviaCore
 import HearviaEngines
 
-/// Starting, stopping and applying one engine run. Updates from an engine that is no longer running are ignored.
+/// Updates from an engine that is no longer running are ignored.
 public extension LiveTranslator {
     func start() async {
         guard !isActive else { return }

@@ -1,6 +1,6 @@
 import Foundation
 
-/// Thresholds and delays for `CloudEngine`. Audio durations are counted in 200 ms chunks; tests shrink everything.
+/// Audio durations are counted in 200 ms chunks; tests shrink everything.
 struct CloudTiming: Sendable {
     /// Silence before the socket is closed to stop billing (25 s).
     var silenceChunks = 125
@@ -16,7 +16,6 @@ struct CloudTiming: Sendable {
     var rotationLead: TimeInterval = 180
     /// Rotate regardless of speech once the session is this close to expiring.
     var rotationDeadline: TimeInterval = 60
-    /// Consecutive failed connections before giving up.
     var maxFailures = 20
     /// How long a closing socket may flush its last text before it is cancelled.
     var closeGrace: Duration = .seconds(5)

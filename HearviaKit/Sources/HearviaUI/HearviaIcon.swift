@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// App icon tile with the iOS continuous-corner mask.
 public struct HearviaIcon: View {
     let size: CGFloat
     public init(size: CGFloat) {

@@ -2,7 +2,6 @@ import HearviaSession
 import HearviaUI
 import SwiftUI
 
-/// API keys for the cloud translators and the on-device models, one page under Settings.
 struct TranslatorSettingsView: View {
     @Bindable var translator: LiveTranslator
 

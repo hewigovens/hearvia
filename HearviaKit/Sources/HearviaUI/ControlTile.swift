@@ -1,8 +1,6 @@
 import SwiftUI
 
-/// One of the setup tiles beside the listen button: what to listen to, languages, translator.
-/// Apps wrap it in a `Menu` or `Button`; `ready` adds a green or orange dot. A value that must not wrap
-/// (CJK breaks between any two characters) passes `wraps: false` and shrinks instead.
+/// A value that must not wrap (CJK breaks between any two characters) passes `wraps: false` and shrinks instead.
 public struct ControlTile: View {
     let symbol: String
     let caption: String

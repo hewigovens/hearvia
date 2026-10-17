@@ -3,7 +3,6 @@ import HearviaCore
 import HearviaSession
 import SwiftUI
 
-/// Owns capture, the PiP subtitle window and the translator, and keeps them in step while listening.
 @MainActor @Observable
 final class AppModel {
     let settings: AppSettings
@@ -22,7 +21,6 @@ final class AppModel {
     var micRunning = false
     var micStarting = false
     var micError = ""
-    /// Last ~1 s of input peaks (system audio or mic), 10 per second.
     var levels = [Float](repeating: 0, count: 10)
     var level: Float {
         levels.last ?? 0
@@ -85,7 +83,6 @@ final class AppModel {
         Task { await translation.setTranscribesSource(shows) }
     }
 
-    /// Once a second: refresh audio stats, follow listening start/stop, and repaint the subtitle frame.
     func tick() async {
         guard !ticking else { return }
         ticking = true
@@ -98,7 +95,7 @@ final class AppModel {
     }
 
     func sceneChanged(_ phase: ScenePhase) {
-        UIApplication.shared.isIdleTimerDisabled = phase == .active // Keep the screen awake while Hearvia is open; manual lock still works.
+        UIApplication.shared.isIdleTimerDisabled = phase == .active
         scene = phase == .active ? "active" : phase == .background ? "background" : "inactive"
         log.event("scene", ["phase": scene, "pip_active": "\(pip.active)", "capture_running": "\(capture.running)"])
         if phase == .background {

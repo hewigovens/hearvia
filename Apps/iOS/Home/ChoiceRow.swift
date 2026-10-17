@@ -1,7 +1,6 @@
 import HearviaUI
 import SwiftUI
 
-/// One selectable option in a tile sheet: symbol, title, a line of detail and a check.
 struct ChoiceRow: View {
     let symbol: String
     let title: String

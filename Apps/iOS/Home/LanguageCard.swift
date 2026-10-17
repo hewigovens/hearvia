@@ -3,7 +3,6 @@ import HearviaSession
 import HearviaUI
 import SwiftUI
 
-/// Spoken → Subtitles pickers with a swap button; the spoken side is auto-detected by OpenAI Realtime.
 struct LanguageCard: View {
     let translator: LiveTranslator
 

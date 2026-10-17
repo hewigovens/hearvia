@@ -2,7 +2,6 @@ import HearviaSession
 import HearviaUI
 import SwiftUI
 
-/// Settings window: General, Translators, Overlay and Diagnostics tabs.
 struct SettingsView: View {
     let model: AppModel
 
@@ -17,7 +16,6 @@ struct SettingsView: View {
     }
 }
 
-/// The look shared by every tab.
 private struct SettingsPane<Content: View>: View {
     @ViewBuilder var content: Content
 

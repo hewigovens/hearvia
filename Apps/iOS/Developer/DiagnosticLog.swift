@@ -1,9 +1,7 @@
 import Foundation
 import OSLog
 
-/// Structured app events in unified logging. Debug builds also keep a JSONL file in Documents/Evidence for the
-/// developer tools; Release builds write no file and redact field values in the system log.
-/// The lock serializes records from capture, UI, and audio-session callbacks.
+/// Release builds write no file and redact field values in the system log. The lock serializes records from capture, UI, and audio-session callbacks.
 final class DiagnosticLog: @unchecked Sendable {
     private let lock = NSLock()
     private let logger = Logger(subsystem: "dev.hewig.hearvia", category: "experiment")

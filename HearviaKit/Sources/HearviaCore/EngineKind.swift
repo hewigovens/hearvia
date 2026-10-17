@@ -1,14 +1,9 @@
 import Foundation
 
-/// Which pipeline turns captured audio into subtitles.
 public enum EngineKind: String, CaseIterable, Identifiable, Sendable, Codable {
-    /// SpeechTranscriber + Translation framework: free, offline, sentence-level lag.
     case onDevice
-    /// gpt-realtime-translate over WebSocket: lowest lag, paid per minute.
     case realtime
-    /// gemini-3.5-live-translate over the Live API: free tier for testing, paid per minute after.
     case gemini
-    /// SpeechTranscriber + a chat model on the user's own server (Ollama, LM Studio, Unsloth Studio). Experimental.
     case local
 
     public var id: String {
@@ -30,7 +25,6 @@ public enum EngineKind: String, CaseIterable, Identifiable, Sendable, Codable {
         default: title
         }
     }
-    /// One line for pickers.
     public var tagline: String {
         switch self {
         case .onDevice: "Free · private · works offline"
@@ -39,7 +33,6 @@ public enum EngineKind: String, CaseIterable, Identifiable, Sendable, Codable {
         case .local: "Experimental · your Ollama, LM Studio or Unsloth"
         }
     }
-    /// Runs in the cloud: needs an API key and streams audio to the provider.
     public var isCloud: Bool {
         self == .realtime || self == .gemini
     }
@@ -47,7 +40,6 @@ public enum EngineKind: String, CaseIterable, Identifiable, Sendable, Codable {
     public var detectsSpokenLanguage: Bool {
         isCloud
     }
-    /// Where this engine's API key is kept; nil for on-device. A local server's key is optional.
     public var keyAccount: String? {
         switch self {
         case .onDevice: nil

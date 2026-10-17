@@ -8,12 +8,10 @@ extension AppModel {
         }
     }
 
-    /// Capture is starting: the iOS picker is up or the microphone is warming up.
     var busy: Bool {
         capture.pending || micStarting
     }
 
-    /// Start when idle; otherwise stop, which also cancels a start in progress.
     func toggleListening() async {
         if listening || busy {
             await stopListening()
@@ -22,7 +20,6 @@ extension AppModel {
         }
     }
 
-    /// Capture and translator errors, with the common cloud failures reworded.
     var errorMessage: String {
         let message = [translation.error, capture.error, micError].filter { !$0.isEmpty }.joined(separator: "\n")
         if message.contains("invalid_api_key") || message.contains("API key not valid") {
@@ -47,7 +44,7 @@ extension AppModel {
         await tick() // Stop translation now rather than on the next timer tick.
     }
 
-    /// Follows the toggle in Settings; arming needs an active session, so it waits for listening.
+    /// Arming needs an active session, so it waits for listening.
     func updateFloating() async {
         if settings.floatsWhenLeaving, listening {
             await pip.armAutoStart()

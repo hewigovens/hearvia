@@ -147,7 +147,6 @@ final class AudioProbe: NSObject, SCStreamOutput, @unchecked Sendable {
         }
     }
 
-    /// Updates the per-source counters shown in Developer tools and logs them once a second.
     private func record(_ pcm: AVAudioPCMBuffer, of type: SCStreamOutputType, at pts: Double) {
         let metrics = AudioMetrics.measure(pcm)
         let now = ProcessInfo.processInfo.systemUptime

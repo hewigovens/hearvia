@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// A white symbol on a colored rounded square, like the rows in the iOS Settings app.
 struct SettingsIcon: View {
     let symbol: String
     let color: Color
@@ -20,7 +19,6 @@ struct SettingsIcon: View {
 }
 
 extension Label where Title == Text, Icon == SettingsIcon {
-    /// A Settings row label: `Label("Translators", icon: "character.bubble", color: .blue)`.
     init(_ title: String, icon: String, color: Color) {
         self.init { Text(title) } icon: { SettingsIcon(icon, color) }
     }

@@ -8,7 +8,7 @@ struct AudioMetrics: Sendable {
     let toneAmplitude: Double
     let toneEnergyFraction: Double
 
-    /// Float PCM normalized to full scale. The sinusoidal projection is phase independent.
+    /// The sinusoidal projection is phase independent.
     static func measure(_ pcm: AVAudioPCMBuffer, toneHz: Double = 1000) -> AudioMetrics {
         let frames = Int(pcm.frameLength)
         let channels = Int(pcm.format.channelCount)
@@ -44,8 +44,7 @@ struct AudioMetrics: Sendable {
 enum PCMError: Error { case invalidFormat, allocation, copy(OSStatus), converter }
 
 enum PCMDecoder {
-    /// Copy, rather than retain borrowed AudioBufferList pointers past the callback.
-    /// CoreMedia handles planar/interleaved layout; AVAudioConverter normalizes integer/float PCM.
+    /// Copy, rather than retain borrowed AudioBufferList pointers past the callback. CoreMedia handles planar/interleaved layout; AVAudioConverter normalizes integer/float PCM.
     static func decode(_ sample: CMSampleBuffer) throws -> AVAudioPCMBuffer {
         guard CMSampleBufferIsValid(sample), CMSampleBufferDataIsReady(sample),
               let description = CMSampleBufferGetFormatDescription(sample),

@@ -1,7 +1,6 @@
 import HearviaUI
 import SwiftUI
 
-/// Subtitle overlay switches and text size.
 struct OverlayOptions: View {
     @Environment(AppSettings.self) private var settings
 

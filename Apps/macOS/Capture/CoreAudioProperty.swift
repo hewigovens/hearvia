@@ -1,6 +1,5 @@
 import CoreAudio
 
-/// Thin wrappers over the Core Audio property C API.
 enum CoreAudioProperty {
     static func check(_ status: OSStatus, _ operation: String) throws {
         guard status == noErr else { throw CoreAudioError(status: status, operation: operation) }

@@ -1,8 +1,6 @@
 import AppKit
 import SwiftUI
 
-/// Floating subtitle window: stays above other apps, including full-screen video,
-/// on every Space, without taking focus.
 final class OverlayPanel: NSPanel {
     init(model: AppModel) {
         let screen = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1440, height: 900)
@@ -47,8 +45,7 @@ final class OverlayPanel: NSPanel {
     }
 }
 
-/// Whether the pointer is over the overlay. SwiftUI's hover tracking stops while Hearvia is in the background,
-/// which is when the overlay is used, so the hosting view tracks it instead.
+/// Whether the pointer is over the overlay. SwiftUI's hover tracking stops while Hearvia is in the background, which is when the overlay is used, so the hosting view tracks it instead.
 @MainActor @Observable
 final class OverlayPointer {
     var inside = false

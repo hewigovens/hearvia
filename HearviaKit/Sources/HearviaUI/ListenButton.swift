@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Round Start/Stop control: an accent play button with a breathing glow that turns into a pulsing red stop button.
-/// Every press sends a ripple out; `busy` shows progress while capture is starting.
 public struct ListenButton: View {
     let listening: Bool
     let busy: Bool
@@ -67,7 +65,6 @@ private struct PressStyle: ButtonStyle {
     }
 }
 
-/// The live indicator behind the stop button.
 private struct Pulse: View {
     var body: some View {
         Circle().fill(Color.hvStop)
@@ -80,7 +77,6 @@ private struct Pulse: View {
     }
 }
 
-/// The idle glow behind the play button, slowly breathing in and out.
 private struct Breath: View {
     var body: some View {
         Circle().fill(Color.hvAccent)
@@ -94,7 +90,6 @@ private struct Breath: View {
     }
 }
 
-/// A ring that grows out of the button and fades once per press.
 private struct Ripple: View {
     let delay: Double
     let trigger: Int

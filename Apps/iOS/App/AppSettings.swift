@@ -3,7 +3,6 @@ import HearviaSession
 import HearviaUI
 import Observation
 
-/// User preferences owned by the app shell; translation languages and engine live on `LiveTranslator`.
 @MainActor @Observable
 final class AppSettings {
     private enum Keys {
@@ -29,12 +28,11 @@ final class AppSettings {
         didSet { defaults.set(showsOriginal, forKey: Keys.showsOriginal) }
     }
 
-    /// Subtitle text size multiplier; the PiP frame is fixed, so larger text shows fewer lines.
+    /// The PiP frame is fixed, so larger text shows fewer lines.
     var subtitleScale: Double {
         didSet { defaults.set(subtitleScale, forKey: Keys.subtitleScale) }
     }
 
-    /// Start the floating window automatically when the user leaves Hearvia while listening.
     var floatsWhenLeaving: Bool {
         didSet { defaults.set(floatsWhenLeaving, forKey: Keys.floatsWhenLeaving) }
     }

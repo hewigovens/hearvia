@@ -1,7 +1,5 @@
 import Foundation
 
-/// One listening session's finished sentences (original + translation), oldest first, with what produced them.
-/// Saved to the transcript history when the session ends.
 public struct Transcript: Identifiable, Equatable, Sendable, Codable {
     public let id: UUID
     public let startedAt: Date
@@ -32,18 +30,15 @@ public struct Transcript: Identifiable, Equatable, Sendable, Codable {
         lines.append(line)
     }
 
-    /// "Oct 16, 2026 at 10:55"
     public var title: String {
         startedAt.formatted(date: .abbreviated, time: .shortened)
     }
 
-    /// "12 min · English → 中文 · On-device"
     public var summary: String {
         let minutes = max(1, Int(((endedAt ?? lines.last?.time ?? startedAt).timeIntervalSince(startedAt) / 60).rounded()))
         return "\(minutes) min · \(LanguageName.pair(source: sourceLanguage, target: targetLanguage)) · \(engine.title)"
     }
 
-    /// Plain text for sharing and export: a header, then each sentence's time, original and translation.
     public var text: String {
         let body = lines.map { line in
             let time = "[\(line.time.formatted(date: .omitted, time: .standard))]"

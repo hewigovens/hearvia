@@ -1,7 +1,6 @@
 import SwiftUI
 
-/// The status item icon. There is one from launch in both Dock and menu-bar-only modes, so launch work hangs off it;
-/// switching modes inserts the other status item, which mustn't launch again.
+/// The status item icon. There is one from launch in both Dock and menu-bar-only modes, so launch work hangs off it; switching modes inserts the other status item, which mustn't launch again.
 struct MenuBarLabel: View {
     let model: AppModel
     let delegate: AppDelegate
@@ -31,8 +30,7 @@ struct MenuBarLabel: View {
             }
     }
 
-    /// A menu-bar-only app starts without its control window. SwiftUI orders that window in shortly after
-    /// launch work begins, so wait (briefly) until it is on screen: closing it earlier doesn't stick.
+    /// A menu-bar-only app starts without its control window. SwiftUI orders that window in shortly after launch work begins, so wait (briefly) until it is on screen: closing it earlier doesn't stick.
     private func closeLaunchWindow() async {
         for _ in 0 ..< 150 {
             if let window = NSApp.windows.first(where: { $0.identifier?.rawValue == "main" && $0.isVisible }) {

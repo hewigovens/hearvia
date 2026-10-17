@@ -1,7 +1,6 @@
 import HearviaUI
 import SwiftUI
 
-/// A large centred listen button when ready; while listening the same button shrinks into a status row.
 struct ListenHero: View {
     let model: AppModel
 

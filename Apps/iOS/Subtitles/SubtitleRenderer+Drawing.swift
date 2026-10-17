@@ -1,6 +1,5 @@
 import UIKit
 
-/// Rasterizes one subtitle frame: original speech in two small grey lines on top, translation below, newest text pinned to the bottom.
 extension SubtitleRenderer {
     nonisolated func makePixelBuffer() throws -> CVPixelBuffer {
         var pixel: CVPixelBuffer?
@@ -49,7 +48,6 @@ extension SubtitleRenderer {
         [.font: UIFont.systemFont(ofSize: size, weight: weight), .foregroundColor: color, .paragraphStyle: centered]
     }
 
-    /// Draws the tail of `text` that fits `box`, bottom-aligned.
     nonisolated private static func drawTail(_ text: String, attributes: [NSAttributedString.Key: Any], in box: CGRect) {
         let shown = Self.fittingTail(text, attributes: attributes, size: box.size) as NSString
         let used = shown.boundingRect(with: box.size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
@@ -63,8 +61,7 @@ extension SubtitleRenderer {
         return style
     }()
 
-    /// Longest suffix of `text` that fits, starting at a word or CJK character boundary,
-    /// so live subtitles scroll upward as translation deltas append.
+    /// Starts at a word or CJK character boundary so live subtitles scroll upward as translation deltas append.
     nonisolated static func fittingTail(_ text: String, attributes: [NSAttributedString.Key: Any], size: CGSize) -> String {
         func fits(_ s: Substring) -> Bool {
             (String(s) as NSString).boundingRect(with: CGSize(width: size.width, height: .greatestFiniteMagnitude),
@@ -74,7 +71,7 @@ extension SubtitleRenderer {
         if fits(trimmed[...]) {
             return trimmed
         }
-        var low = 0, high = trimmed.count // binary search on dropped characters
+        var low = 0, high = trimmed.count
         while low < high {
             let mid = (low + high) / 2
             if fits(trimmed.dropFirst(mid)) {
