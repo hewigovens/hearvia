@@ -21,8 +21,16 @@ import Testing
 }
 
 @Test func cloudTargetFallsBackToEnglish() {
-    #expect(Languages.cloudTarget(for: "ja") == "ja")
-    #expect(Languages.cloudTarget(for: "nl") == "en")
+    #expect(Languages.target("ja", for: .realtime) == "ja")
+    #expect(Languages.target("nl", for: .realtime) == "en")
+    #expect(Languages.target("nl", for: .gemini) == "nl")
+    #expect(Languages.target("yue", for: .gemini) == "en")
+}
+
+@Test func geminiChoicesAddItsLanguagesAfterTheCommonOnes() {
+    let choices = Languages.choices(for: .gemini, onDevice: [], including: "en")
+    #expect(choices.prefix(Languages.supported.count) == Languages.supported[...])
+    #expect(choices.contains("nl") && choices.contains("sw") && choices.count == Set(choices).count)
 }
 
 @Test func thaiJoinsWithoutSpaces() {

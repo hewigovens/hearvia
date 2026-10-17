@@ -43,6 +43,12 @@ struct GeminiLiveClientTests {
         #expect((quiet["setup"] as? [String: Any])?["inputAudioTranscription"] == nil)
     }
 
+    @Test func namesTheScriptForChineseAndTheRegionForPortuguese() {
+        #expect(GeminiLiveConfiguration.languageCode("zh") == "zh-Hans")
+        #expect(GeminiLiveConfiguration.languageCode("pt") == "pt-BR")
+        #expect(GeminiLiveConfiguration.languageCode("nl") == "nl")
+    }
+
     @Test func downsamplesThreeSamplesToTwo() {
         let input: [Int16] = [100, 200, 400, -300, -100, 500]
         let output = GeminiLiveClient.downsample(input.withUnsafeBytes { Data($0) })

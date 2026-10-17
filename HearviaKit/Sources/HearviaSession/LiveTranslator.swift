@@ -120,7 +120,7 @@ public final class LiveTranslator {
         guard engine != self.engine else { return }
         self.engine = engine
         if engine.isCloud {
-            targetLanguage = Languages.cloudTarget(for: targetLanguage) // On-device offers more languages.
+            targetLanguage = Languages.target(targetLanguage, for: engine) // On-device offers more languages.
         }
         await restartIfActive()
     }

@@ -54,7 +54,7 @@ Left for Mac TestFlight:
 - [ ] Home: the play button's ripple and the move to the bottom when listening; the three tile sheets size to their content; the transcript sheet from the header.
 - [x] Onboarding "Your languages" and "Get ready" pages render with the shared language picker and matching cards (screenshots 2026-10-15).
 - [ ] Onboarding "Get ready": microphone Allow / denied → Settings, model downloads. Light theme on onboarding.
-- [ ] Language pickers: on-device lists the system's languages, the cloud engines the fixed 13; switching to a cloud engine with an unsupported subtitle language falls back to English (unit-tested).
+- [ ] Language pickers: on-device lists the system's languages, OpenAI Realtime the fixed 13, Gemini Live 76; switching to a cloud engine with an unsupported subtitle language falls back to English (unit-tested).
 - [ ] Silence pause/resume and "show original" off on iOS (Realtime restarts when the toggle changes while listening).
 - [ ] A Release build on the phone: no Developer tools in Settings, no Files sharing, no diagnostics log file.
 - [ ] Home: the play button breathes while idle (checked on Mac only).
@@ -81,7 +81,7 @@ Left for Mac TestFlight:
 - [x] CLI end to end with a free-tier key: en → zh and en → ja stream about 0.2 s behind the source transcript; a rejected key stops without reconnecting.
 - [ ] en → ja dropped the clip's last clause ("…smaller than expected") on every run, even with more speech after it; recheck when the model leaves preview, and compare other targets.
 - [ ] Try it in the apps on device: rotation every ~7–9 minutes, silence pause and resume, a language change mid-session.
-- [ ] Offer Gemini its full 70+ subtitle languages instead of OpenAI's 13.
+- [x] Gemini Live offers its 76 subtitle languages (Google's list minus Traditional Chinese, which needs script-aware picker names); Portuguese goes out as `pt-BR`, which Gemini requires. Dutch and Portuguese checked live with the CLI (2026-10-17).
 
 ## Cost and reliability (cloud engines)
 

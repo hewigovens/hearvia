@@ -32,8 +32,12 @@ public struct GeminiLiveConfiguration: Sendable {
         return ["setup": setup]
     }
 
-    /// Gemini names the script for Chinese; the app's other codes are already what it expects.
+    /// Gemini names the script for Chinese and the region for Portuguese; the app's other codes are what it expects.
     static func languageCode(_ code: String) -> String {
-        code == "zh" ? "zh-Hans" : code
+        switch code {
+        case "zh": "zh-Hans"
+        case "pt": "pt-BR"
+        default: code
+        }
     }
 }
