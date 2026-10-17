@@ -31,13 +31,13 @@ Left for iPhone TestFlight (in order):
 
 - [x] Stack pushed; GitHub Pages serves `docs/` from `main` and https://hewigovens.github.io/hearvia/privacy.html loads (2026-10-16).
 - [x] App Store Connect privacy policy URL set on the app record (2026-10-17).
-- [ ] App Privacy answers from `docs/release.md` (unchanged by TranslateGemma: Hearvia collects nothing from the download). Needs an Apple ID web session (`asc web privacy plan/apply`) or the App Store Connect website; the API key can't set them.
+- [x] App Privacy answers published (2026-10-17), as in `docs/release.md`: Audio Data only, not linked to identity, not used for tracking, App Functionality ("Data Not Linked to You: User Content").
 - [ ] A Release build on the phone (see "Verify on iPhone"): no Developer tools, no file sharing, no diagnostics log; quick start, transcripts and TranslateGemma work.
 - [x] Internal TestFlight group "Internal" (internal, access to all builds; `TESTFLIGHT_GROUP=Internal` in `.env`) with hewigovens@gmail.com as tester (2026-10-16).
 - [x] iOS 0.1 (202610161709) and Mac 0.1 (202610161713) uploaded with `just testflight` / `just testflight-macos`, processed and in Internal with What to Test notes (2026-10-16). The iOS one is the first archive with MLX and the increased-memory-limit entitlement.
 - [ ] Install both from TestFlight and run the "Verify on iPhone" / "Verify on Mac" checks on these Release builds.
 - [x] TestFlight test information (en-US): description with what to try, keys, the Gemini free-tier note and TranslateGemma; website and privacy URL (2026-10-17).
-- [ ] TestFlight feedback email (required for external testing); not set yet.
+- [x] TestFlight feedback email: hi@hewig.dev (2026-10-17).
 - [ ] Internal group: you plus a couple of devices; then an external group through Beta App Review (needs the privacy URL and test information).
 
 Left for Mac TestFlight:
@@ -99,12 +99,13 @@ Left for Mac TestFlight:
 
 - [ ] Hybrid "ChatGPT plan" mode: on-device speech + Responses API text translation (`gpt-6-luna`, effort none; ~3–5 s behind sentence end). Plan tokens can't do realtime audio. Commercial use needs OpenAI's approval. Probe: `scripts/chatgpt_plan_probe.py`.
 - [x] Keys for TestFlight: bring your own key only (decided 2026-10-15). On-device is the default; testers paste an OpenAI or Gemini key in Settings → Translators. See `docs/release.md`.
-- [ ] Keys for the App Store: decide on a paid tier later. Option on the table: a token server (App Attest + StoreKit check, short-lived provider tokens, the app still connects straight to OpenAI/Google) with minutes sold through In-App Purchase; on-device stays free.
+- [x] Keys for the App Store: free + bring-your-own-key for now (decided 2026-10-17); a paid tier can come later.
+- [ ] Later, if wanted: a paid tier. Option on the table: a token server (App Attest + StoreKit check, short-lived provider tokens, the app still connects straight to OpenAI/Google) with minutes sold through In-App Purchase; on-device stays free.
 - [x] On-device offers more languages than the 13 Realtime ones.
 - [x] TranslateGemma 4B (open weights, MLX, `HearviaLLM`) as a downloadable translator on 8 GB devices, with Apple speech recognition in front (2026-10-16). Mac (Release `gemma-bench`): 1.3 s load, ~0.5 s per sentence, 2.8 GB peak; the sandboxed Mac app downloads it in Settings and subtitles live speech. iPhone 16 Pro (Release, `GemmaDeviceTests`): 6.1 GB free with the increased-memory-limit entitlement, 1.7 s load, 1.4–1.8 s per sentence, 3.8 GB still free once loaded.
 - [x] TranslateGemma background GPU support (2026-10-17): request a GPU-enabled continued-processing task for a listening session, report consumed audio, and revoke GPU access on cancellation or expiration. Unsupported devices and denied requests retain foreground translation. The signed iOS app includes Background GPU Access.
 - [x] Background task registration (2026-10-17): register each concrete session identifier before submission; keep the wildcard only in Info.plist. Two registrations passed on iPhone 16 Pro, iOS 27.0.1. That phone reports background GPU support as unavailable, so the Gemma background probe skips.
-- [ ] Verify background TranslateGemma with live capture, Apple speech recognition and PiP together on iPhone; include task cancellation, interruptions and returning to Hearvia after expiration.
+- [ ] (Skipped for now: the test iPhone has no background GPU support, 2026-10-17.) Verify background TranslateGemma with live capture, Apple speech recognition and PiP together on iPhone; include task cancellation, interruptions and returning to Hearvia after expiration.
 - [ ] TranslateGemma in the iPhone app by hand, Hearvia on screen: microphone mode with no network, a few minutes of speech.
 - [ ] TranslateGemma download in the iPhone app (Settings → Translators, 2.2 GB over Wi-Fi); the test phone has the model copied in already.
 - [ ] TranslateGemma quality: 2 of 8 English test sentences came out wrong in Chinese ("fell asleep 20 minutes faster" → "slept 20 minutes"; "Activation went up" garbled). Compare against the built-in translator on real speech before calling it "better".
