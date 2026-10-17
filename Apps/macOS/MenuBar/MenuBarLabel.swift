@@ -1,6 +1,7 @@
 import SwiftUI
 
-/// The status item icon. It exists from launch in both Dock and menu-bar-only modes, so launch work hangs off it.
+/// The status item icon. There is one from launch in both Dock and menu-bar-only modes, so launch work hangs off it;
+/// switching modes inserts the other status item, which mustn't launch again.
 struct MenuBarLabel: View {
     let model: AppModel
     let delegate: AppDelegate
@@ -10,6 +11,7 @@ struct MenuBarLabel: View {
         Image(systemName: model.capturing ? "captions.bubble.fill" : "captions.bubble")
             .accessibilityLabel("Hearvia")
             .task {
+                guard delegate.model == nil else { return }
                 delegate.model = model
                 model.openWindow = { id in
                     openWindow(id: id)
