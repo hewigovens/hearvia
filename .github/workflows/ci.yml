@@ -1,4 +1,4 @@
-# Kit tests, lint, and unsigned builds of both apps on GitHub's Xcode 27 image (public preview).
+# Kit tests, lint, and unsigned builds of both apps on GitHub's Xcode 27 image (public preview), with Xcode 27.1 like local and App Store builds (the image defaults to 27.0, whose SDK lacks the iPhone Duo APIs).
 name: CI
 
 on:
@@ -9,6 +9,9 @@ on:
 
 permissions:
   contents: read
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
 
 concurrency:
   group: ci-${{ github.ref }}
