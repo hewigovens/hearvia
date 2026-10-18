@@ -133,6 +133,21 @@ read_archive_build_metadata() {
   build_number=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$info_plist")
 }
 
+# Counts up within each version, shared by iOS and Mac so one number names one release; a new MARKETING_VERSION starts again at 1.
+next_build_number() {
+  require_non_empty "$selected_app_id" "ASC_APP_ID"
+  local version highest=0 platform next
+  version=$(awk -F'"' '/MARKETING_VERSION:/ { print $2; exit }' "$repo_root/project.yml")
+  for platform in IOS MAC_OS; do
+    next=$(run_asc builds next-build-number --app "$selected_app_id" --version "$version" --platform "$platform" --output json \
+      | python3 -c 'import json, sys; print(json.load(sys.stdin)["nextBuildNumber"])')
+    if (( next > highest )); then
+      highest=$next
+    fi
+  done
+  echo "$highest"
+}
+
 archive_build() {
   local artifact_path
 
@@ -147,8 +162,7 @@ archive_build() {
   mkdir -p "$release_root"
   rm -rf "$archive_path" "$export_path" "$derived_data_path"
 
-  # A timestamp is unique across uploads and across iOS and Mac, which share one App Store Connect record.
-  local archive_build_number="${TESTFLIGHT_BUILD_NUMBER:-$(date +%Y%m%d%H%M)}"
+  local archive_build_number="${TESTFLIGHT_BUILD_NUMBER:-$(next_build_number)}"
   log "Archiving $scheme, build $archive_build_number..."
   run_xcodebuild \
     -scheme "$scheme" \

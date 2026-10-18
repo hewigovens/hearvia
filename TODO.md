@@ -5,15 +5,14 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 ## Handoff
 
 - Version control: jj only, in the default workspace (no sibling workspaces); `git` only for gaps jj doesn't cover, never index-writing commands. See `agents/version-control.md`. Codex sometimes works in the same checkout: check `jj op log` and `jj diff --stat` for edits you didn't make before describing or pushing.
-- `main` on `origin` (github.com/hewigovens/hearvia) is at nsomsurp (2026-10-18). `jj log -r 'main::@'` shows what isn't pushed yet; publish with `jj bookmark set main -r <rev>` and `jj git push --bookmark main`.
+- `main` on `origin` (github.com/hewigovens/hearvia) is at mxvtsnvo (2026-10-18). `jj log -r 'main::@'` shows what isn't pushed yet; publish with `jj bookmark set main -r <rev>` and `jj git push --bookmark main`.
 - Checks: `just format lint build test` locally; CI (`.github/workflows/ci.yml`, GitHub's `xcode-27` image) runs the kit tests, SwiftFormat, SwiftLint and unsigned builds of both apps on every push and pull request.
-- Releases: `just testflight` / `just testflight-macos` upload to the internal TestFlight group (`docs/release.md`). The builds there predate the 2026-10-17 changes.
+- Releases: `just testflight` / `just testflight-macos` upload to TestFlight (`docs/release.md`). Internal testers get every build; the external "Public Beta" group (public link, up to 1,000 testers) gets a build once it's added to the group, and the first build of each version needs Beta App Review. Latest: 0.1 (202610180934 iOS, 202610180937 Mac), 2026-10-18.
 
 ## Next: TestFlight
 
-- [ ] Upload new builds (`just testflight`, `just testflight-macos`) and install both from TestFlight.
-- [ ] Run the checks below on those Release builds: no Developer tools, no Files sharing and no diagnostics log on iPhone; quick start and transcripts work.
-- [ ] Add a couple more internal testers; then an external group through Beta App Review (privacy URL, test information, feedback email and App Privacy are all set).
+- [ ] Beta App Review of 0.1 (submitted 2026-10-18, both builds in the Public Beta group). Once approved, share the public link and bump `MARKETING_VERSION` to 0.2 so build numbers restart at 1 (0.1 has to stay above its timestamp builds).
+- [ ] Run the checks below on the TestFlight builds: no Developer tools, no Files sharing and no diagnostics log on iPhone; quick start and transcripts work.
 
 ## Check on iPhone
 

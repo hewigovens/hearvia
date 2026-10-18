@@ -53,7 +53,7 @@ just testflight-macos           # Mac: upload the .pkg with altool, then asc for
 - `.env` (gitignored) holds `ASC_APP_ID` (the app's App Store Connect ID) and the App Store Connect API key: `APP_STORE_CONNECT_KEY_NAME`, `APP_STORE_CONNECT_KEY_ID`, `APP_STORE_CONNECT_ISSUER_ID`, `APP_STORE_CONNECT_KEY_PATH` (a `.p8` outside the repo, shared with the AnyTime and Inspect repos). Never print or commit them.
 - Optional: `TESTFLIGHT_GROUP` (group name or ID; the build is added to it and the script waits for processing), `TESTFLIGHT_NOTES` ("What to Test"), `TESTFLIGHT_NOTIFY`, `TESTFLIGHT_WAIT`, `TESTFLIGHT_TIMEOUT`, `TESTFLIGHT_BUILD_NUMBER`.
 - An internal group with access to all builds (like "Internal") receives every processed build by itself; the script doesn't try to add builds to it.
-- Build numbers default to a timestamp (`yyyyMMddHHmm`): unique per upload and across iOS and Mac, which share the one App Store Connect record.
+- Build numbers count up within each `MARKETING_VERSION`, one sequence shared by iOS and Mac (the next number after the highest uploaded for either), so a new version starts at 1. Version 0.1 used timestamps (`yyyyMMddHHmm`), so its numbers stay that long. `TESTFLIGHT_BUILD_NUMBER` overrides it.
 - Before uploading, check the iOS archive has no key: `strings build/testflight/ios/Hearvia.xcarchive/Products/Applications/Hearvia.app/Hearvia | grep -c "sk-"` should print 0.
 
 ## macOS: hardened runtime, sandbox, notarization

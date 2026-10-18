@@ -30,7 +30,7 @@ install-ios: generate
   xcrun devicectl device install app --device {{device}} "$(xcodebuild -project Hearvia.xcodeproj -scheme Hearvia -destination 'generic/platform=iOS' -showBuildSettings 2>/dev/null | awk '/ BUILT_PRODUCTS_DIR/{print $3}')/Hearvia.app"
   xcrun devicectl device process launch --terminate-existing --device {{device}} dev.hewig.hearvia
 
-# TestFlight (scripts/testflight.sh, settings in .env; see docs/release.md). Build numbers are timestamps.
+# TestFlight (scripts/testflight.sh, settings in .env; see docs/release.md). Build numbers count up per version.
 # Check the App Store Connect API key
 testflight-auth:
   scripts/testflight.sh auth
