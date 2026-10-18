@@ -219,3 +219,9 @@ func waitUntil(_ condition: @MainActor () async -> Bool) async throws {
     }
     #expect(await condition())
 }
+
+@Test func simplifiedChineseSpeechConvertsToTraditional() async throws {
+    let convert = try #require(OnDeviceModels.scriptConversion(from: "zh", to: "zh-Hant"))
+    #expect(try await convert("简体中文，后来发现") == "簡體中文，後來發現")
+    #expect(OnDeviceModels.scriptConversion(from: "en", to: "zh-Hant") == nil)
+}

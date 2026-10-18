@@ -38,12 +38,18 @@ public final class OnDeviceEngine: TranslationEngine {
         if source.isEmpty {
             return try await detecting(strategy: "auto") { source in
                 guard source != target else { return nil }
+                if let conversion = OnDeviceModels.scriptConversion(from: source, to: target) {
+                    return conversion
+                }
                 let translator = try await OnDeviceTextTranslator(source: source, target: target)
                 return { try await translator.translate($0) }
             }
         }
         guard source != target else {
             return try await OnDeviceModelSet(speech: OnDeviceSpeech(language: source, progress: progress), translate: nil, strategy: "none")
+        }
+        if let conversion = OnDeviceModels.scriptConversion(from: source, to: target) {
+            return try await OnDeviceModelSet(speech: OnDeviceSpeech(language: source, progress: progress), translate: conversion, strategy: "Hans-Hant")
         }
         let translator = try await OnDeviceTextTranslator(source: source, target: target)
         let speech = try await OnDeviceSpeech(language: source, progress: progress)

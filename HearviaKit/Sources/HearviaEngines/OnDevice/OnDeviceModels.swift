@@ -28,12 +28,20 @@ public enum OnDeviceModels {
     }
 
     public static func subtitleLanguages() async -> [String] {
-        await codes(LanguageAvailability().supportedLanguages)
+        let languages = await LanguageAvailability().supportedLanguages
+        let traditional = languages.contains { $0.languageCode?.identifier == "zh" && $0.script?.identifier == "Hant" }
+        return codes(languages) + (traditional ? [Languages.traditionalChinese] : [])
     }
 
     private static func codes(_ languages: [Locale.Language]) -> [String] {
         let special: Set = ["mul", "und", "zxx", "mis"] // multiple, undetermined, no content, uncoded
         return Array(Set(languages.compactMap { $0.languageCode?.identifier }).subtracting(special))
+    }
+
+    /// Apple doesn't translate Simplified to Traditional Chinese, but ICU converts the script on device.
+    static func scriptConversion(from source: String, to target: String) -> Translate? {
+        guard source == "zh", target == Languages.traditionalChinese else { return nil }
+        return { $0.applyingTransform(StringTransform("Hans-Hant"), reverse: false) ?? $0 }
     }
 
     public static func translationLanguage(_ code: String) -> Locale.Language {
@@ -89,7 +97,7 @@ public enum OnDeviceModels {
     }
 
     public static func translation(from source: String, to target: String) async -> Availability {
-        if source == target {
+        if source == target || scriptConversion(from: source, to: target) != nil {
             return .installed
         }
         switch await installedStrategy(from: source, to: target) {

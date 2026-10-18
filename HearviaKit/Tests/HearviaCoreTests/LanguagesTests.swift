@@ -29,10 +29,19 @@ import Testing
 
 @Test func geminiChoicesAddItsLanguagesAfterTheCommonOnes() {
     let choices = Languages.choices(for: .gemini, onDevice: [], including: "en")
-    #expect(choices.prefix(Languages.supported.count) == Languages.supported[...])
+    #expect(choices.filter { $0 != Languages.traditionalChinese }.prefix(Languages.supported.count) == Languages.supported[...])
     #expect(choices.contains("nl") && choices.contains("sw") && choices.count == Set(choices).count)
 }
 
 @Test func thaiJoinsWithoutSpaces() {
     #expect(SubtitleText.join("สวัสดี", "ครับ", language: "th") == "สวัสดีครับ")
+}
+
+@Test func traditionalChineseFollowsChineseAndFallsBackToIt() throws {
+    let choices = Languages.choices(for: .gemini, onDevice: [], including: "en")
+    #expect(try choices[#require(choices.firstIndex(of: "zh")) + 1] == Languages.traditionalChinese)
+    #expect(!Languages.choices(for: .realtime, onDevice: [], including: "en").contains(Languages.traditionalChinese))
+    #expect(Languages.target(Languages.traditionalChinese, for: .realtime) == "zh")
+    #expect(SubtitleText.join("你好", "世界", language: Languages.traditionalChinese) == "你好世界")
+    #expect(LanguageName.english(Languages.traditionalChinese) == "Traditional Chinese")
 }

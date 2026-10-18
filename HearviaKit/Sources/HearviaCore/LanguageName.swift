@@ -10,7 +10,7 @@ public enum LanguageName {
 
     public static func short(_ code: String) -> String {
         guard !code.isEmpty else { return "Auto" }
-        return (Locale(identifier: code).localizedString(forLanguageCode: code) ?? code).capitalized
+        return (Locale(identifier: code).localizedString(forIdentifier: code) ?? code).capitalized
     }
 
     public static func pair(source: String, target: String) -> String {
@@ -19,10 +19,10 @@ public enum LanguageName {
 
     /// The English name, for prompts: "Japanese", "Chinese".
     public static func english(_ code: String) -> String {
-        Locale(identifier: "en").localizedString(forLanguageCode: code) ?? code
+        code == Languages.traditionalChinese ? "Traditional Chinese" : Locale(identifier: "en").localizedString(forIdentifier: code) ?? code
     }
 
     public static func localized(_ code: String) -> String {
-        Locale.current.localizedString(forLanguageCode: code)?.capitalized ?? code
+        Locale.current.localizedString(forIdentifier: code)?.capitalized ?? code
     }
 }

@@ -47,7 +47,7 @@ public struct LocalModelServer: Sendable, Equatable {
     static func prompt(_ text: String, from source: String, to target: String, model: String) -> String {
         if model.localizedCaseInsensitiveContains("index-translate") {
             // The prompt from the Index-Translate model card, with the target named in Chinese.
-            let name = Locale(identifier: "zh-Hans").localizedString(forLanguageCode: target) ?? LanguageName.english(target)
+            let name = Locale(identifier: "zh-Hans").localizedString(forIdentifier: target) ?? LanguageName.english(target)
             return "请将以下文本翻译为\(name)，直接输出翻译结果，不要进行任何解释。\n\n\(text)"
         }
         let from = LanguageName.english(source), to = LanguageName.english(target)
