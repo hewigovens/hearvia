@@ -11,8 +11,8 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 
 ## Next: TestFlight
 
-- [ ] Beta App Review of 0.1 (submitted 2026-10-18, both builds in the Public Beta group). Once approved, share the public link.
-- [ ] App Store 1.0 is ready to submit (iOS and Mac, 2026-10-18): listing, keywords, screenshots (`scripts/frame_screenshots.py`), age rating 4+, free, every territory but mainland China (no ICP filing), review details, builds 1.0 (1) iOS and (2) Mac attached; release is manual. Submit with `asc review submit` or in App Store Connect when ready.
+- [ ] Beta App Review of 1.0 (3) iOS and (4) Mac (submitted 2026-10-18, both in the Public Beta group; the 0.1 builds were expired). Once approved, share the public link.
+- [ ] App Store 1.0 is ready to submit (iOS and Mac, 2026-10-18): listing, keywords, screenshots (`scripts/frame_screenshots.py`), age rating 4+, free, every territory but mainland China (no ICP filing), review details, builds 1.0 (3) iOS and (4) Mac attached; release is manual. Submit with `asc review submit` or in App Store Connect when ready.
 - [ ] Run the checks below on the TestFlight builds: no Developer tools, no Files sharing and no diagnostics log on iPhone; quick start and transcripts work.
 
 ## Check on iPhone
@@ -25,8 +25,7 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 
 ## Check on iPhone Duo (ships 2026-10-23)
 
-- Xcode 27.1 (final, 2026-10-15) is at /Applications/Xcode-27.1.app with the iOS 27.1 and 27.0 simulators and a "Hearvia Duo" simulator; build with `DEVELOPER_DIR=/Applications/Xcode-27.1.app/Contents/Developer` (the selected Xcode is still 27.0). Simulator screenshots come back black while the Mac is locked.
-- [ ] Move builds to Xcode 27.1 (the 27.1 SDK gives the full-screen layout on iPhone Duo): `sudo xcode-select -s /Applications/Xcode-27.1.app`, then TestFlight.
+- Xcode 27.1 (final, 2026-10-15) is at /Applications/Xcode-27.1.app with the iOS 27.1 and 27.0 simulators and a "Hearvia Duo" simulator; build with `DEVELOPER_DIR=/Applications/Xcode-27.1.app/Contents/Developer` (also the selected Xcode now). Simulator screenshots come back black while the Mac is locked.
 - [ ] Open and closed: home switches between one and two columns; transcripts show as a split view when open; onboarding stays readable; uneven safe areas don't clip anything.
 - [ ] Standing half-folded (landscape) while listening shows full-screen captions; PiP still starts when leaving the app from caption mode.
 
