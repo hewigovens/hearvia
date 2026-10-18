@@ -43,13 +43,12 @@ private struct GeneralSettings: View {
                 .pickerStyle(.segmented)
                 Toggle(isOn: $settings.menuBarOnly) {
                     Text("Show in menu bar only")
-                    Text("Hides the Dock icon. Open Hearvia from the captions icon in the menu bar.")
+                    Text("Open Hearvia from the menu bar icon.")
                 }
             }
             Section {
                 Toggle(isOn: $translator.savesTranscripts) {
                     Text("Save transcripts")
-                    Text("Open Transcripts to export or copy one.")
                 }
                 Toggle(isOn: Bindable(translator.history).syncsWithICloud) {
                     Text("Sync with iCloud")
@@ -70,12 +69,12 @@ private struct TranslatorSettings: View {
             Section {
                 SecureField("API key", text: $translator.openAIKey)
             } header: { Text("OpenAI Realtime") } footer: {
-                Text("Only used by the OpenAI Realtime translator. Kept in your Keychain.").foregroundStyle(Color.hvMuted)
+                Text("Stored in your Keychain.").foregroundStyle(Color.hvMuted)
             }
             Section {
                 SecureField("API key", text: $translator.geminiKey)
             } header: { Text("Gemini Live") } footer: {
-                Text("Only used by the Gemini Live translator. Get a free key at [aistudio.google.com](https://aistudio.google.com/apikey). Kept in your Keychain.")
+                Text("Free key at [aistudio.google.com](https://aistudio.google.com/apikey). Stored in your Keychain.")
                     .foregroundStyle(Color.hvMuted)
             }
             Section("On-device models") {
@@ -84,7 +83,7 @@ private struct TranslatorSettings: View {
             Section {
                 LocalModelSettingsView(translator: translator)
             } header: { Text("Local LLM (experimental)") } footer: {
-                Text("Hearvia recognizes speech on this Mac, then sends each finished sentence to this server for translation. Works with Ollama, LM Studio, Unsloth Studio or another OpenAI-compatible server.")
+                Text("Sends each finished sentence to your OpenAI-compatible server: Ollama, LM Studio, Unsloth Studio and others.")
                     .foregroundStyle(Color.hvMuted)
             }
         }
@@ -107,7 +106,7 @@ private struct OverlaySettings: View {
                 Toggle(settings.originalLarge ? "Show translation" : "Show original speech", isOn: $settings.showsOriginal)
                 Toggle(isOn: $settings.clickThrough) {
                     Text("Click-through")
-                    Text("Clicks reach the app underneath; the overlay can't be dragged meanwhile.")
+                    Text("Clicks reach the app below; the overlay can't be moved.")
                 }
             }
             Section {

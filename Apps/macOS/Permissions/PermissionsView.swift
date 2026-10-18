@@ -17,14 +17,13 @@ struct PermissionsView: View {
             }
             VStack(spacing: 8) {
                 PermissionRow(symbol: "speaker.wave.2", title: "Audio from other apps",
-                              detail: "Allow Hearvia to record system audio. It hears the app you pick and never records the screen.",
+                              detail: "Hears the app you pick. Never records the screen.",
                               isNext: model.source != .microphone)
                 PermissionRow(symbol: "mic", title: "Microphone",
-                              detail: "Asked the first time you choose Microphone, to subtitle speech around you.",
+                              detail: "Asked when you first choose Microphone.",
                               isNext: model.source == .microphone)
             }
-            Text("Hearvia never plays sound or pauses what you're watching. Audio stays on this Mac unless you use OpenAI Realtime. "
-                + "You can change access later in System Settings → Privacy & Security.")
+            Text("Audio stays on this Mac unless you use OpenAI Realtime. Change access in System Settings → Privacy & Security.")
                 .font(.caption).foregroundStyle(Color.hvMuted)
                 .fixedSize(horizontal: false, vertical: true)
             HStack(spacing: 10) {

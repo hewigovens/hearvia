@@ -4,10 +4,10 @@ import HearviaCore
 extension TranscriptHistory {
     public func storageNote(device: String) -> String {
         if isInICloud {
-            return String(localized: "Synced with iCloud to your other devices. Deleting a transcript removes it everywhere.")
+            return String(localized: "Synced across your devices. Deleting syncs too.")
         }
         if syncsWithICloud {
-            return String(localized: "Kept on this \(device) until iCloud is available: sign in to iCloud and turn on iCloud Drive.")
+            return String(localized: "Turn on iCloud Drive to sync. Kept on this \(device) meanwhile.")
         }
         return String(localized: "Kept on this \(device) only.")
     }

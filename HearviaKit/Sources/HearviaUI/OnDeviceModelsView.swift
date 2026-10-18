@@ -31,7 +31,7 @@ public struct OnDeviceModelsView: View {
             if source.isEmpty {
                 autoRows
             } else {
-                row("Speech recognition · \(LanguageName.localized(source))", speech, progress: speechProgress) {
+                row("Speech · \(LanguageName.localized(source))", speech, progress: speechProgress) {
                     Task { await downloadSpeech() }
                 }
                 if translates, source != target {
@@ -59,11 +59,13 @@ public struct OnDeviceModelsView: View {
 
     @ViewBuilder private var autoRows: some View {
         HStack {
-            Text("Speech recognition · Auto")
-            Spacer()
+            Text("Auto-detect").lineLimit(1).layoutPriority(1)
+            Spacer(minLength: 8)
             if let candidates {
-                Text(candidates.isEmpty ? "None downloaded" : candidates.map(LanguageName.short).joined(separator: ", "))
+                Text(candidates.isEmpty ? String(localized: "None downloaded") : candidates.map(LanguageName.short).joined(separator: " · "))
                     .foregroundStyle(candidates.isEmpty ? .red : .green)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
             } else {
                 Text("Checking…").foregroundStyle(.secondary)
             }
@@ -82,10 +84,10 @@ public struct OnDeviceModelsView: View {
         }
     }
 
-    private func row(_ title: String, _ status: OnDeviceModels.Availability?, progress: Double?, action: @escaping () -> Void) -> some View {
+    private func row(_ title: LocalizedStringKey, _ status: OnDeviceModels.Availability?, progress: Double?, action: @escaping () -> Void) -> some View {
         HStack {
-            Text(title)
-            Spacer()
+            Text(title).lineLimit(1).minimumScaleFactor(0.8)
+            Spacer(minLength: 8)
             if let progress {
                 ProgressView(value: progress).frame(width: 80)
             } else if status == .downloadable {

@@ -60,7 +60,7 @@ struct SettingsView: View {
                     }
                     .disabled(model.translation.history.transcripts.isEmpty)
                 } header: { Text("Transcripts") } footer: {
-                    Text(model.translation.history.storageNote(device: "iPhone") + " " + String(localized: "Open one from the transcript button on the home screen to export or share it."))
+                    Text(model.translation.history.storageNote(device: "iPhone"))
                 }
                 .listRowBackground(Color.hvSurface)
 

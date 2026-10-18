@@ -45,50 +45,50 @@ struct OnboardingView: View {
 
     private var welcome: some View {
         OnboardingPage(symbol: nil, title: "Live subtitles for anything you hear",
-                       message: "Videos, podcasts, calls, or the person in front of you, translated as they speak.") {
-            FeatureCard("apps.iphone", "Other apps", "Keep watching in Safari, YouTube or Podcasts. Hearvia never pauses them.")
-            FeatureCard("mic", "Microphone", "Talks, lessons and conversations in the room.")
-            FeatureCard("checkmark.shield", "Free and private on device", "Or switch to OpenAI Realtime for the fastest subtitles.")
+                       message: "Videos, podcasts, calls and people, translated as they speak.") {
+            FeatureCard("apps.iphone", "Other apps", "What you're watching keeps playing.")
+            FeatureCard("mic", "Microphone", "Talks, lessons and conversations.")
+            FeatureCard("checkmark.shield", "Free and private on device", "Or OpenAI Realtime for the fastest subtitles.")
         }
     }
 
     private var permission: some View {
         OnboardingPage(symbol: "rectangle.dashed.badge.record", title: "iOS will ask to share your screen",
-                       message: "iOS only lets apps hear other apps' sound through screen sharing. When you tap the play button, choose **Share Entire Screen**.") {
-            Bullet("waveform", "Hearvia uses only the sound. Screen images are thrown away immediately and never saved or uploaded.")
-            Bullet("record.circle", "A red indicator stays in the status bar while Hearvia is listening. Tap it any time to stop.")
-            Bullet("network", "OpenAI Realtime sends speech to OpenAI to translate. On-device mode keeps everything on your iPhone. Hearvia doesn't keep recordings.")
+                       message: "Choose **Share Entire Screen**. It's the only way iOS lets Hearvia hear other apps.") {
+            Bullet("waveform", "Only the sound is used. The screen is never saved or uploaded.")
+            Bullet("record.circle", "Tap the red indicator in the status bar to stop.")
+            Bullet("network", "On-device keeps everything on your iPhone. OpenAI Realtime sends speech to OpenAI.")
         }
     }
 
     private var floatingWindow: some View {
         OnboardingPage(symbol: "pip", title: "Subtitles float on top",
-                       message: "When you switch to another app, subtitles appear in a slim floating window.") {
-            Bullet("hand.draw", "Drag it anywhere — above or below the action.")
-            Bullet("arrow.up.left.and.arrow.down.right", "Pinch to make it bigger or smaller.")
-            Bullet("arrow.right.to.line", "Swipe it to the screen edge to hide it; swipe back to bring it out.")
+                       message: "Subtitles follow you to other apps in a floating window.") {
+            Bullet("hand.draw", "Drag it anywhere.")
+            Bullet("arrow.up.left.and.arrow.down.right", "Pinch to resize.")
+            Bullet("arrow.right.to.line", "Swipe it to the edge to hide it.")
         }
     }
 
     private var tips: some View {
-        OnboardingPage(symbol: "lightbulb", title: "For the smoothest experience",
-                       message: "A few things iOS decides for us:") {
-            Bullet("1.circle", "Start Hearvia first, then open your video. Watch it full screen rather than in its own floating window — iOS shows only one floating window at a time.")
-            Bullet("lock.shield", "Some streaming apps block screen sharing for protected movies. Those won't get subtitles.")
-            Bullet("headphones", "Headphones and AirPods work fine — Hearvia hears the app, not the room.")
+        OnboardingPage(symbol: "lightbulb", title: "Tips",
+                       message: "iOS sets a few limits.") {
+            Bullet("1.circle", "Start Hearvia first, then watch full screen. iOS shows one floating window at a time.")
+            Bullet("lock.shield", "Protected movies in some streaming apps can't get subtitles.")
+            Bullet("headphones", "Headphones and AirPods work fine.")
         }
     }
 
     private var languageChoice: some View {
         OnboardingPage(symbol: "globe", title: "Your languages",
-                       message: "Pick the language you want to read. Change it any time from the home screen.") {
+                       message: "Pick the language to read. Change it any time.") {
             LanguageCard(translator: translator)
         }
     }
 
     private var getReady: some View {
         OnboardingPage(symbol: "checkmark.seal", title: "Get ready",
-                       message: "Both optional. Hearvia asks again when they're needed.") {
+                       message: "Both optional. Hearvia asks again when needed.") {
             MicrophonePermissionRow()
             FeatureCard("cpu", "On-device translator", "Downloads once, then works offline.", footer: {
                 OnDeviceModelsView(source: translator.sourceLanguage, target: translator.targetLanguage)

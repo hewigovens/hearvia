@@ -141,64 +141,6 @@
       "extractionState": "manual",
       "shouldTranslate": false
     },
-    "A few things iOS decides for us:": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iOS が決めていることがいくつかあります："
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iOS가 정하는 몇 가지가 있습니다:"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "有几件事由 iOS 决定："
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "有幾件事由 iOS 決定："
-          }
-        }
-      }
-    },
-    "A red indicator stays in the status bar while Hearvia is listening. Tap it any time to stop.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hearvia が聞いている間、ステータスバーに赤いインジケータが表示されます。タップすればいつでも停止できます。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hearvia가 듣는 동안 상태 막대에 빨간색 표시가 나타납니다. 언제든 탭하면 중지됩니다."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hearvia 收听时，状态栏会一直显示红色指示器。随时轻点即可停止。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hearvia 收聽時，狀態列會一直顯示紅色指示器。隨時點一下即可停止。"
-          }
-        }
-      }
-    },
     "AIza…": {
       "extractionState": "manual",
       "shouldTranslate": false
@@ -385,35 +327,6 @@
         }
       }
     },
-    "Allow Hearvia to record system audio. It hears the app you pick and never records the screen.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hearvia にシステム音声の収録を許可してください。選んだアプリの音声だけを聞き、画面は録画しません。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hearvia가 시스템 오디오를 녹음하도록 허용하세요. 선택한 앱의 소리만 듣고 화면은 녹화하지 않습니다."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "允许 Hearvia 录制系统音频。它只听你选择的 App，从不录制屏幕。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "允許 Hearvia 錄製系統音訊。它只聽你選擇的 App，從不錄製螢幕。"
-          }
-        }
-      }
-    },
     "Allowed": {
       "extractionState": "manual",
       "localizations": {
@@ -501,31 +414,31 @@
         }
       }
     },
-    "Asked the first time you choose Microphone, to subtitle speech around you.": {
+    "Asked when you first choose Microphone.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "初めてマイクを選んだときに確認します。周りの話し声に字幕を付けるためです。"
+            "value": "初めてマイクを選んだときに確認します。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "처음 마이크를 선택할 때 요청합니다. 주변의 말소리에 자막을 달기 위한 것입니다."
+            "value": "처음 마이크를 선택할 때 묻습니다."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "第一次选择麦克风时询问，用于为你周围的说话添加字幕。"
+            "value": "第一次选择麦克风时询问。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "第一次選擇麥克風時詢問，用於為你周圍的說話新增字幕。"
+            "value": "第一次選擇麥克風時詢問。"
           }
         }
       }
@@ -591,6 +504,35 @@
     "Audio isolation / route experiment": {
       "extractionState": "manual",
       "shouldTranslate": false
+    },
+    "Audio stays on this Mac unless you use OpenAI Realtime. Change access in System Settings → Privacy & Security.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OpenAI Realtime を使わない限り、音声はこのMacから出ません。アクセスは「システム設定 → プライバシーとセキュリティ」で変更できます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OpenAI Realtime을 사용하지 않으면 오디오는 이 Mac에만 남습니다. 접근 권한은 ‘시스템 설정 → 개인정보 보호 및 보안’에서 바꿀 수 있습니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "除非使用 OpenAI Realtime，否则音频只留在这台 Mac 上。可在“系统设置 → 隐私与安全性”中更改访问权限。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "除非使用 OpenAI Realtime，否則音訊只留在這台 Mac 上。可在「系統設定 → 隱私權與安全性」中更改取用權限。"
+          }
+        }
+      }
     },
     "Auto": {
       "extractionState": "manual",
@@ -766,31 +708,31 @@
         }
       }
     },
-    "Both optional. Hearvia asks again when they're needed.": {
+    "Both optional. Hearvia asks again when needed.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "どちらも任意です。必要になったときに Hearvia が改めて確認します。"
+            "value": "どちらも任意です。必要なときに改めて確認します。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "둘 다 선택 사항입니다. 필요할 때 Hearvia가 다시 묻습니다."
+            "value": "둘 다 선택 사항입니다. 필요할 때 다시 묻습니다."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "两项都是可选的。需要时 Hearvia 会再次询问。"
+            "value": "两项都可选。需要时 Hearvia 会再次询问。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "兩項都是可選的。需要時 Hearvia 會再次詢問。"
+            "value": "兩項都可選。需要時 Hearvia 會再次詢問。"
           }
         }
       }
@@ -948,6 +890,35 @@
         }
       }
     },
+    "Choose **Share Entire Screen**. It's the only way iOS lets Hearvia hear other apps.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**画面全体を共有** を選んでください。iOS でほかのアプリの音声を聞く方法はこれだけです。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**전체 화면 공유**를 선택하세요. iOS에서 다른 앱의 소리를 들을 수 있는 유일한 방법입니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请选择**共享整个屏幕**。这是 iOS 让 Hearvia 听到其他 App 的唯一方式。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請選擇**分享整個螢幕**。這是 iOS 讓 Hearvia 聽到其他 App 的唯一方式。"
+          }
+        }
+      }
+    },
     "Choose a local model in Settings": {
       "extractionState": "manual",
       "localizations": {
@@ -1068,6 +1039,35 @@
         }
       }
     },
+    "Clicks reach the app below; the overlay can't be moved.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "クリックは下のアプリに届きます。オーバーレイは移動できません。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "클릭이 아래 앱으로 전달되며, 오버레이는 옮길 수 없습니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "点按会传到下方的 App；字幕浮层无法移动。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "點按會傳到下方的 App；字幕浮層無法移動。"
+          }
+        }
+      }
+    },
     "Clicks reach the app underneath; the overlay can't be dragged meanwhile": {
       "extractionState": "manual",
       "localizations": {
@@ -1093,35 +1093,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "點按會傳到下方的 App；此時無法拖動字幕浮層"
-          }
-        }
-      }
-    },
-    "Clicks reach the app underneath; the overlay can't be dragged meanwhile.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "クリックは下のアプリに届きます。その間オーバーレイは移動できません。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "클릭이 아래 앱으로 전달됩니다. 그동안 오버레이는 옮길 수 없습니다."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "点按会传到下方的 App；此时无法拖动字幕浮层。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "點按會傳到下方的 App；此時無法拖動字幕浮層。"
           }
         }
       }
@@ -1465,6 +1436,35 @@
         }
       }
     },
+    "Download once, then use offline.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一度ダウンロードすればオフラインで使えます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "한 번 다운로드하면 오프라인에서 사용할 수 있습니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下载一次，之后可离线使用。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下載一次，之後可離線使用。"
+          }
+        }
+      }
+    },
     "Download the %@ → %@ translation language first.": {
       "extractionState": "manual",
       "localizations": {
@@ -1581,31 +1581,31 @@
         }
       }
     },
-    "Drag it anywhere — above or below the action.": {
+    "Drag it anywhere.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "どこへでもドラッグできます。映像の上でも下でも。"
+            "value": "どこへでもドラッグできます。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "원하는 곳으로 끌어 놓으세요. 화면 위나 아래 어디든 괜찮습니다."
+            "value": "원하는 곳으로 끌어 놓으세요."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "可以拖到任意位置——画面上方或下方都行。"
+            "value": "可以拖到任意位置。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "可以拖到任意位置——畫面上方或下方都行。"
+            "value": "可以拖到任意位置。"
           }
         }
       }
@@ -1916,89 +1916,31 @@
         }
       }
     },
-    "For talks and people around you. Not needed for other apps.": {
+    "For talks and people around you.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "講演や周りの人の話に使います。ほかのアプリの音声には不要です。"
+            "value": "講演や周りの人の話に。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "강연과 주변 사람의 말에 사용합니다. 다른 앱의 소리에는 필요하지 않습니다."
+            "value": "강연과 주변 사람의 말에 사용합니다."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "用于讲座和你身边的人。收听其他 App 时不需要。"
+            "value": "用于讲座和你身边的人。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "用於講座和你身邊的人。收聽其他 App 時不需要。"
-          }
-        }
-      }
-    },
-    "For the languages chosen on the home screen. Downloaded once, then work offline.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ホーム画面で選んだ言語用です。一度ダウンロードすればオフラインで使えます。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "홈 화면에서 선택한 언어용입니다. 한 번 다운로드하면 오프라인에서 작동합니다."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "对应主屏幕上选择的语言。下载一次，之后可离线使用。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "對應主螢幕上選擇的語言。下載一次，之後可離線使用。"
-          }
-        }
-      }
-    },
-    "For the smoothest experience": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "快適に使うために"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "가장 매끄럽게 사용하려면"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "获得最流畅的体验"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "獲得最流暢的體驗"
+            "value": "用於講座和你身邊的人。"
           }
         }
       }
@@ -2028,6 +1970,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "在裝置上免費且私密"
+          }
+        }
+      }
+    },
+    "Free key at [aistudio.google.com](https://aistudio.google.com/apikey). Stored in your Keychain.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キーは [aistudio.google.com](https://aistudio.google.com/apikey) で無料で取得できます。キーチェーンに保存されます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "[aistudio.google.com](https://aistudio.google.com/apikey)에서 무료 키를 받으세요. 키체인에 저장됩니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可在 [aistudio.google.com](https://aistudio.google.com/apikey) 免费获取密钥。保存在你的钥匙串中。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可在 [aistudio.google.com](https://aistudio.google.com/apikey) 免費取得金鑰。儲存在你的鑰匙圈中。"
           }
         }
       }
@@ -2185,31 +2156,60 @@
         }
       }
     },
-    "Headphones and AirPods work fine — Hearvia hears the app, not the room.": {
+    "Headphones and AirPods work fine.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ヘッドフォンや AirPods でも大丈夫です。Hearvia が聞くのはアプリの音で、部屋の音ではありません。"
+            "value": "ヘッドフォンや AirPods でも使えます。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "헤드폰과 AirPods도 괜찮습니다. Hearvia는 방 안의 소리가 아니라 앱의 소리를 듣습니다."
+            "value": "헤드폰과 AirPods도 잘 작동합니다."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "耳机和 AirPods 也没问题——Hearvia 听的是 App，不是房间里的声音。"
+            "value": "耳机和 AirPods 都可以正常使用。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "耳機和 AirPods 也沒問題——Hearvia 聽的是 App，不是房間裡的聲音。"
+            "value": "耳機和 AirPods 都可以正常使用。"
+          }
+        }
+      }
+    },
+    "Hears the app you pick. Never records the screen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選んだアプリの音声だけを聞き、画面は録画しません。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "선택한 앱의 소리만 듣고 화면은 녹화하지 않습니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "只听你选择的 App，从不录制屏幕。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "只聽你選擇的 App，從不錄製螢幕。"
           }
         }
       }
@@ -2221,93 +2221,6 @@
     "Hearvia %@ (%@)": {
       "extractionState": "manual",
       "shouldTranslate": false
-    },
-    "Hearvia recognizes speech on this Mac, then sends each finished sentence to this server for translation. Works with Ollama, LM Studio, Unsloth Studio or another OpenAI-compatible server.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hearvia はこのMacで音声を認識し、話し終えた文ごとにこのサーバへ送って翻訳します。Ollama、LM Studio、Unsloth Studio など OpenAI 互換のサーバで使えます。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hearvia는 이 Mac에서 음성을 인식한 뒤, 끝난 문장마다 이 서버로 보내 번역합니다. Ollama, LM Studio, Unsloth Studio 등 OpenAI 호환 서버에서 작동합니다."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hearvia 在这台 Mac 上识别语音，然后把每个说完的句子发送到这台服务器翻译。支持 Ollama、LM Studio、Unsloth Studio 或其他兼容 OpenAI 的服务器。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hearvia 在這台 Mac 上辨識語音，然後把每個說完的句子發送到這台伺服器翻譯。支援 Ollama、LM Studio、Unsloth Studio 或其他相容 OpenAI 的伺服器。"
-          }
-        }
-      }
-    },
-    "Hearvia recognizes speech on this iPhone, then sends each finished sentence to this server for translation: Ollama, LM Studio, Unsloth Studio or another OpenAI-compatible server. Use your Mac's address on the same network (such as http://my-mac.local:11434/v1), with the server set to accept network connections.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hearvia はこのiPhoneで音声を認識し、話し終えた文ごとにこのサーバへ送って翻訳します（Ollama、LM Studio、Unsloth Studio など OpenAI 互換のサーバ）。同じネットワーク上の Mac のアドレス（例：http://my-mac.local:11434/v1）を使い、サーバがネットワーク接続を受け付けるよう設定してください。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hearvia는 이 iPhone에서 음성을 인식한 뒤, 끝난 문장마다 이 서버로 보내 번역합니다(Ollama, LM Studio, Unsloth Studio 등 OpenAI 호환 서버). 같은 네트워크에 있는 Mac 주소(예: http://my-mac.local:11434/v1)를 사용하고, 서버가 네트워크 연결을 받도록 설정하세요."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hearvia 在这台 iPhone 上识别语音，然后把每个说完的句子发送到这台服务器翻译：Ollama、LM Studio、Unsloth Studio 或其他兼容 OpenAI 的服务器。请使用同一网络中 Mac 的地址（例如 http://my-mac.local:11434/v1），并让服务器接受网络连接。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hearvia 在這台 iPhone 上辨識語音，然後把每個說完的句子發送到這台伺服器翻譯：Ollama、LM Studio、Unsloth Studio 或其他相容 OpenAI 的伺服器。請使用同一網路中 Mac 的位址（例如 http://my-mac.local:11434/v1），並讓伺服器接受網路連線。"
-          }
-        }
-      }
-    },
-    "Hearvia uses only the sound. Screen images are thrown away immediately and never saved or uploaded.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hearvia が使うのは音声だけです。画面の映像はすぐに破棄され、保存もアップロードもされません。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hearvia는 소리만 사용합니다. 화면 이미지는 즉시 버려지며 저장하거나 업로드하지 않습니다."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hearvia 只使用声音。屏幕画面会立即丢弃，从不保存或上传。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hearvia 只使用聲音。螢幕畫面會立即丟棄，從不儲存或上傳。"
-          }
-        }
-      }
     },
     "Hide subtitle overlay": {
       "extractionState": "manual",
@@ -2334,35 +2247,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "隱藏字幕浮層"
-          }
-        }
-      }
-    },
-    "Hides the Dock icon. Open Hearvia from the captions icon in the menu bar.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dock のアイコンを隠します。メニューバーの字幕アイコンから Hearvia を開きます。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dock 아이콘을 숨깁니다. 메뉴 막대의 자막 아이콘에서 Hearvia를 여세요."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "隐藏程序坞图标。从菜单栏的字幕图标打开 Hearvia。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "隱藏 Dock 圖示。從選單列的字幕圖示打開 Hearvia。"
           }
         }
       }
@@ -2483,35 +2367,6 @@
         }
       }
     },
-    "Keep watching in Safari, YouTube or Podcasts. Hearvia never pauses them.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Safari、YouTube、Podcast をそのまま再生できます。Hearvia が一時停止させることはありません。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Safari, YouTube, 팟캐스트를 계속 보고 들으세요. Hearvia는 일시 정지하지 않습니다."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "继续在 Safari、YouTube 或播客里观看收听。Hearvia 从不会暂停它们。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "繼續在 Safari、YouTube 或 Podcast 裡觀看收聽。Hearvia 從不會暫停它們。"
-          }
-        }
-      }
-    },
     "Kept on this %@ only.": {
       "extractionState": "manual",
       "localizations": {
@@ -2537,35 +2392,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "僅儲存在這台 %@ 上。"
-          }
-        }
-      }
-    },
-    "Kept on this %@ until iCloud is available: sign in to iCloud and turn on iCloud Drive.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud が使えるようになるまでこの %@ に保存されます。iCloud にサインインして iCloud Drive をオンにしてください。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud를 사용할 수 있을 때까지 이 %@에 저장됩니다. iCloud에 로그인하고 iCloud Drive를 켜세요."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "在 iCloud 可用前保存在这台 %@ 上：请登录 iCloud 并打开 iCloud 云盘。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "在 iCloud 可用前儲存在這台 %@ 上：請登入 iCloud 並打開 iCloud 雲碟。"
           }
         }
       }
@@ -3290,6 +3116,35 @@
       "extractionState": "manual",
       "shouldTranslate": false
     },
+    "None downloaded": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未ダウンロード"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다운로드 안 됨"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚未下载"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚未下載"
+          }
+        }
+      }
+    },
     "Not Now": {
       "extractionState": "manual",
       "localizations": {
@@ -3476,6 +3331,35 @@
         }
       }
     },
+    "On-device keeps everything on your iPhone. OpenAI Realtime sends speech to OpenAI.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "デバイス上の翻訳ならすべて iPhone 内で完結。OpenAI Realtime は音声を OpenAI に送ります。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기기 내 번역은 모든 것이 iPhone에 남습니다. OpenAI Realtime은 음성을 OpenAI로 보냅니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设备端翻译一切都留在 iPhone 上。OpenAI Realtime 会把语音发送给 OpenAI。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "裝置端翻譯一切都留在 iPhone 上。OpenAI Realtime 會把語音發送給 OpenAI。"
+          }
+        }
+      }
+    },
     "On-device models": {
       "extractionState": "manual",
       "localizations": {
@@ -3592,118 +3476,31 @@
         }
       }
     },
-    "Only used by the Gemini Live translator. Get a free key at [aistudio.google.com](https://aistudio.google.com/apikey). Kept in this iPhone's Keychain.": {
+    "Only the sound is used. The screen is never saved or uploaded.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gemini Live の翻訳でのみ使います。キーは [aistudio.google.com](https://aistudio.google.com/apikey) で無料で取得できます。このiPhoneのキーチェーンに保存されます。"
+            "value": "使うのは音声だけ。画面は保存もアップロードもしません。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gemini Live 번역기에서만 사용합니다. [aistudio.google.com](https://aistudio.google.com/apikey)에서 무료 키를 받으세요. 이 iPhone의 키체인에 저장됩니다."
+            "value": "소리만 사용합니다. 화면은 저장하거나 업로드하지 않습니다."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "仅供 Gemini Live 翻译使用。可在 [aistudio.google.com](https://aistudio.google.com/apikey) 免费获取密钥。保存在这台 iPhone 的钥匙串中。"
+            "value": "只使用声音。屏幕画面从不保存或上传。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "僅供 Gemini Live 翻譯使用。可在 [aistudio.google.com](https://aistudio.google.com/apikey) 免費取得金鑰。儲存在這台 iPhone 的鑰匙圈中。"
-          }
-        }
-      }
-    },
-    "Only used by the Gemini Live translator. Get a free key at [aistudio.google.com](https://aistudio.google.com/apikey). Kept in your Keychain.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gemini Live の翻訳でのみ使います。キーは [aistudio.google.com](https://aistudio.google.com/apikey) で無料で取得できます。キーチェーンに保存されます。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gemini Live 번역기에서만 사용합니다. [aistudio.google.com](https://aistudio.google.com/apikey)에서 무료 키를 받으세요. 키체인에 저장됩니다."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "仅供 Gemini Live 翻译使用。可在 [aistudio.google.com](https://aistudio.google.com/apikey) 免费获取密钥。保存在你的钥匙串中。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "僅供 Gemini Live 翻譯使用。可在 [aistudio.google.com](https://aistudio.google.com/apikey) 免費取得金鑰。儲存在你的鑰匙圈中。"
-          }
-        }
-      }
-    },
-    "Only used by the OpenAI Realtime translator. Kept in this iPhone's Keychain.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OpenAI Realtime の翻訳でのみ使います。このiPhoneのキーチェーンに保存されます。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OpenAI Realtime 번역기에서만 사용합니다. 이 iPhone의 키체인에 저장됩니다."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "仅供 OpenAI Realtime 翻译使用。保存在这台 iPhone 的钥匙串中。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "僅供 OpenAI Realtime 翻譯使用。儲存在這台 iPhone 的鑰匙圈中。"
-          }
-        }
-      }
-    },
-    "Only used by the OpenAI Realtime translator. Kept in your Keychain.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OpenAI Realtime の翻訳でのみ使います。キーチェーンに保存されます。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OpenAI Realtime 번역기에서만 사용합니다. 키체인에 저장됩니다."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "仅供 OpenAI Realtime 翻译使用。保存在你的钥匙串中。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "僅供 OpenAI Realtime 翻譯使用。儲存在你的鑰匙圈中。"
+            "value": "只使用聲音。螢幕畫面從不儲存或上傳。"
           }
         }
       }
@@ -3737,31 +3534,31 @@
         }
       }
     },
-    "Open Transcripts to export or copy one.": {
+    "Open Hearvia from the menu bar icon.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "記録を開いて書き出しやコピーができます。"
+            "value": "メニューバーのアイコンから Hearvia を開きます。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "기록을 열어 내보내거나 복사하세요."
+            "value": "메뉴 막대 아이콘에서 Hearvia를 엽니다."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "打开“记录”即可导出或拷贝。"
+            "value": "从菜单栏图标打开 Hearvia。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "打開「記錄」即可匯出或拷貝。"
+            "value": "從選單列圖示打開 Hearvia。"
           }
         }
       }
@@ -3795,35 +3592,6 @@
         }
       }
     },
-    "Open one from the transcript button on the home screen to export or share it.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ホーム画面の記録ボタンから開くと、書き出しや共有ができます。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "홈 화면의 기록 버튼에서 열어 내보내거나 공유하세요."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "从主屏幕的记录按钮打开一条记录，即可导出或分享。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "從主螢幕的記錄按鈕打開一條記錄，即可匯出或分享。"
-          }
-        }
-      }
-    },
     "OpenAI API key": {
       "extractionState": "manual",
       "shouldTranslate": false
@@ -3831,35 +3599,6 @@
     "OpenAI Realtime": {
       "extractionState": "manual",
       "shouldTranslate": false
-    },
-    "OpenAI Realtime sends speech to OpenAI to translate. On-device mode keeps everything on your iPhone. Hearvia doesn't keep recordings.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OpenAI Realtime は音声を OpenAI に送って翻訳します。デバイス上モードではすべてが iPhone 内で完結します。Hearvia は録音を保存しません。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OpenAI Realtime은 음성을 OpenAI로 보내 번역합니다. 기기 내 모드에서는 모든 것이 iPhone에 남습니다. Hearvia는 녹음을 보관하지 않습니다."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OpenAI Realtime 会把语音发送给 OpenAI 翻译。设备端模式下一切都留在你的 iPhone 上。Hearvia 不保存录音。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OpenAI Realtime 會把語音發送給 OpenAI 翻譯。裝置端模式下一切都留在你的 iPhone 上。Hearvia 不儲存錄音。"
-          }
-        }
-      }
     },
     "Opens Hearvia and starts live subtitles.": {
       "extractionState": "manual",
@@ -3894,31 +3633,31 @@
       "extractionState": "manual",
       "shouldTranslate": false
     },
-    "Or switch to OpenAI Realtime for the fastest subtitles.": {
+    "Or OpenAI Realtime for the fastest subtitles.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "最速の字幕なら OpenAI Realtime に切り替えてください。"
+            "value": "最速の字幕なら OpenAI Realtime。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "또는 OpenAI Realtime으로 바꿔 가장 빠른 자막을 받으세요."
+            "value": "가장 빠른 자막은 OpenAI Realtime으로."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "或者切换到 OpenAI Realtime 获得最快的字幕。"
+            "value": "或用 OpenAI Realtime 获得最快的字幕。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "或者切換到 OpenAI Realtime 獲得最快的字幕。"
+            "value": "或用 OpenAI Realtime 獲得最快的字幕。"
           }
         }
       }
@@ -4101,60 +3840,60 @@
       "extractionState": "manual",
       "shouldTranslate": false
     },
-    "Pick the language you want to read. Change it any time from the home screen.": {
+    "Pick the language to read. Change it any time.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "読みたい言語を選んでください。ホーム画面からいつでも変更できます。"
+            "value": "読みたい言語を選んでください。いつでも変更できます。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "읽고 싶은 언어를 선택하세요. 홈 화면에서 언제든 바꿀 수 있습니다."
+            "value": "읽을 언어를 선택하세요. 언제든 바꿀 수 있습니다."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "选择你想阅读的语言。随时可以在主屏幕上更改。"
+            "value": "选择要阅读的语言，随时可以更改。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "選擇你想閱讀的語言。隨時可以在主螢幕上更改。"
+            "value": "選擇要閱讀的語言，隨時可以更改。"
           }
         }
       }
     },
-    "Pinch to make it bigger or smaller.": {
+    "Pinch to resize.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ピンチで拡大・縮小できます。"
+            "value": "ピンチでサイズを変更。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "핀치해서 크기를 조절하세요."
+            "value": "핀치해서 크기 조절."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "双指捏合可以放大或缩小。"
+            "value": "双指捏合调整大小。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "雙指捏合可以放大或縮小。"
+            "value": "雙指捏合調整大小。"
           }
         }
       }
@@ -4188,6 +3927,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "預設"
+          }
+        }
+      }
+    },
+    "Protected movies in some streaming apps can't get subtitles.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一部の動画配信アプリの保護された映画には字幕を付けられません。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "일부 스트리밍 앱의 보호된 영화에는 자막을 달 수 없습니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部分流媒体 App 中受保护的电影无法显示字幕。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部分串流 App 中受保護的電影無法顯示字幕。"
           }
         }
       }
@@ -4515,6 +4283,64 @@
           "stringUnit": {
             "state": "translated",
             "value": "這台裝置無法使用或限制了螢幕錄製。"
+          }
+        }
+      }
+    },
+    "Sends each finished sentence to your OpenAI-compatible server on the same network, such as http://my-mac.local:11434/v1.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "話し終えた文ごとに、同じネットワーク上の OpenAI 互換サーバ（例：http://my-mac.local:11434/v1）へ送ります。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "끝난 문장마다 같은 네트워크의 OpenAI 호환 서버(예: http://my-mac.local:11434/v1)로 보냅니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "把每个说完的句子发送到同一网络中兼容 OpenAI 的服务器，例如 http://my-mac.local:11434/v1。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "把每個說完的句子發送到同一網路中相容 OpenAI 的伺服器，例如 http://my-mac.local:11434/v1。"
+          }
+        }
+      }
+    },
+    "Sends each finished sentence to your OpenAI-compatible server: Ollama, LM Studio, Unsloth Studio and others.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "話し終えた文ごとに、OpenAI 互換サーバ（Ollama、LM Studio、Unsloth Studio など）へ送ります。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "끝난 문장마다 OpenAI 호환 서버(Ollama, LM Studio, Unsloth Studio 등)로 보냅니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "把每个说完的句子发送到你兼容 OpenAI 的服务器：Ollama、LM Studio、Unsloth Studio 等。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "把每個說完的句子發送到你相容 OpenAI 的伺服器：Ollama、LM Studio、Unsloth Studio 等。"
           }
         }
       }
@@ -4862,35 +4688,6 @@
         }
       }
     },
-    "Some streaming apps block screen sharing for protected movies. Those won't get subtitles.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "一部の動画配信アプリは保護された映画の画面共有をブロックします。その場合は字幕が付きません。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "일부 스트리밍 앱은 보호된 영화의 화면 공유를 막습니다. 그런 영상에는 자막이 나오지 않습니다."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "有些流媒体 App 会为受保护的电影阻止屏幕共享，这些内容不会有字幕。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "有些串流 App 會為受保護的電影阻止螢幕分享，這些內容不會有字幕。"
-          }
-        }
-      }
-    },
     "Source app / clip": {
       "extractionState": "manual",
       "shouldTranslate": false
@@ -4924,31 +4721,31 @@
         }
       }
     },
-    "Speech recognition · Auto": {
+    "Speech · %@": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "音声認識 · 自動"
+            "value": "音声 · %@"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "음성 인식 · 자동"
+            "value": "음성 · %@"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "语音识别 · 自动"
+            "value": "语音 · %@"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "語音辨識 · 自動"
+            "value": "語音 · %@"
           }
         }
       }
@@ -5102,31 +4899,31 @@
         }
       }
     },
-    "Start Hearvia first, then open your video. Watch it full screen rather than in its own floating window — iOS shows only one floating window at a time.": {
+    "Start Hearvia first, then watch full screen. iOS shows one floating window at a time.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "先に Hearvia を始めてから動画を開いてください。動画はピクチャ・イン・ピクチャではなくフルスクリーンで。iOS が一度に表示できるフローティングウインドウは1つだけです。"
+            "value": "先に Hearvia を始めてから、フルスクリーンで再生。iOS が表示できるフローティングウインドウは一度に1つです。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "먼저 Hearvia를 시작한 뒤 동영상을 여세요. 동영상은 자체 플로팅 창이 아닌 전체 화면으로 보세요. iOS는 플로팅 창을 한 번에 하나만 보여 줍니다."
+            "value": "먼저 Hearvia를 시작한 뒤 전체 화면으로 보세요. iOS는 플로팅 창을 한 번에 하나만 보여 줍니다."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "先启动 Hearvia，再打开视频。请全屏观看，不要用视频自己的悬浮窗——iOS 一次只能显示一个悬浮窗。"
+            "value": "先启动 Hearvia，再全屏观看。iOS 一次只显示一个悬浮窗。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "先啟動 Hearvia，再打開影片。請全螢幕觀看，不要用影片自己的懸浮視窗——iOS 一次只能顯示一個懸浮視窗。"
+            "value": "先啟動 Hearvia，再全螢幕觀看。iOS 一次只顯示一個懸浮視窗。"
           }
         }
       }
@@ -5358,6 +5155,35 @@
         }
       }
     },
+    "Stored in your Keychain.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キーチェーンに保存されます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "키체인에 저장됩니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存在你的钥匙串中。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "儲存在你的鑰匙圈中。"
+          }
+        }
+      }
+    },
     "Subtitle preview": {
       "extractionState": "manual",
       "localizations": {
@@ -5503,6 +5329,35 @@
         }
       }
     },
+    "Subtitles follow you to other apps in a floating window.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字幕はフローティングウインドウでほかのアプリにもついてきます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "자막이 플로팅 창으로 다른 앱까지 따라갑니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字幕会以悬浮窗口跟随你到其他 App。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字幕會以懸浮視窗跟隨你到其他 App。"
+          }
+        }
+      }
+    },
     "Subtitles in": {
       "extractionState": "manual",
       "localizations": {
@@ -5590,31 +5445,31 @@
         }
       }
     },
-    "Swipe it to the screen edge to hide it; swipe back to bring it out.": {
+    "Swipe it to the edge to hide it.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "画面の端へスワイプすると隠れ、戻すと再び表示されます。"
+            "value": "端へスワイプすると隠れます。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "화면 가장자리로 밀면 숨겨지고, 다시 밀면 나타납니다."
+            "value": "가장자리로 밀면 숨겨집니다."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "把它滑到屏幕边缘即可隐藏，滑回来就会出现。"
+            "value": "滑到屏幕边缘即可隐藏。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "把它滑到螢幕邊緣即可隱藏，滑回來就會出現。"
+            "value": "滑到螢幕邊緣即可隱藏。"
           }
         }
       }
@@ -5648,31 +5503,31 @@
         }
       }
     },
-    "Synced with iCloud to your other devices. Deleting a transcript removes it everywhere.": {
+    "Synced across your devices. Deleting syncs too.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud でほかのデバイスと同期しています。記録を削除するとすべてのデバイスから削除されます。"
+            "value": "デバイス間で同期されます。削除も同期されます。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud로 다른 기기와 동기화됩니다. 기록을 삭제하면 모든 기기에서 삭제됩니다."
+            "value": "기기 간에 동기화됩니다. 삭제도 동기화됩니다."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "已通过 iCloud 同步到你的其他设备。删除记录会在所有设备上删除。"
+            "value": "已在你的设备间同步。删除也会同步。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "已透過 iCloud 同步到你的其他裝置。刪除記錄會在所有裝置上刪除。"
+            "value": "已在你的裝置間同步。刪除也會同步。"
           }
         }
       }
@@ -5710,31 +5565,31 @@
       "extractionState": "manual",
       "shouldTranslate": false
     },
-    "Talks, lessons and conversations in the room.": {
+    "Talks, lessons and conversations.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "部屋の中の講演、授業、会話。"
+            "value": "講演、授業、会話。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "방 안의 강연, 수업, 대화."
+            "value": "강연, 수업, 대화."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "房间里的讲座、课程和对话。"
+            "value": "讲座、课程和对话。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "房間裡的講座、課程和對話。"
+            "value": "講座、課程和對話。"
           }
         }
       }
@@ -5793,6 +5648,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "在 iOS 彈出的面板中點一下**分享整個螢幕**。Hearvia 只使用聲音。"
+          }
+        }
+      }
+    },
+    "Tap the red indicator in the status bar to stop.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ステータスバーの赤いインジケータをタップすると停止します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "상태 막대의 빨간색 표시를 탭하면 중지됩니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轻点状态栏中的红色指示器即可停止。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "點一下狀態列中的紅色指示器即可停止。"
           }
         }
       }
@@ -5950,6 +5834,35 @@
         }
       }
     },
+    "Tips": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ヒント"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "팁"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "小贴士"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "小提示"
+          }
+        }
+      }
+    },
     "Transcripts": {
       "extractionState": "manual",
       "localizations": {
@@ -6070,6 +5983,35 @@
         }
       }
     },
+    "Translation · %@ → %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "翻訳 · %@ → %@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "번역 · %@ → %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "翻译 · %@ → %@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "翻譯 · %@ → %@"
+          }
+        }
+      }
+    },
     "Translator": {
       "extractionState": "manual",
       "localizations": {
@@ -6157,6 +6099,35 @@
         }
       }
     },
+    "Turn on iCloud Drive to sync. Kept on this %@ meanwhile.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同期するには iCloud Drive をオンにしてください。それまではこの %@ に保存されます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "동기화하려면 iCloud Drive를 켜세요. 그동안은 이 %@에 저장됩니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开 iCloud 云盘即可同步。在此之前保存在这台 %@ 上。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打開 iCloud 雲碟即可同步。在此之前儲存在這台 %@ 上。"
+          }
+        }
+      }
+    },
     "Using %@": {
       "extractionState": "manual",
       "localizations": {
@@ -6215,31 +6186,31 @@
         }
       }
     },
-    "Videos, podcasts, calls, or the person in front of you, translated as they speak.": {
+    "Videos, podcasts, calls and people, translated as they speak.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "動画、Podcast、通話、目の前の人の話を、話すそばから翻訳します。"
+            "value": "動画、Podcast、通話、目の前の人の話を、話すそばから翻訳。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "동영상, 팟캐스트, 통화, 눈앞의 사람까지 말하는 즉시 번역합니다."
+            "value": "동영상, 팟캐스트, 통화, 사람의 말을 말하는 즉시 번역합니다."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "视频、播客、通话，或你面前的人——边说边翻译。"
+            "value": "视频、播客、通话和身边的人，边说边翻译。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "影片、Podcast、通話，或你面前的人——邊說邊翻譯。"
+            "value": "影片、Podcast、通話和身邊的人，邊說邊翻譯。"
           }
         }
       }
@@ -6277,31 +6248,31 @@
       "extractionState": "manual",
       "shouldTranslate": false
     },
-    "When you switch to another app, subtitles appear in a slim floating window.": {
+    "What you're watching keeps playing.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ほかのアプリに切り替えると、細いフローティングウインドウに字幕が表示されます。"
+            "value": "見ているものはそのまま再生されます。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "다른 앱으로 전환하면 자막이 얇은 플로팅 창에 나타납니다."
+            "value": "보던 것은 계속 재생됩니다."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "切换到其他 App 时，字幕会显示在一个细长的悬浮窗里。"
+            "value": "正在看的内容会继续播放。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "切換到其他 App 時，字幕會顯示在一個細長的懸浮視窗裡。"
+            "value": "正在看的內容會繼續播放。"
           }
         }
       }
@@ -6339,31 +6310,31 @@
       "extractionState": "manual",
       "shouldTranslate": false
     },
-    "iOS only lets apps hear other apps' sound through screen sharing. When you tap the play button, choose **Share Entire Screen**.": {
+    "iOS sets a few limits.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "iOS では、ほかのアプリの音声を聞くには画面共有を使うしかありません。再生ボタンをタップしたら **画面全体を共有** を選んでください。"
+            "value": "iOS にはいくつか制限があります。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "iOS에서는 화면 공유를 통해서만 다른 앱의 소리를 들을 수 있습니다. 재생 버튼을 탭하면 **전체 화면 공유**를 선택하세요."
+            "value": "iOS에는 몇 가지 제한이 있습니다."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "iOS 只允许 App 通过屏幕共享听到其他 App 的声音。轻点播放按钮后，请选择**共享整个屏幕**。"
+            "value": "iOS 有几项限制。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "iOS 只允許 App 透過螢幕分享聽到其他 App 的聲音。點一下播放按鈕後，請選擇**分享整個螢幕**。"
+            "value": "iOS 有幾項限制。"
           }
         }
       }

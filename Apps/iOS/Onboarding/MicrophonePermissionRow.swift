@@ -7,7 +7,7 @@ struct MicrophonePermissionRow: View {
     @Environment(\.openURL) private var openURL
 
     var body: some View {
-        FeatureCard("mic", "Microphone", "For talks and people around you. Not needed for other apps.", trailing: { control })
+        FeatureCard("mic", "Microphone", "For talks and people around you.", trailing: { control })
             .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
                 permission = AVAudioApplication.shared.recordPermission
             }
