@@ -9,6 +9,7 @@ final class AppSettings {
         static let appearance = "hearvia.appearance"
         static let input = "hearvia.input"
         static let showsOriginal = "hearvia.showsOriginal"
+        static let originalLarge = "hearvia.originalLarge"
         static let subtitleScale = "hearvia.subtitleScale"
         static let floatsWhenLeaving = "hearvia.floatsWhenLeaving"
         static let hasCompletedOnboarding = "hearvia.hasCompletedOnboarding"
@@ -24,8 +25,19 @@ final class AppSettings {
         didSet { defaults.set(input.rawValue, forKey: Keys.input) }
     }
 
+    /// Shows the smaller second line: the original speech, or the translation while `originalLarge`.
     var showsOriginal: Bool {
         didSet { defaults.set(showsOriginal, forKey: Keys.showsOriginal) }
+    }
+
+    /// The original speech in large text, for following the speaker rather than the translation.
+    var originalLarge: Bool {
+        didSet { defaults.set(originalLarge, forKey: Keys.originalLarge) }
+    }
+
+    /// The original is billed separately by OpenAI Realtime, so it's only requested while shown.
+    var needsOriginal: Bool {
+        showsOriginal || originalLarge
     }
 
     /// The PiP frame is fixed, so larger text shows fewer lines.
@@ -48,6 +60,7 @@ final class AppSettings {
         appearance = defaults.string(forKey: Keys.appearance).flatMap(Appearance.init) ?? .dark
         input = defaults.string(forKey: Keys.input).flatMap(InputSource.init) ?? .otherApps
         showsOriginal = defaults.object(forKey: Keys.showsOriginal) as? Bool ?? true
+        originalLarge = defaults.bool(forKey: Keys.originalLarge)
         subtitleScale = defaults.object(forKey: Keys.subtitleScale) as? Double ?? 1
         floatsWhenLeaving = defaults.object(forKey: Keys.floatsWhenLeaving) as? Bool ?? true
         hasCompletedOnboarding = defaults.bool(forKey: Keys.hasCompletedOnboarding)

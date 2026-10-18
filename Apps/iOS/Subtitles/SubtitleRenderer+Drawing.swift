@@ -12,7 +12,7 @@ extension SubtitleRenderer {
     }
 
     /// Nonisolated so the pixel buffer stays in a disconnected region and can be sent to the renderer.
-    nonisolated func draw(subtitle: String, original: String?, detail: String?, scale: Double, into pixel: CVPixelBuffer) throws {
+    nonisolated func draw(subtitle: String, second: String?, detail: String?, scale: Double, into pixel: CVPixelBuffer) throws {
         CVPixelBufferLockBaseAddress(pixel, [])
         defer { CVPixelBufferUnlockBaseAddress(pixel, []) }
         guard let context = CGContext(data: CVPixelBufferGetBaseAddress(pixel), width: width, height: height,
@@ -28,12 +28,12 @@ extension SubtitleRenderer {
         UIGraphicsPushContext(context)
         defer { UIGraphicsPopContext() }
 
-        let bilingual = !(original ?? "").isEmpty
+        let bilingual = !(second ?? "").isEmpty
         var box = detail == nil ? CGRect(x: 28, y: 20, width: width - 56, height: height - 40)
             : CGRect(x: 28, y: 12, width: width - 56, height: height - 60)
-        if let original, bilingual {
+        if let second, bilingual {
             let top = CGRect(x: box.minX, y: box.minY, width: box.width, height: ceil(72 * scale))
-            Self.drawTail(original, attributes: Self.attributes(size: 28 * scale, weight: .regular, color: UIColor(white: 0.62, alpha: 1)), in: top)
+            Self.drawTail(second, attributes: Self.attributes(size: 28 * scale, weight: .regular, color: UIColor(white: 0.62, alpha: 1)), in: top)
             box = CGRect(x: box.minX, y: top.maxY + 10, width: box.width, height: box.height - top.height - 10)
         }
         Self.drawTail(subtitle, attributes: Self.attributes(size: (bilingual ? 46 : 50) * scale, weight: .semibold, color: .white), in: box)

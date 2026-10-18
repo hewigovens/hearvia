@@ -25,4 +25,10 @@ public extension LiveTranslator {
     var languagePair: String {
         LanguageName.pair(source: engine.detectsSpokenLanguage ? "" : sourceLanguage, target: targetLanguage)
     }
+
+    /// The large subtitle line and, when `showsSecond`, the small one above it: the translation is large unless `originalLarge`.
+    func subtitleLines(originalLarge: Bool, showsSecond: Bool) -> (main: String, second: String?) {
+        let (main, second) = originalLarge ? (source, translation) : (translation, source)
+        return (main, showsSecond && !main.isEmpty && !second.isEmpty ? second : nil)
+    }
 }

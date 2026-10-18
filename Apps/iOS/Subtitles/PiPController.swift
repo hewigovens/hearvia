@@ -152,7 +152,7 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
         log.event("pip_session_interruption", ["began": "\(began)", "may_resume": "\(mayResume)"])
     }
 
-    func render(subtitle: String, original: String? = nil, detail: String?) async {
+    func render(subtitle: String, second: String? = nil, detail: String?) async {
         guard playing, !rendering, let renderer else { return }
         guard renderer.synchronizer.rate > 0 else {
             log.event("subtitle_clock_paused")
@@ -161,7 +161,7 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
         rendering = true
         defer { rendering = false }
         do {
-            if try await renderer.render(subtitle: subtitle, original: original, detail: detail) {
+            if try await renderer.render(subtitle: subtitle, second: second, detail: detail) {
                 let now = ProcessInfo.processInfo.systemUptime
                 log.event("subtitle_frame", ["frame": "\(renderer.frames)", "pts": "\(renderer.lastPTS.seconds)",
                                              "active": "\(active)", "gap": lastFrameUptime.map { "\(now - $0)" } ?? "none",

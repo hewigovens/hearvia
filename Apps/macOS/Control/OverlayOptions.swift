@@ -10,8 +10,8 @@ struct OverlayOptions: View {
             Text("OVERLAY").font(.caption2.weight(.semibold)).tracking(0.6).foregroundStyle(Color.hvMuted)
             HStack(spacing: 6) {
                 Toggle("Visible", isOn: $settings.overlayVisible)
-                Toggle("Original", isOn: $settings.showsOriginal)
-                    .help("Show the original speech above the translation")
+                Toggle(settings.originalLarge ? "Translation" : "Original", isOn: $settings.showsOriginal)
+                    .help(settings.originalLarge ? "Show the translation above the original speech" : "Show the original speech above the translation")
                 Toggle("Click-through", isOn: $settings.clickThrough)
                     .help("Clicks reach the app underneath; the overlay can't be dragged meanwhile")
             }

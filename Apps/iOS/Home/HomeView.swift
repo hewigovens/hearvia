@@ -52,6 +52,7 @@ struct HomeView: View {
         .onChange(of: settings.floatsWhenLeaving) { Task { await model.updateFloating() } }
         .onChange(of: settings.subtitleScale) { model.scheduleRender() }
         .onChange(of: settings.showsOriginal) { model.scheduleRender() }
+        .onChange(of: settings.originalLarge) { model.scheduleRender() }
         .onChange(of: model.pip.restoreRequested) { _, requested in
             if requested {
                 Task { await Task.yield()

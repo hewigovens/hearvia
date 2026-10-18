@@ -97,6 +97,15 @@ struct LiveTranslatorTests {
         #expect(request?.localModel == "qwen3:8b" && request?.localServer.baseURL == "http://localhost:1234/v1")
     }
 
+    @Test func subtitleLinesPutTheChosenLanguageFirst() {
+        let translator = Harness(apiKey: nil).translator
+        translator.source = "hello"
+        translator.translation = "bonjour"
+        #expect(translator.subtitleLines(originalLarge: false, showsSecond: true) == ("bonjour", "hello"))
+        #expect(translator.subtitleLines(originalLarge: true, showsSecond: true) == ("hello", "bonjour"))
+        #expect(translator.subtitleLines(originalLarge: true, showsSecond: false) == ("hello", nil))
+    }
+
     @Test func realtimeNeedsAnAPIKey() async {
         let harness = Harness(apiKey: nil)
         let translator = harness.translator

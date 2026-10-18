@@ -10,6 +10,7 @@ final class AppSettings {
         static let overlayVisible = "hearvia.overlayVisible"
         static let clickThrough = "hearvia.clickThrough"
         static let showsOriginal = "hearvia.showsOriginal"
+        static let originalLarge = "hearvia.originalLarge"
         static let overlayFontSize = "hearvia.overlayFontSize"
         static let overlayOpacity = "hearvia.overlayOpacity"
         static let menuBarOnly = "hearvia.menuBarOnly"
@@ -34,8 +35,19 @@ final class AppSettings {
         didSet { defaults.set(clickThrough, forKey: Keys.clickThrough) }
     }
 
+    /// Shows the smaller second line: the original speech, or the translation while `originalLarge`.
     var showsOriginal: Bool {
         didSet { defaults.set(showsOriginal, forKey: Keys.showsOriginal) }
+    }
+
+    /// The original speech in large text, for following the speaker rather than the translation.
+    var originalLarge: Bool {
+        didSet { defaults.set(originalLarge, forKey: Keys.originalLarge) }
+    }
+
+    /// The original is billed separately by OpenAI Realtime, so it's only requested while shown.
+    var needsOriginal: Bool {
+        showsOriginal || originalLarge
     }
 
     var overlayFontSize: Double {
@@ -68,6 +80,7 @@ final class AppSettings {
         overlayVisible = defaults.object(forKey: Keys.overlayVisible) as? Bool ?? true
         clickThrough = defaults.bool(forKey: Keys.clickThrough)
         showsOriginal = defaults.object(forKey: Keys.showsOriginal) as? Bool ?? true
+        originalLarge = defaults.bool(forKey: Keys.originalLarge)
         overlayFontSize = defaults.object(forKey: Keys.overlayFontSize) as? Double ?? 30
         overlayOpacity = defaults.object(forKey: Keys.overlayOpacity) as? Double ?? 0.65
         menuBarOnly = defaults.bool(forKey: Keys.menuBarOnly)

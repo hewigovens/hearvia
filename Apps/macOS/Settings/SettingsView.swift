@@ -99,7 +99,12 @@ private struct OverlaySettings: View {
         SettingsPane {
             Section {
                 Toggle("Show the subtitle overlay", isOn: $settings.overlayVisible)
-                Toggle("Show original speech", isOn: $settings.showsOriginal)
+                Picker("Large text", selection: $settings.originalLarge) {
+                    Text("Translation").tag(false)
+                    Text("Original speech").tag(true)
+                }
+                .pickerStyle(.segmented)
+                Toggle(settings.originalLarge ? "Show translation" : "Show original speech", isOn: $settings.showsOriginal)
                 Toggle(isOn: $settings.clickThrough) {
                     Text("Click-through")
                     Text("Clicks reach the app underneath; the overlay can't be dragged meanwhile.")

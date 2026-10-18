@@ -13,16 +13,15 @@ extension AppModel {
 
     func renderSubtitle() async {
         pip.fontScale = settings.subtitleScale
-        let translated = translation.translation
+        let lines = translation.subtitleLines(originalLarge: settings.originalLarge, showsSecond: settings.showsOriginal)
         let subtitle: String = if diagnosticsInPiP {
             String(format: "System RMS %.5f\n%@", audio.system.rms, captureLabel)
-        } else if !translated.isEmpty {
-            translated
+        } else if !lines.main.isEmpty {
+            lines.main
         } else {
             translation.isActive ? "Listening…" : listening ? "Connecting…" : "Subtitles appear here"
         }
-        let original = settings.showsOriginal && !diagnosticsInPiP && !translated.isEmpty ? translation.source : nil
-        await pip.render(subtitle: subtitle, original: original, detail: statusLineInPiP ? statusLine : nil)
+        await pip.render(subtitle: subtitle, second: diagnosticsInPiP ? nil : lines.second, detail: statusLineInPiP ? statusLine : nil)
     }
 
     private var captureLabel: String {

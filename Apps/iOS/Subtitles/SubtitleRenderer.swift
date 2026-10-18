@@ -33,9 +33,9 @@ final class SubtitleRenderer {
     }
 
     @discardableResult
-    func render(subtitle: String, original: String? = nil, detail: String?) async throws -> Bool {
+    func render(subtitle: String, second: String? = nil, detail: String?) async throws -> Bool {
         let pixel = try makePixelBuffer()
-        try draw(subtitle: subtitle, original: original, detail: detail, scale: fontScale, into: pixel)
+        try draw(subtitle: subtitle, second: second, detail: detail, scale: fontScale, into: pixel)
         var pts = CMTimeAdd(CMTimebaseGetTime(timebase), CMTime(value: 1, timescale: 30))
         if lastPTS.isValid, CMTimeCompare(pts, lastPTS) <= 0 {
             pts = CMTimeAdd(lastPTS, CMTime(value: 1, timescale: 30))

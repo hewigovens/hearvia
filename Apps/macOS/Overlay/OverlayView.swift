@@ -29,8 +29,8 @@ struct OverlayView: View {
     }
 
     @ViewBuilder private var subtitles: some View {
-        let translator = model.translator
-        if !model.capturing || translator.translation.isEmpty {
+        let lines = model.translator.subtitleLines(originalLarge: settings.originalLarge, showsSecond: settings.showsOriginal)
+        if !model.capturing || lines.main.isEmpty {
             Text(placeholder)
                 .font(.system(size: min(settings.overlayFontSize, 22), weight: .medium))
                 .foregroundStyle(.white.opacity(0.7))
@@ -40,15 +40,15 @@ struct OverlayView: View {
             let originalSize = settings.overlayFontSize * 0.55
             VStack(spacing: 2) {
                 Spacer(minLength: 0)
-                if settings.showsOriginal, !translator.source.isEmpty {
+                if let second = lines.second {
                     // Two whole lines: a fraction of a line more would show a sliver of the line above.
-                    tail(Text(Self.tail(translator.source, 300))
+                    tail(Text(Self.tail(second, 300))
                         .font(.system(size: originalSize))
                         .foregroundStyle(.white.opacity(0.7)), lineHeight: Self.lineHeight(ofSystemFontSize: originalSize))
                         .frame(maxHeight: 2 * Self.lineHeight(ofSystemFontSize: originalSize))
                         .layoutPriority(2) // Keeps its two lines when the translation overflows.
                 }
-                tail(Text(Self.tail(translator.translation, 400))
+                tail(Text(Self.tail(lines.main, 400))
                     .font(.system(size: settings.overlayFontSize, weight: .semibold))
                     .foregroundStyle(.white), lineHeight: Self.lineHeight(ofSystemFontSize: settings.overlayFontSize))
                     .layoutPriority(1)

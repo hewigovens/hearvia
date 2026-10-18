@@ -28,7 +28,13 @@ struct SettingsView: View {
                             .accessibilityLabel("Subtitle text size")
                         Text("A").font(.title3).foregroundStyle(Color.hvMuted)
                     }
-                    Toggle(isOn: $settings.showsOriginal) { Label("Show original speech", icon: "text.bubble", color: .teal) }
+                    Picker(selection: $settings.originalLarge) {
+                        Text("Translation").tag(false)
+                        Text("Original speech").tag(true)
+                    } label: { Label("Large text", icon: "arrow.up.arrow.down", color: .purple) }
+                    Toggle(isOn: $settings.showsOriginal) {
+                        Label(settings.originalLarge ? "Show translation" : "Show original speech", icon: "text.bubble", color: .teal)
+                    }
                     Toggle(isOn: $settings.floatsWhenLeaving) { Label("Float when I leave Hearvia", icon: "pip", color: .indigo) }
                 }
                 .listRowBackground(Color.hvSurface)

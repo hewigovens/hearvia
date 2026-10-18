@@ -59,10 +59,9 @@ final class AppModel {
         }
     }
 
-    /// The original-language text is billed separately by Realtime, so it is only requested while shown.
     private func followShowsOriginal() {
         let shows = withObservationTracking {
-            settings.showsOriginal
+            settings.needsOriginal
         } onChange: { [weak self] in
             Task { @MainActor in self?.followShowsOriginal() }
         }
