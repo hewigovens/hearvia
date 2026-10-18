@@ -4,6 +4,12 @@
     "NSAudioCaptureUsageDescription": {
       "extractionState": "manual",
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearvia listens to other apps' audio to show live translated subtitles."
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -33,6 +39,12 @@
     "NSLocalNetworkUsageDescription": {
       "extractionState": "manual",
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearvia connects to the translation model you run on your local network (Local model translator)."
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -62,6 +74,12 @@
     "NSMicrophoneUsageDescription": {
       "extractionState": "manual",
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearvia listens to the microphone to show live translated subtitles."
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -91,6 +109,12 @@
     "NSSpeechRecognitionUsageDescription": {
       "extractionState": "manual",
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearvia turns speech into text on this Mac to show subtitles."
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",

@@ -4,6 +4,12 @@
     "NSLocalNetworkUsageDescription": {
       "extractionState": "manual",
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearvia connects to the translation model you run on your local network (Local model translator)."
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -33,6 +39,12 @@
     "NSMicrophoneUsageDescription": {
       "extractionState": "manual",
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearvia listens to the microphone to show live translated subtitles of speech around you."
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -62,6 +74,12 @@
     "NSSpeechRecognitionUsageDescription": {
       "extractionState": "manual",
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearvia turns speech into text on this device to show subtitles."
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
