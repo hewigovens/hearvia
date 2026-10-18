@@ -1,7 +1,7 @@
 public enum Languages {
     public static let supported = ["zh", "en", "ja", "ko", "es", "fr", "de", "pt", "it", "ru", "hi", "id", "vi"]
 
-    /// Gemini Live's subtitle languages (ai.google.dev/gemini-api/docs/live-api/live-translate, 2026-10-17); Traditional Chinese is left out until the pickers can name scripts.
+    /// Gemini Live's subtitle languages (ai.google.dev/gemini-api/docs/live-api/live-translate, 2026-10-17), plus Traditional Chinese.
     public static let gemini = supported + [traditionalChinese, "af", "ak", "am", "ar", "az", "be", "bg", "bn", "ca", "cs", "da", "el", "et", "eu", "fa",
                                             "fi", "fil", "gl", "gu", "ha", "he", "hr", "hu", "hy", "is", "jv", "ka", "kk", "km", "kn",
                                             "lo", "lt", "lv", "mk", "ml", "mn", "mr", "ms", "my", "ne", "nl", "no", "pa", "pl", "ro",

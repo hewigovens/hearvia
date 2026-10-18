@@ -8,15 +8,17 @@ struct HomeView: View {
     @Environment(\.horizontalSizeClass) private var widthClass
     @Environment(\.verticalSizeClass) private var heightClass
     @State private var presentation: HomePresentation?
-    @State private var halfFolded = false
 
     var body: some View {
         GeometryReader { proxy in
-            let duo = DuoPosture(proxy, halfFolded: halfFolded)
-            if model.listening, let duo, duo.isTabletop {
-                TabletopMode(model: model, fold: duo.fold)
-            } else if model.listening, let duo, duo.isBook {
-                book(fold: duo.fold)
+            if let duo = DuoPosture(proxy) {
+                if !duo.isTabletop {
+                    book(fold: duo.fold)
+                } else if model.listening {
+                    TabletopMode(model: model, fold: duo.fold)
+                } else {
+                    tabletop(fold: duo.fold)
+                }
             } else if model.listening, proxy.size.width > proxy.size.height {
                 CaptionMode(model: model)
             } else if widthClass == .regular, heightClass == .regular, !model.listening {
@@ -28,7 +30,6 @@ struct HomeView: View {
         .animation(.spring(duration: 0.55, bounce: 0.15), value: model.listening)
         .background(Color.hvGround.ignoresSafeArea())
         .foregroundStyle(Color.hvText)
-        .onHalfFoldChange { halfFolded = $0 }
         .sceneAccessory {
             ExternalNonInteractiveAccessory(isEnabled: .constant(model.listening)) {
                 ExternalSubtitles(model: model, settings: settings)
@@ -120,7 +121,32 @@ struct HomeView: View {
         .frame(maxWidth: .infinity)
     }
 
-    /// The open iPhone Duo, or an iPad, while idle: a wide preview over the button and the tiles side by side. Listening uses the book layout on the Duo and the single column on iPad (landscape means caption mode).
+    /// The open iPhone Duo in portrait while idle: the preview above the fold, the button and the tiles below.
+    private func tabletop(fold: CGRect) -> some View {
+        VStack(spacing: 0) {
+            VStack(spacing: 16) {
+                HomeHeader(model: model) { presentation = $0 }
+                Spacer(minLength: 0)
+                preview
+            }
+            .padding(.horizontal, 24)
+            .padding(.top, 8)
+            .padding(.bottom, 16)
+            .frame(height: fold.minY)
+            Color.clear.frame(height: fold.height)
+            VStack(spacing: 12) {
+                Spacer(minLength: 0)
+                listenButton(size: 96)
+                StartPrompt(model: model)
+                Spacer(minLength: 0)
+                HomeTiles(model: model) { presentation = $0 }
+            }
+            .padding(.horizontal, 24)
+            .padding(.bottom, 16)
+        }
+    }
+
+    /// An iPad while idle: a wide preview over the button and the tiles side by side. Listening uses the single column (landscape means caption mode).
     private var wide: some View {
         VStack(spacing: 20) {
             HomeHeader(model: model) { presentation = $0 }
@@ -144,24 +170,40 @@ struct HomeView: View {
         .frame(maxWidth: .infinity)
     }
 
-    /// Listening on the open iPhone Duo: the subtitles and controls on the left page, the transcript on the right.
+    /// The open iPhone Duo: the subtitles and the button on the left page; the transcript while listening, or the tiles, on the right.
     private func book(fold: CGRect) -> some View {
-        HStack(spacing: 0) {
+        let listening = model.listening
+        return HStack(spacing: 0) {
             VStack(spacing: 16) {
                 HomeHeader(model: model) { presentation = $0 }
                 preview
-                ListeningSummary(model: model)
+                if listening {
+                    ListeningSummary(model: model)
+                        .transition(.opacity)
+                }
                 Spacer(minLength: 0)
-                listenButton(size: 56)
+                listenButton(size: listening ? 56 : 96)
+                if !listening {
+                    StartPrompt(model: model)
+                        .transition(.opacity)
+                    Spacer(minLength: 0)
+                }
             }
             .padding(.horizontal, 16)
             .padding(.top, 8)
             .padding(.bottom, 4)
             .frame(width: fold.minX)
             Color.clear.frame(width: fold.width)
-            LiveTranscriptCard(translator: model.translation)
-                .padding(16)
-                .frame(maxWidth: .infinity)
+            Group {
+                if listening {
+                    LiveTranscriptCard(translator: model.translation)
+                } else {
+                    HomeTiles(model: model) { presentation = $0 }
+                        .frame(maxHeight: .infinity)
+                }
+            }
+            .padding(16)
+            .frame(maxWidth: .infinity)
         }
     }
 

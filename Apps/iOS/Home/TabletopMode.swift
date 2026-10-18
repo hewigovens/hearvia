@@ -1,7 +1,7 @@
 import HearviaUI
 import SwiftUI
 
-/// Listening on an iPhone Duo half-folded on a table: subtitles on the standing half for the room, the transcript and Stop on the half lying flat.
+/// Listening on the open iPhone Duo in portrait, or half-folded on a table: subtitles above the fold for the room, the transcript and Stop below it.
 struct TabletopMode: View {
     let model: AppModel
     let fold: CGRect
