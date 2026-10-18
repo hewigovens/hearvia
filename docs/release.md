@@ -91,7 +91,7 @@ Checked with the sandboxed Debug build (`--autostart`, `--source=`, logs on stdo
 | One app's audio (`--source=<pid>`, process list and PID lookup) | Works |
 | Gemini Live WebSocket (`network.client`) | Works |
 | Microphone | Starts; not confirmed with speech (the test Mac played into headphones) |
-| Saving a key in Settings (Keychain) | Not tested yet (the key field couldn't be filled by automation) |
+| Saving a key in Settings (Keychain) | Works in a Release build. Keys live in the data protection keychain, so no build prompts; keys an earlier build left in the login keychain move over once on first read (2026-10-19) |
 
 The only sandbox denials logged were disk-space probes (`system-info vfs.disk-space`) and one NVMe user client, neither affecting capture. Moving into the sandbox gives the app a container: settings, transcripts and Keychain items from unsandboxed builds don't carry over.
 
