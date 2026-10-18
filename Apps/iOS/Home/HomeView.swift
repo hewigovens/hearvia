@@ -32,6 +32,10 @@ struct HomeView: View {
                    let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                     scene.requestGeometryUpdate(.iOS(interfaceOrientations: .landscapeRight))
                 }
+                // Starts a session at launch for on-device debugging (-hearvia.autostart microphone).
+                if let source = UserDefaults.standard.string(forKey: "hearvia.autostart").flatMap(InputSource.init) {
+                    model.quickStart(source)
+                }
             #endif
         }
         .onChange(of: phase) { _, value in

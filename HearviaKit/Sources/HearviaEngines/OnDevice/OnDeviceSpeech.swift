@@ -14,25 +14,14 @@ final class OnDeviceSpeech: SpeechInput, @unchecked Sendable {
         try await self.init(transcribers: [OnDeviceModels.transcriber(language)], languages: [language])
     }
 
-    /// Auto: recognizes with each installed candidate until one is clearly right (see +Detection). The iPhone limits how many recognizers run at once (SFSpeechErrorDomain 16), so this drops candidates until it fits.
+    /// Auto: recognizes with each installed candidate until one is clearly right (see +Detection).
     static func detecting(_ languages: [String]) async throws -> OnDeviceSpeech {
         guard !languages.isEmpty else { throw OnDeviceError.noSpeechModels }
-        var count = languages.count
-        while true {
-            do {
-                return try await OnDeviceSpeech(detecting: Array(languages.prefix(count)))
-            } catch let error as NSError where error.domain == "SFSpeechErrorDomain" && error.code == 16 && count > 1 {
-                count -= 1
-            }
-        }
-    }
-
-    private convenience init(detecting languages: [String]) async throws {
         var transcribers: [SpeechTranscriber] = []
         for language in languages {
             try await transcribers.append(OnDeviceModels.transcriber(language, confidence: true))
         }
-        try await self.init(transcribers: transcribers, languages: languages)
+        return try await OnDeviceSpeech(transcribers: transcribers, languages: languages)
     }
 
     private init(transcribers: [SpeechTranscriber], languages: [String]) async throws {

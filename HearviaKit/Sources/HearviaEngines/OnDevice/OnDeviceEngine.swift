@@ -70,7 +70,9 @@ public final class OnDeviceEngine: TranslationEngine {
     }
 
     private static func detecting(strategy: String, translator: @escaping @Sendable (String) async throws -> Translate?) async throws -> OnDeviceModelSet {
-        var models = try await OnDeviceModelSet(speech: OnDeviceSpeech.detecting(OnDeviceModels.autoCandidates()), translate: nil, strategy: strategy)
+        let candidates = await OnDeviceModels.autoCandidates()
+        var models = try await OnDeviceModelSet(speech: OnDeviceSpeech.detecting(candidates), translate: nil,
+                                                strategy: "\(strategy) \(candidates.joined(separator: ","))")
         models.translator = translator
         return models
     }

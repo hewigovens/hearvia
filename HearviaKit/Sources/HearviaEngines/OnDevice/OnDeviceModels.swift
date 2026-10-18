@@ -58,14 +58,14 @@ public enum OnDeviceModels {
                                  reportingOptions: [.volatileResults, .fastResults], attributeOptions: confidence ? [.transcriptionConfidence] : [])
     }
 
-    /// Every recognizer runs at once until one wins, so Auto tries at most three: installed languages, the user's own first.
+    /// Every recognizer runs at once until one wins, and iOS fails a third (SFSpeechErrorDomain 16), so Auto tries two installed languages, the user's own first.
     public static func autoCandidates() async -> [String] {
         guard SpeechTranscriber.isAvailable else { return [] }
         let installed = await Set(SpeechTranscriber.installedLocales.compactMap { $0.language.languageCode?.identifier })
         let preferred = Locale.preferredLanguages.compactMap { Locale(identifier: $0).language.languageCode?.identifier }
         let ordered = preferred + Languages.supported + installed.sorted()
         var seen = Set<String>()
-        return Array(ordered.filter { installed.contains($0) && seen.insert($0).inserted }.prefix(3))
+        return Array(ordered.filter { installed.contains($0) && seen.insert($0).inserted }.prefix(2))
     }
 
     public static func speech(_ code: String) async -> Availability {
