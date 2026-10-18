@@ -1,7 +1,7 @@
 import HearviaUI
 import SwiftUI
 
-/// Listening in landscape, such as an iPhone Duo standing half-folded on a table: the subtitles fill the screen for anyone nearby to read.
+/// Listening in landscape on a phone without a fold: the subtitles fill the screen for anyone nearby to read.
 struct CaptionMode: View {
     let model: AppModel
 

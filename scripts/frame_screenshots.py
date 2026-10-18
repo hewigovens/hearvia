@@ -6,7 +6,8 @@ Usage: python3 scripts/frame_screenshots.py <raw-dir> [out-dir=build/appstore/en
 Raw captures come from the Debug demo mode (`-hearvia.demo YES`, see docs/release.md):
   iphone-home.png, iphone-2-listening.png, iphone-3-captions.png (landscape), iphone-4-transcripts.png,
   iphone-5-translators.png at 1320x2868 (6.9"); ipad-home.png (after Float subtitles), ipad-1-listening.png, ipad-2-transcripts.png at
-  2064x2752 (13"); mac-control.png, mac-overlay.png, mac-transcripts.png window captures (screencapture -o -l).
+  2064x2752 (13"); duo-1-book.png (landscape, 2853x2007) and duo-2-tabletop.png
+  (portrait, half-folded, 2007x2853) from an open iPhone Duo; mac-control.png, mac-overlay.png, mac-transcripts.png window captures (screencapture -o -l).
 """
 
 import sys
@@ -22,6 +23,7 @@ FONT = "/System/Library/Fonts/SFNS.ttf"
 
 IPHONE = (1320, 2868)
 IPAD = (2064, 2752)
+DUO = (2007, 2853)
 MAC = (2880, 1800)
 
 
@@ -171,6 +173,12 @@ def main():
                 "The original above, the translation below", out, IPAD, 60)
     phone_frame(raw / "ipad-2-transcripts.png", "ipad-3.png", "Every session, saved",
                 "Read or export any transcript later", out, IPAD, 60)
+
+    if (raw / "duo-1-book.png").exists():
+        phone_frame(raw / "duo-1-book.png", "duo-1.png", "Made for iPhone Duo",
+                    "Subtitles on one page, the transcript on the other", out, DUO, 60)
+        phone_frame(raw / "duo-2-tabletop.png", "duo-2.png", "Stand it up for the room",
+                    "Half-fold it: subtitles above the fold, controls below", out, DUO, 60)
 
     scene = scene_background((2400, 1350))
     mac_frame("mac-1.png", "Subtitles over any app", "All system audio, or just one app", out,

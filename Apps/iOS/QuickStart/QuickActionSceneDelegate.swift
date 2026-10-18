@@ -23,6 +23,8 @@ final class QuickActionSceneDelegate: NSObject, UIWindowSceneDelegate {
 /// Only there to give SwiftUI's scenes the quick-action delegate.
 final class QuickActionAppDelegate: NSObject, UIApplicationDelegate {
     func application(_: UIApplication, configurationForConnecting session: UISceneSession, options _: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        // The external-display subtitles scene keeps the configuration SwiftUI registered for it.
+        guard session.role == .windowApplication else { return session.configuration }
         let configuration = UISceneConfiguration(name: nil, sessionRole: session.role)
         configuration.delegateClass = QuickActionSceneDelegate.self
         return configuration

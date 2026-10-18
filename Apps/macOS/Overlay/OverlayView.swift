@@ -42,13 +42,13 @@ struct OverlayView: View {
                 Spacer(minLength: 0)
                 if let second = lines.second {
                     // Two whole lines: a fraction of a line more would show a sliver of the line above.
-                    tail(Text(Self.tail(second, 300))
+                    tail(Text(second.subtitleTail(300))
                         .font(.system(size: originalSize))
                         .foregroundStyle(.white.opacity(0.7)), lineHeight: Self.lineHeight(ofSystemFontSize: originalSize))
                         .frame(maxHeight: 2 * Self.lineHeight(ofSystemFontSize: originalSize))
                         .layoutPriority(2) // Keeps its two lines when the translation overflows.
                 }
-                tail(Text(Self.tail(lines.main, 400))
+                tail(Text(lines.main.subtitleTail(400))
                     .font(.system(size: settings.overlayFontSize, weight: .semibold))
                     .foregroundStyle(.white), lineHeight: Self.lineHeight(ofSystemFontSize: settings.overlayFontSize))
                     .layoutPriority(1)
@@ -85,15 +85,6 @@ struct OverlayView: View {
 
     static func lineHeight(ofSystemFontSize size: CGFloat) -> CGFloat {
         NSLayoutManager().defaultLineHeight(for: .systemFont(ofSize: size))
-    }
-
-    static func tail(_ text: String, _ limit: Int) -> String {
-        guard text.count > limit else { return text }
-        var tail = text.suffix(limit)
-        if let space = tail.firstIndex(of: " "), tail.distance(from: tail.startIndex, to: space) < 20 {
-            tail = tail[tail.index(after: space)...]
-        }
-        return String(tail)
     }
 }
 
