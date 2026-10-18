@@ -56,6 +56,16 @@ just testflight-macos           # Mac: upload the .pkg with altool, then asc for
 - Build numbers count up within each `MARKETING_VERSION`, one sequence shared by iOS and Mac (the next number after the highest uploaded for either), so a new version starts at 1. Version 0.1 used timestamps (`yyyyMMddHHmm`), so its numbers stay that long. `TESTFLIGHT_BUILD_NUMBER` overrides it.
 - Before uploading, check the iOS archive has no key: `strings build/testflight/ios/Hearvia.xcarchive/Products/Applications/Hearvia.app/Hearvia | grep -c "sk-"` should print 0.
 
+## App Store screenshots
+
+English only (Apple reuses them for every locale), framed with a headline by `scripts/frame_screenshots.py`; output goes to `build/appstore/en-US` (not committed).
+
+- Debug builds have a demo mode, `-hearvia.demo YES`: a Japanese → English session with live subtitles, a live transcript and past transcripts, never saved (`LiveTranslator+Demo`). Launch with `-hearvia.hasCompletedOnboarding YES -hearvia.engine onDevice -hearvia.sourceLanguage ja -hearvia.targetLanguage en -hearvia.input otherApps`; add `-hearvia.demoLandscape YES` for caption mode (the Simulator can't be rotated from the command line).
+- iPhone 6.9" (1320×2868): an iPhone 18 Pro Max simulator on iOS 27.0 with `xcrun simctl status_bar <udid> override --time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3`. Captures: home screen (`iphone-home.png`, for the floating-window composite: the iPhone Simulator has no PiP), listening, caption mode, the transcripts list (sheet pulled up), and the translator sheet with OpenAI Realtime selected (on-device shows "Not supported" in the Simulator).
+- iPad 13" (2064×2752): an iPad Pro 13-inch (M5) simulator on iOS 27.0: listening, transcripts (split view), and the home screen after Float subtitles (real PiP).
+- Mac (2880×1800): run the Mac app with the same demo arguments plus `-hearvia.overlayVisible YES`, then capture the control window, the overlay and the Transcripts window with `screencapture -o -l <window id>`.
+- `xcrun simctl io <udid> screenshot <file>` saves full-resolution captures; then `python3 scripts/frame_screenshots.py <raw-dir>`.
+
 ## macOS: hardened runtime, sandbox, notarization
 
 ### Hardened runtime (done)

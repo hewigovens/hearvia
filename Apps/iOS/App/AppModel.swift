@@ -15,8 +15,10 @@ final class AppModel {
     var scene = "active"
     var tickCount = 0
     var listening: Bool {
-        capture.running || micRunning
+        capture.running || micRunning || demo
     }
+    /// App Store screenshot mode (see LiveTranslator+Demo).
+    var demo = false
     var listeningSince: Date?
     var micRunning = false
     var micStarting = false
@@ -71,6 +73,16 @@ final class AppModel {
         translation.onLog = { [log] name, fields in log.event(name, fields) }
         pip.onClose = { [weak self] in Task { await self?.stopListening() } }
         followShowsOriginal()
+        #if DEBUG
+            if LiveTranslator.demoRequested {
+                demo = true
+                wasListening = true
+                listeningSince = .now.addingTimeInterval(-754)
+                levels = [0.2, 0.5, 0.35, 0.7, 0.45, 0.6, 0.3, 0.55, 0.4, 0.65]
+                translation.loadDemo()
+                scheduleRender()
+            }
+        #endif
     }
 
     private func followShowsOriginal() {

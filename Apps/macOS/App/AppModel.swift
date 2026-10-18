@@ -40,6 +40,14 @@ final class AppModel {
                 Self.emit("text", ["translation_tail": String(self.translator.translation.suffix(60))])
             }
         }
+        #if DEBUG
+            if LiveTranslator.demoRequested { // App Store screenshots (see LiveTranslator+Demo).
+                capturing = true
+                capturingSince = .now.addingTimeInterval(-754)
+                levels = [0.2, 0.5, 0.35, 0.7, 0.45, 0.6, 0.3, 0.55, 0.4, 0.65]
+                translator.loadDemo()
+            }
+        #endif
     }
 
     func showOverlay() {
