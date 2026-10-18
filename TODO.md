@@ -11,7 +11,8 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 
 ## Next: TestFlight
 
-- [ ] Beta App Review of 0.1 (submitted 2026-10-18, both builds in the Public Beta group). Once approved, share the public link and bump `MARKETING_VERSION` to 0.2 so build numbers restart at 1 (0.1 has to stay above its timestamp builds).
+- [ ] Beta App Review of 0.1 (submitted 2026-10-18, both builds in the Public Beta group). Once approved, share the public link.
+- [ ] App Store 1.0 is ready to submit (iOS and Mac, 2026-10-18): listing, keywords, screenshots (`scripts/frame_screenshots.py`), age rating 4+, free, every territory but mainland China (no ICP filing), review details, builds 1.0 (1) iOS and (2) Mac attached; release is manual. Submit with `asc review submit` or in App Store Connect when ready.
 - [ ] Run the checks below on the TestFlight builds: no Developer tools, no Files sharing and no diagnostics log on iPhone; quick start and transcripts work.
 
 ## Check on iPhone
