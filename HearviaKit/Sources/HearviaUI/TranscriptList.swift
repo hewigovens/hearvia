@@ -40,6 +40,11 @@ public struct TranscriptList: View {
                     withAnimation { proxy.scrollTo(id, anchor: .bottom) }
                 }
             }
+            .onAppear {
+                if let id = lines.last?.id {
+                    proxy.scrollTo(id, anchor: .bottom)
+                }
+            }
         }
     }
 }

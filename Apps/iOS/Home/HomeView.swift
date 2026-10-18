@@ -13,7 +13,7 @@ struct HomeView: View {
         GeometryReader { proxy in
             if model.listening, proxy.size.width > proxy.size.height {
                 CaptionMode(model: model)
-            } else if widthClass == .regular, heightClass == .regular {
+            } else if widthClass == .regular, heightClass == .regular, !model.listening {
                 wide
             } else {
                 narrow
@@ -26,6 +26,13 @@ struct HomeView: View {
             if !settings.hasCompletedOnboarding {
                 presentation = .onboarding
             }
+            #if DEBUG
+                // Caption-mode screenshots: the Simulator can't be rotated from the command line.
+                if UserDefaults.standard.bool(forKey: "hearvia.demoLandscape"),
+                   let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                    scene.requestGeometryUpdate(.iOS(interfaceOrientations: .landscapeRight))
+                }
+            #endif
         }
         .onChange(of: phase) { _, value in
             model.sceneChanged(value)
@@ -69,8 +76,11 @@ struct HomeView: View {
             if listening {
                 ListeningSummary(model: model)
                     .transition(.offset(y: 12).combined(with: .opacity))
+                LiveTranscriptCard(translator: model.translation)
+                    .transition(.opacity)
+            } else {
+                Spacer(minLength: 0)
             }
-            Spacer(minLength: 0)
             listenButton(size: listening ? 56 : 96)
             if !listening {
                 StartPrompt(model: model)
@@ -83,41 +93,26 @@ struct HomeView: View {
         .padding(.horizontal, 16)
         .padding(.top, 8)
         .padding(.bottom, 4)
+        .frame(maxWidth: 1000)
+        .frame(maxWidth: .infinity)
     }
 
-    /// The open iPhone Duo, or an iPad. Idle: a wide preview over the button and the tiles side by side. Listening: subtitles beside the live transcript.
+    /// The open iPhone Duo, or an iPad, while idle: a wide preview over the button and the tiles side by side. Listening uses the single column (wide and landscape means caption mode).
     private var wide: some View {
-        let listening = model.listening
-        return VStack(spacing: 20) {
+        VStack(spacing: 20) {
             HomeHeader(model: model) { presentation = $0 }
-            if listening {
-                HStack(alignment: .top, spacing: 24) {
-                    VStack(spacing: 16) {
-                        preview
-                        ListeningSummary(model: model)
-                        Spacer(minLength: 0)
-                        listenButton(size: 72)
-                    }
-                    .frame(maxWidth: .infinity)
-                    LiveTranscriptCard(translator: model.translation)
-                        .frame(maxWidth: .infinity)
+            preview
+            Spacer(minLength: 0)
+            HStack(alignment: .center, spacing: 32) {
+                VStack(spacing: 12) {
+                    listenButton(size: 112)
+                    StartPrompt(model: model)
                 }
-                .transition(.opacity)
-            } else {
-                preview
-                Spacer(minLength: 0)
-                HStack(alignment: .center, spacing: 32) {
-                    VStack(spacing: 12) {
-                        listenButton(size: 112)
-                        StartPrompt(model: model)
-                    }
+                .frame(maxWidth: .infinity)
+                HomeTiles(model: model) { presentation = $0 }
                     .frame(maxWidth: .infinity)
-                    HomeTiles(model: model) { presentation = $0 }
-                        .frame(maxWidth: .infinity)
-                }
-                .transition(.opacity)
-                Spacer(minLength: 0)
             }
+            Spacer(minLength: 0)
         }
         .padding(.horizontal, 24)
         .padding(.top, 8)
