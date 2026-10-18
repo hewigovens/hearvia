@@ -1,19 +1,18 @@
 # TODO
 
-Open work, grouped by what it needs. Finished work lives in `jj log`. State as of 2026-10-18.
+Open work, grouped by what it needs. Finished work lives in `jj log`. State as of 2026-10-19.
 
 ## Handoff
 
 - Version control: jj only, in the default workspace (no sibling workspaces); `git` only for gaps jj doesn't cover, never index-writing commands. See `agents/version-control.md`. Codex sometimes works in the same checkout: check `jj op log` and `jj diff --stat` for edits you didn't make before describing or pushing.
-- `main` on `origin` (github.com/hewigovens/hearvia) is at mxvtsnvo (2026-10-18). `jj log -r 'main::@'` shows what isn't pushed yet; publish with `jj bookmark set main -r <rev>` and `jj git push --bookmark main`.
-- Checks: `just format lint build test` locally; CI (`.github/workflows/ci.yml`, GitHub's `xcode-27` image) runs the kit tests, SwiftFormat, SwiftLint and unsigned builds of both apps on every push and pull request.
-- Releases: `just testflight` / `just testflight-macos` upload to TestFlight (`docs/release.md`). Internal testers get every build; the external "Public Beta" group (public link, up to 1,000 testers) gets a build once it's added to the group, and the first build of each version needs Beta App Review. Latest: 0.1 (202610180940 iOS, 202610180941 Mac, built with Xcode 27.1), 2026-10-18.
+- `main` on `origin` (github.com/hewigovens/hearvia): `jj log -r 'main@origin..@'` shows what isn't pushed yet; publish with `jj bookmark set main -r <rev>` and `jj git push --bookmark main`.
+- Checks: `just format lint build test` locally; CI (`.github/workflows/ci.yml`, GitHub's `xcode-27` image with its Xcode 27.1) runs the kit tests, SwiftFormat, SwiftLint and unsigned builds of both apps on every push and pull request.
+- Releases: `just testflight` / `just testflight-macos` upload to TestFlight (`docs/release.md`). Internal testers get every build; the external "Public Beta" group (public link, up to 1,000 testers) gets a build once it's added to the group, and the first build of each version needs Beta App Review. Latest: 1.0 (7) iOS and (8) Mac, built with Xcode 27.1, 2026-10-19.
 
 ## Next: TestFlight
 
 - [ ] Beta App Review of 1.0 (3) iOS and (4) Mac (submitted 2026-10-18, both in the Public Beta group; the 0.1 builds were expired). Once approved, share the public link.
-- [ ] App Store 1.0 is ready to submit (iOS and Mac, 2026-10-18): listing, keywords, screenshots (`scripts/frame_screenshots.py`), age rating 4+, free, every territory but mainland China (no ICP filing), review details, builds 1.0 (5) iOS and (6) Mac attached (with the Duo layouts and Apple TV subtitles), iPhone Duo screenshots included; release is manual. Submit with `asc review submit` or in App Store Connect when ready.
-- [ ] Run the checks below on the TestFlight builds: no Developer tools, no Files sharing and no diagnostics log on iPhone; quick start and transcripts work.
+- [ ] App Store 1.0 in review (submitted 2026-10-19: iOS 1.0 (7), Mac 1.0 (8), with iPhone Duo screenshots); it goes live automatically once approved. Watch for reviewer questions in App Store Connect.
 
 ## Check on iPhone
 
@@ -24,8 +23,7 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 ## Check on iPhone Duo (ships 2026-10-23)
 
 - Xcode 27.1 (final, 2026-10-15) is at /Applications/Xcode-27.1.app with the iOS 27.1 and 27.0 simulators and a "Hearvia Duo" simulator; build with `DEVELOPER_DIR=/Applications/Xcode-27.1.app/Contents/Developer` (also the selected Xcode now). Simulator screenshots come back black while the Mac is locked.
-- [ ] Open and closed: home switches between one and two columns; transcripts show as a split view when open; onboarding stays readable; uneven safe areas don't clip anything.
-- [ ] On a real Duo (both checked in the 27.1 Simulator, 2026-10-18): open in landscape while listening shows the book layout (subtitles and controls left, transcript right, nothing under the fold); half-folded in portrait shows tabletop (subtitles on the standing half, transcript and Stop on the flat half). PiP still starts when leaving the app from either.
+- [ ] On a real Duo: landscape shows the book layout (subtitles and the button left; transcript, or tiles while idle, right), portrait splits above and below the fold, and nothing sits on the fold. PiP still starts when leaving the app from either.
 
 ## Check on Mac
 
@@ -35,11 +33,10 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 ## Engineering
 
 - [ ] Local LLM translator with Ollama / LM Studio. With a slow model, consider translating finished sentences only, since in-progress text is re-sent as it changes.
-- [ ] iOS UI tests for the redesigned UI. This Mac has no iOS 27 simulator runtime (several GB to download); GitHub's `xcode-27` image has one.
+- [ ] iOS UI tests for the redesigned UI (this Mac now has the iOS 27.0 and 27.1 simulators).
 - [ ] Tune the cloud silence threshold (about −40 dBFS peak, `CloudTiming.silencePeak`): videos with background music may never pause.
 - [ ] Transcript lines are cut at sentence punctuation in the translation, so original/translation pairing is approximate.
 - [ ] Gemini Live en → ja drops the last clause of a clip ("…smaller than expected"), and en → nl / pt cut the end too; recheck when the model leaves preview.
-- [ ] Gemini Live: offer Traditional Chinese (`zh-Hant`) once the pickers can name scripts.
 - [ ] Mac menu-bar-only launch closes the control window by polling for it (`MenuBarLabel.closeLaunchWindow`) because `.defaultLaunchBehavior` was unreliable; replace if SwiftUI gets a dependable way.
 
 ## Release
