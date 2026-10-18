@@ -1,0 +1,93 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "NSLocalNetworkUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearvia はローカルネットワーク上で実行している翻訳モデル（ローカル LLM 翻訳）に接続します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearvia는 로컬 네트워크에서 실행 중인 번역 모델(로컬 LLM 번역기)에 연결합니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearvia 会连接你在本地网络上运行的翻译模型（本地大模型翻译器）。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearvia 會連線到你在區域網路上執行的翻譯模型（本機大型模型翻譯器）。"
+          }
+        }
+      }
+    },
+    "NSMicrophoneUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearvia はマイクの音声を聞き取り、周りの話し声にリアルタイムの翻訳字幕を表示します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearvia는 마이크로 주변의 말소리를 듣고 실시간 번역 자막을 표시합니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearvia 会收听麦克风，为你周围的说话显示实时翻译字幕。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearvia 會收聽麥克風，為你周圍的說話顯示即時翻譯字幕。"
+          }
+        }
+      }
+    },
+    "NSSpeechRecognitionUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearvia はこのデバイス上で音声を文字に変換して字幕を表示します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearvia는 이 기기에서 음성을 텍스트로 바꿔 자막을 표시합니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearvia 在这台设备上把语音转成文字，用来显示字幕。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearvia 在這台裝置上把語音轉成文字，用來顯示字幕。"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

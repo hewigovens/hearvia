@@ -3,7 +3,7 @@ import SwiftUI
 
 struct CircleButton: View {
     let symbol: String
-    let label: String
+    let label: LocalizedStringKey
     let action: () -> Void
     var body: some View {
         Button(action: action) {

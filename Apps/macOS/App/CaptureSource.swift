@@ -25,9 +25,9 @@ enum CaptureSource: Hashable {
 
     var label: String {
         switch self {
-        case .allApps: "All system audio"
+        case .allApps: String(localized: "All system audio")
         case let .process(p): p.name
-        case .microphone: "Microphone"
+        case .microphone: String(localized: "Microphone")
         }
     }
 }

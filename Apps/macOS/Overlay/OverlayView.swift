@@ -60,7 +60,7 @@ struct OverlayView: View {
         if !model.translator.error.isEmpty {
             return model.translator.error
         }
-        return model.capturing ? "Listening… (\(model.translator.status.label))" : "Subtitles appear here"
+        return model.capturing ? String(localized: "Listening… (\(model.translator.status.label))") : String(localized: "Subtitles appear here")
     }
 
     /// The non-scrollable ScrollView gives the text unlimited height but clips it, to a whole number of lines so no part-line shows at the top (a fade there covered the newest line when only about one line fit).

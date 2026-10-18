@@ -26,6 +26,7 @@
   - **Local model (experimental):** Apple speech recognition, then each sentence goes to a model you run yourself with Ollama, LM Studio, Unsloth Studio or another OpenAI-compatible server, on your Mac or your network.
 - **Transcripts** of each session stay on your device, or sync through your own iCloud to your other devices if you turn it on.
 - **Quick start** on iPhone from a widget, Control Center, Shortcuts or the app icon.
+- **In your language:** English, 简体中文, 繁體中文, 日本語 and 한국어. Subtitles can also be in Traditional Chinese.
 - **Private by default:** no accounts, no analytics, no tracking. See the [privacy policy](https://hewigovens.github.io/hearvia/privacy.html).
 
 ## Get Hearvia

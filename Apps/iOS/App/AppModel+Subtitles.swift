@@ -18,8 +18,12 @@ extension AppModel {
             String(format: "System RMS %.5f\n%@", audio.system.rms, captureLabel)
         } else if !lines.main.isEmpty {
             lines.main
+        } else if translation.isActive {
+            String(localized: "Listening…")
+        } else if listening {
+            String(localized: "Connecting…")
         } else {
-            translation.isActive ? "Listening…" : listening ? "Connecting…" : "Subtitles appear here"
+            String(localized: "Subtitles appear here")
         }
         await pip.render(subtitle: subtitle, second: diagnosticsInPiP ? nil : lines.second, detail: statusLineInPiP ? statusLine : nil)
     }

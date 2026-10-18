@@ -7,10 +7,10 @@ public enum OnDeviceModels {
         case unsupported, downloadable, downloading, installed
         public var label: String {
             switch self {
-            case .unsupported: "Not supported"
-            case .downloadable: "Needs download"
-            case .downloading: "Downloading…"
-            case .installed: "Ready"
+            case .unsupported: String(localized: "Not supported")
+            case .downloadable: String(localized: "Needs download")
+            case .downloading: String(localized: "Downloading…")
+            case .installed: String(localized: "Ready")
             }
         }
     }

@@ -17,10 +17,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDockMenu(_: NSApplication) -> NSMenu? {
         guard let model else { return nil }
         let menu = NSMenu()
-        menu.addItem(ActionMenuItem(model.capturing ? "Stop Listening" : "Start Listening") {
+        menu.addItem(ActionMenuItem(model.capturing ? String(localized: "Stop Listening") : String(localized: "Start Listening")) {
             Task { await model.toggleListening() }
         })
-        let overlay = ActionMenuItem("Show Subtitle Overlay") { model.settings.overlayVisible.toggle() }
+        let overlay = ActionMenuItem(String(localized: "Show Subtitle Overlay")) { model.settings.overlayVisible.toggle() }
         overlay.state = model.settings.overlayVisible ? .on : .off
         menu.addItem(overlay)
         return menu

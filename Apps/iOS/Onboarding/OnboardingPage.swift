@@ -3,7 +3,7 @@ import SwiftUI
 
 struct OnboardingPage<Content: View>: View {
     let symbol: String?
-    let title: String
+    let title: LocalizedStringKey
     let message: LocalizedStringKey
     @ViewBuilder var content: Content
 

@@ -11,10 +11,10 @@ public enum EngineKind: String, CaseIterable, Identifiable, Sendable, Codable {
     }
     public var title: String {
         switch self {
-        case .onDevice: "On-device"
+        case .onDevice: String(localized: "On-device")
         case .realtime: "OpenAI Realtime"
         case .gemini: "Gemini Live"
-        case .local: "Local LLM"
+        case .local: String(localized: "Local LLM")
         }
     }
     /// For tiles and one-line summaries, where the full name would wrap.
@@ -27,10 +27,10 @@ public enum EngineKind: String, CaseIterable, Identifiable, Sendable, Codable {
     }
     public var tagline: String {
         switch self {
-        case .onDevice: "Free · private · works offline"
-        case .realtime: "Fastest · best quality · ~$2/hour"
-        case .gemini: "Free to try · ~$2.20/hour after"
-        case .local: "Experimental · your Ollama, LM Studio or Unsloth"
+        case .onDevice: String(localized: "Free · private · works offline")
+        case .realtime: String(localized: "Fastest · best quality · ~$2/hour")
+        case .gemini: String(localized: "Free to try · ~$2.20/hour after")
+        case .local: String(localized: "Experimental · your Ollama, LM Studio or Unsloth")
         }
     }
     public var isCloud: Bool {

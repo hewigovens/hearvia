@@ -32,7 +32,7 @@ final class CaptureController: NSObject, SCContentSharingPickerObserver, SCStrea
     func start() {
         guard !running, !pending, !stopping else { return }
         guard picker.isAvailable else { state = "Unavailable"
-            error = "Screen capture is unavailable or restricted on this device."
+            error = String(localized: "Screen capture is unavailable or restricted on this device.")
             return
         }
         var config = SCContentSharingPickerConfiguration()

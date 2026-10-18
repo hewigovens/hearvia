@@ -3,12 +3,12 @@ import SwiftUI
 /// A value that must not wrap (CJK breaks between any two characters) passes `wraps: false` and shrinks instead.
 public struct ControlTile: View {
     let symbol: String
-    let caption: String
+    let caption: LocalizedStringKey
     let value: String
     let ready: Bool?
     let wraps: Bool
 
-    public init(symbol: String, caption: String, value: String, ready: Bool? = nil, wraps: Bool = true) {
+    public init(symbol: String, caption: LocalizedStringKey, value: String, ready: Bool? = nil, wraps: Bool = true) {
         self.symbol = symbol
         self.caption = caption
         self.value = value

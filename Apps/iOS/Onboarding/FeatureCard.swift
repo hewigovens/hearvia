@@ -3,8 +3,8 @@ import SwiftUI
 
 struct FeatureCard<Trailing: View, Footer: View>: View {
     let symbol: String
-    let title: String
-    let text: String
+    let title: LocalizedStringKey
+    let text: LocalizedStringKey
     @ViewBuilder var trailing: Trailing
     @ViewBuilder var footer: Footer
 
@@ -27,19 +27,19 @@ struct FeatureCard<Trailing: View, Footer: View>: View {
 }
 
 extension FeatureCard where Trailing == EmptyView, Footer == EmptyView {
-    init(_ symbol: String, _ title: String, _ text: String) {
+    init(_ symbol: String, _ title: LocalizedStringKey, _ text: LocalizedStringKey) {
         self.init(symbol: symbol, title: title, text: text, trailing: { EmptyView() }, footer: { EmptyView() })
     }
 }
 
 extension FeatureCard where Footer == EmptyView {
-    init(_ symbol: String, _ title: String, _ text: String, @ViewBuilder trailing: () -> Trailing) {
+    init(_ symbol: String, _ title: LocalizedStringKey, _ text: LocalizedStringKey, @ViewBuilder trailing: () -> Trailing) {
         self.init(symbol: symbol, title: title, text: text, trailing: trailing, footer: { EmptyView() })
     }
 }
 
 extension FeatureCard where Trailing == EmptyView {
-    init(_ symbol: String, _ title: String, _ text: String, @ViewBuilder footer: () -> Footer) {
+    init(_ symbol: String, _ title: LocalizedStringKey, _ text: LocalizedStringKey, @ViewBuilder footer: () -> Footer) {
         self.init(symbol: symbol, title: title, text: text, trailing: { EmptyView() }, footer: footer)
     }
 }

@@ -66,7 +66,7 @@ private struct QuickStartView: View {
             VStack(alignment: .leading, spacing: 0) {
                 header
                 Spacer(minLength: 8)
-                StartButton(title: "Start", symbol: "play.fill", intent: StartListeningIntent())
+                StartButton(title: String(localized: "Start"), symbol: "play.fill", intent: StartListeningIntent())
             }
         }
     }

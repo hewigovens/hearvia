@@ -7,7 +7,11 @@ public enum Appearance: String, CaseIterable, Identifiable, Sendable {
         rawValue
     }
     public var title: String {
-        rawValue.capitalized
+        switch self {
+        case .dark: String(localized: "Dark")
+        case .light: String(localized: "Light")
+        case .system: String(localized: "System")
+        }
     }
     public var colorScheme: ColorScheme? {
         switch self {

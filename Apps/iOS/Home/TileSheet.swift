@@ -2,7 +2,7 @@ import HearviaUI
 import SwiftUI
 
 struct TileSheet<Content: View>: View {
-    let title: String
+    let title: LocalizedStringKey
     @ViewBuilder var content: Content
     @State private var height: CGFloat = 240
 

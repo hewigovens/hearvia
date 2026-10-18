@@ -47,7 +47,7 @@ struct EngineStatus: View {
         }
     }
 
-    private func readyLine(_ text: String) -> some View {
+    private func readyLine(_ text: LocalizedStringKey) -> some View {
         Label { Text(text) } icon: { Image(systemName: "checkmark.circle.fill").foregroundStyle(Color.hvReady) }
             .font(.footnote).foregroundStyle(Color.hvMuted)
     }

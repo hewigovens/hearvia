@@ -36,7 +36,7 @@ public struct Transcript: Identifiable, Equatable, Sendable, Codable {
 
     public var summary: String {
         let minutes = max(1, Int(((endedAt ?? lines.last?.time ?? startedAt).timeIntervalSince(startedAt) / 60).rounded()))
-        return "\(minutes) min · \(LanguageName.pair(source: sourceLanguage, target: targetLanguage)) · \(engine.title)"
+        return String(localized: "\(minutes) min") + " · \(LanguageName.pair(source: sourceLanguage, target: targetLanguage)) · \(engine.title)"
     }
 
     public var text: String {

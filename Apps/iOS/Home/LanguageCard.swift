@@ -22,7 +22,7 @@ struct LanguageCard: View {
                     ForEach(OnDeviceLanguages.shared.spokenChoices(for: translator.engine, including: translator.sourceLanguage), id: \.self) { Text(LanguageName.of($0)).tag($0) }
                 }
             } label: {
-                LanguageField(caption: "Spoken", value: autoDetects || translator.sourceLanguage.isEmpty ? "Auto-detect" : LanguageName.short(translator.sourceLanguage), alignment: .leading)
+                LanguageField(caption: "Spoken", value: autoDetects || translator.sourceLanguage.isEmpty ? LanguageName.of("") : LanguageName.short(translator.sourceLanguage), alignment: .leading)
             }
             .disabled(autoDetects)
             Button(action: swap) {
@@ -57,7 +57,7 @@ struct LanguageCard: View {
 }
 
 private struct LanguageField: View {
-    let caption: String
+    let caption: LocalizedStringKey
     let value: String
     let alignment: HorizontalAlignment
 

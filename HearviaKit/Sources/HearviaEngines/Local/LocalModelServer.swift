@@ -131,11 +131,11 @@ public enum LocalModelError: LocalizedError, Equatable {
 
     public var errorDescription: String? {
         switch self {
-        case let .badAddress(address): "\"\(address)\" isn't a server address. Use one like http://localhost:11434/v1."
+        case let .badAddress(address): String(localized: "\"\(address)\" isn't a server address. Use one like http://localhost:11434/v1.")
         case let .unreachable(address, reason):
-            "Can't reach the local model server at \(address): \(reason) If it's on another machine, allow Hearvia under Privacy & Security → Local Network."
-        case let .rejected(status, body): "The local model server answered \(status)\(body.isEmpty ? "" : ": \(body)")"
-        case .noModel: "Choose a local model in Settings → Translators."
+            String(localized: "Can't reach the local model server at \(address): \(reason) If it's on another machine, allow Hearvia under Privacy & Security → Local Network.")
+        case let .rejected(status, body): String(localized: "The local model server answered \(status)") + (body.isEmpty ? "" : ": \(body)")
+        case .noModel: String(localized: "Choose a local model in Settings → Translators.")
         }
     }
 }

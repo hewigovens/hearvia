@@ -45,6 +45,7 @@ Apps/Shared/      DevSecrets.generated.swift (generated, optional in project.yml
 - **Theme**: on macOS `AppSettings.applyAppearance()` sets `NSApp.appearance`, so every window (menu bar popover and overlay included) resolves the palette's dynamic colors the same way; don't add per-view `preferredColorScheme` there. iOS views use `preferredColorScheme`.
 - **Shared look**: colors are `Color.hv*` tokens; buttons use `HVButtonStyle` or `ListenButton`. Never hard-code hex colors in an app view; the subtitle surfaces stay dark in both themes.
 - **Copy**: plain, outcome-first, no jargon ("Other apps keep playing").
+- **Localization**: English, Simplified and Traditional Chinese, Japanese and Korean. All UI text lives in `Apps/Shared/Localizable.xcstrings`, which all three targets include; kit views and `String(localized:)` in the kit resolve against the app bundle, so they use it too. Permission prompts are in each app's `InfoPlist.xcstrings`, Siri phrases in `Apps/iOS/AppShortcuts.xcstrings`. Catalog entries are manual (the kit's strings aren't extracted into an app target), so a new string needs its entry and four translations added by hand. SwiftUI literals localize; text built in code needs `String(localized:)`, and a custom view's fixed label parameter should be `LocalizedStringKey`. Traditional Chinese uses Taiwan wording (螢幕, 設定, 伺服器). The Developer tools screen stays English.
 
 ## Presentation Surfaces
 

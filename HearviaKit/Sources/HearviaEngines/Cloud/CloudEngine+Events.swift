@@ -81,7 +81,7 @@ extension CloudEngine {
             running = false
             pump?.cancel()
             pump = nil
-            continuation.yield(.failed(lastProblem.isEmpty ? "Lost the connection to \(provider)." : lastProblem))
+            continuation.yield(.failed(lastProblem.isEmpty ? String(localized: "Lost the connection to \(provider).") : lastProblem))
             continuation.finish()
             return
         }

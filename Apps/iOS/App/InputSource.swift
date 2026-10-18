@@ -4,12 +4,12 @@ enum InputSource: String, CaseIterable, Identifiable, Sendable {
         rawValue
     }
     var title: String {
-        self == .otherApps ? "Other apps" : "Microphone"
+        self == .otherApps ? String(localized: "Other apps") : String(localized: "Microphone")
     }
     var symbol: String {
         self == .otherApps ? "square.grid.2x2" : "mic"
     }
     var detail: String {
-        self == .otherApps ? "Safari, YouTube, Podcasts keep playing" : "Talks, lessons and people around you"
+        self == .otherApps ? String(localized: "Safari, YouTube, Podcasts keep playing") : String(localized: "Talks, lessons and people around you")
     }
 }

@@ -2,14 +2,14 @@ import Foundation
 
 public enum LanguageName {
     public static func of(_ code: String) -> String {
-        guard !code.isEmpty else { return "Auto-detect" }
+        guard !code.isEmpty else { return String(localized: "Auto-detect") }
         let native = short(code)
         let local = localized(code)
         return native.localizedCaseInsensitiveCompare(local) == .orderedSame ? native : "\(native) · \(local)"
     }
 
     public static func short(_ code: String) -> String {
-        guard !code.isEmpty else { return "Auto" }
+        guard !code.isEmpty else { return String(localized: "Auto") }
         return (Locale(identifier: code).localizedString(forIdentifier: code) ?? code).capitalized
     }
 

@@ -3,8 +3,8 @@ import SwiftUI
 
 struct PermissionRow: View {
     let symbol: String
-    let title: String
-    let detail: String
+    let title: LocalizedStringKey
+    let detail: LocalizedStringKey
     let isNext: Bool
 
     var body: some View {

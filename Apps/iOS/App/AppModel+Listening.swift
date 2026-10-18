@@ -23,10 +23,10 @@ extension AppModel {
     var errorMessage: String {
         let message = [translation.error, capture.error, micError].filter { !$0.isEmpty }.joined(separator: "\n")
         if message.contains("invalid_api_key") || message.contains("API key not valid") {
-            return "The \(translation.engine.title) key was rejected. Check it in Settings."
+            return String(localized: "The \(translation.engine.title) key was rejected. Check it in Settings.")
         }
         if message.contains("insufficient_quota") || message.contains("RESOURCE_EXHAUSTED") {
-            return "\(translation.engine.title) has no remaining quota for this key. Try the on-device translator."
+            return String(localized: "\(translation.engine.title) has no remaining quota for this key. Try the on-device translator.")
         }
         return message
     }
