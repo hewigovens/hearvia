@@ -8,7 +8,7 @@ extension OnDeviceSpeech {
     }
 
     /// Auto: withholds results until `LanguageContest` picks a recognizer, then forwards only the winner's, from the beginning. Undecided runs are finished every 3 s so there's something to score; a sentence the winner is unsure of reopens the contest.
-    static func detect(_ initial: [SpeechTranscriber], languages: [String], analyzer: SpeechAnalyzer,
+    static func detect(languages: [String], names: [ObjectIdentifier: String], analyzer: SpeechAnalyzer,
                        output: AsyncThrowingStream<SpeechResult, Error>.Continuation) async {
         let (events, sink) = AsyncStream<Event>.makeStream()
         var contest = LanguageContest(languages: languages)
@@ -24,8 +24,8 @@ extension OnDeviceSpeech {
                     } catch { sink.yield(.ended(id, error)) }
                 }
             }
-            for (module, language) in zip(initial, languages) {
-                listen(module, language)
+            for module in await analyzer.modules.compactMap({ $0 as? SpeechTranscriber }) {
+                listen(module, names[ObjectIdentifier(module)] ?? "")
             }
             group.addTask {
                 while !Task.isCancelled {

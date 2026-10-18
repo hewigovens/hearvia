@@ -14,9 +14,20 @@ final class OnDeviceSpeech: SpeechInput, @unchecked Sendable {
         try await self.init(transcribers: [OnDeviceModels.transcriber(language)], languages: [language])
     }
 
-    /// Auto: recognizes with each installed candidate until one is clearly right (see +Detection).
-    convenience init(detecting languages: [String]) async throws {
+    /// Auto: recognizes with each installed candidate until one is clearly right (see +Detection). The iPhone limits how many recognizers run at once (SFSpeechErrorDomain 16), so this drops candidates until it fits.
+    static func detecting(_ languages: [String]) async throws -> OnDeviceSpeech {
         guard !languages.isEmpty else { throw OnDeviceError.noSpeechModels }
+        var count = languages.count
+        while true {
+            do {
+                return try await OnDeviceSpeech(detecting: Array(languages.prefix(count)))
+            } catch let error as NSError where error.domain == "SFSpeechErrorDomain" && error.code == 16 && count > 1 {
+                count -= 1
+            }
+        }
+    }
+
+    private convenience init(detecting languages: [String]) async throws {
         var transcribers: [SpeechTranscriber] = []
         for language in languages {
             try await transcribers.append(OnDeviceModels.transcriber(language, confidence: true))
@@ -43,19 +54,27 @@ final class OnDeviceSpeech: SpeechInput, @unchecked Sendable {
         self.analyzer = analyzer
         let (results, output) = AsyncThrowingStream<SpeechResult, Error>.makeStream()
         self.results = results
+        // Detection reads the recognizers back from the analyzer rather than holding them, so the losers are freed once they're removed.
+        let single = transcribers.count == 1 ? transcribers[0] : nil
+        let names = Dictionary(uniqueKeysWithValues: zip(transcribers.map(ObjectIdentifier.init), languages))
         reader = Task {
-            if transcribers.count > 1 {
-                await Self.detect(transcribers, languages: languages, analyzer: analyzer, output: output)
+            guard let single else {
+                await Self.detect(languages: languages, names: names, analyzer: analyzer, output: output)
                 return
             }
             do {
-                for try await result in transcribers[0].results {
+                for try await result in single.results {
                     output.yield(SpeechResult(result, language: languages[0]))
                 }
                 output.finish()
             } catch { output.finish(throwing: error) }
         }
-        try await analyzer.start(inputSequence: stream)
+        do {
+            try await analyzer.start(inputSequence: stream)
+        } catch {
+            reader.cancel()
+            throw error
+        }
     }
 
     func append(_ chunk: Data) throws {
@@ -70,9 +89,10 @@ final class OnDeviceSpeech: SpeechInput, @unchecked Sendable {
         }
     }
 
+    /// Frees the recognizers right away: a stopped run's last words aren't wanted, and a restart needs the recognizers back.
     func finish() async {
         input.finish()
-        try? await analyzer.finalizeAndFinishThroughEndOfInput()
+        await analyzer.cancelAndFinishNow()
         reader.cancel()
     }
 }

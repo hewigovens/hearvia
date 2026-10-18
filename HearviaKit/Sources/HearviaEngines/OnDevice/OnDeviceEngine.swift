@@ -64,7 +64,7 @@ public final class OnDeviceEngine: TranslationEngine {
     }
 
     private static func detecting(strategy: String, translator: @escaping @Sendable (String) async throws -> Translate?) async throws -> OnDeviceModelSet {
-        var models = try await OnDeviceModelSet(speech: OnDeviceSpeech(detecting: OnDeviceModels.autoCandidates()), translate: nil, strategy: strategy)
+        var models = try await OnDeviceModelSet(speech: OnDeviceSpeech.detecting(OnDeviceModels.autoCandidates()), translate: nil, strategy: strategy)
         models.translator = translator
         return models
     }
@@ -102,8 +102,9 @@ public final class OnDeviceEngine: TranslationEngine {
     public func stop() async {
         guard running else { return }
         running = false
-        shutDown()
+        let speech = shutDown()
         continuation.finish()
+        await speech?.finish() // A restart needs the recognizers freed first.
     }
 
     private func listen(_ audio: AsyncStream<Data>, with models: OnDeviceModelSet) {
@@ -156,20 +157,20 @@ public final class OnDeviceEngine: TranslationEngine {
         guard running else { return }
         running = false
         continuation.yield(.log("ondevice_error", ["error": "\(error)"]))
-        shutDown()
+        if let speech = shutDown() {
+            Task { await speech.finish() }
+        }
         continuation.yield(.failed(error.localizedDescription))
         continuation.finish()
     }
 
-    private func shutDown() {
+    private func shutDown() -> (any SpeechInput)? {
         kick?.finish()
         kick = nil
         tasks.forEach { $0.cancel() }
         tasks = []
         translate = nil
-        if let speech {
-            self.speech = nil
-            Task { await speech.finish() }
-        }
+        defer { speech = nil }
+        return speech
     }
 }
