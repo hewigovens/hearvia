@@ -13,7 +13,9 @@ enum CoreAudioProperty {
         var a = address(selector)
         var size = UInt32(MemoryLayout<T>.size)
         var value = initial
-        try check(AudioObjectGetPropertyData(object, &a, 0, nil, &size, &value), "read \(selector)")
+        try withUnsafeMutableBytes(of: &value) { bytes in
+            try check(AudioObjectGetPropertyData(object, &a, 0, nil, &size, bytes.baseAddress!), "read \(selector)")
+        }
         return value
     }
 
