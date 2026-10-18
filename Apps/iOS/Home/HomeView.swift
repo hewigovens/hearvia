@@ -5,38 +5,21 @@ struct HomeView: View {
     let model: AppModel
     @Environment(AppSettings.self) private var settings
     @Environment(\.scenePhase) private var phase
+    @Environment(\.horizontalSizeClass) private var widthClass
+    @Environment(\.verticalSizeClass) private var heightClass
     @State private var presentation: HomePresentation?
 
     var body: some View {
-        let listening = model.listening
-        VStack(spacing: 16) {
-            HomeHeader(model: model) { presentation = $0 }
-            // The inline layer must stay on screen: PiP starts from it when the user leaves the app.
-            SubtitlePreview(pip: model.pip)
-                .aspectRatio(SubtitleRenderer.aspectRatio, contentMode: .fit)
-                .clipShape(.rect(cornerRadius: 22, style: .continuous))
-                .accessibilityLabel(listening ? "Live subtitles" : "Subtitle preview")
-            if listening {
-                ListeningSummary(model: model)
-                    .transition(.offset(y: 12).combined(with: .opacity))
-            }
-            Spacer(minLength: 0)
-            ListenButton(listening: listening, busy: model.busy, size: listening ? 56 : 96) {
-                Task { await model.toggleListening() }
-            }
-            .accessibilityIdentifier("listenToggle")
-            if !listening {
-                StartPrompt(model: model)
-                    .transition(.opacity)
-                Spacer(minLength: 0)
-                HomeTiles(model: model) { presentation = $0 }
-                    .transition(.offset(y: 40).combined(with: .opacity))
+        GeometryReader { proxy in
+            if model.listening, proxy.size.width > proxy.size.height {
+                CaptionMode(model: model)
+            } else if widthClass == .regular, heightClass == .regular {
+                wide
+            } else {
+                narrow
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.top, 8)
-        .padding(.bottom, 4)
-        .animation(.spring(duration: 0.55, bounce: 0.15), value: listening)
+        .animation(.spring(duration: 0.55, bounce: 0.15), value: model.listening)
         .background(Color.hvGround.ignoresSafeArea())
         .foregroundStyle(Color.hvText)
         .onAppear {
@@ -76,6 +59,86 @@ struct HomeView: View {
                 presentation = nil
             }
         }
+    }
+
+    private var narrow: some View {
+        let listening = model.listening
+        return VStack(spacing: 16) {
+            HomeHeader(model: model) { presentation = $0 }
+            preview
+            if listening {
+                ListeningSummary(model: model)
+                    .transition(.offset(y: 12).combined(with: .opacity))
+            }
+            Spacer(minLength: 0)
+            listenButton(size: listening ? 56 : 96)
+            if !listening {
+                StartPrompt(model: model)
+                    .transition(.opacity)
+                Spacer(minLength: 0)
+                HomeTiles(model: model) { presentation = $0 }
+                    .transition(.offset(y: 40).combined(with: .opacity))
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 8)
+        .padding(.bottom, 4)
+    }
+
+    /// The open iPhone Duo, or an iPad. Idle: a wide preview over the button and the tiles side by side. Listening: subtitles beside the live transcript.
+    private var wide: some View {
+        let listening = model.listening
+        return VStack(spacing: 20) {
+            HomeHeader(model: model) { presentation = $0 }
+            if listening {
+                HStack(alignment: .top, spacing: 24) {
+                    VStack(spacing: 16) {
+                        preview
+                        ListeningSummary(model: model)
+                        Spacer(minLength: 0)
+                        listenButton(size: 72)
+                    }
+                    .frame(maxWidth: .infinity)
+                    LiveTranscriptCard(translator: model.translation)
+                        .frame(maxWidth: .infinity)
+                }
+                .transition(.opacity)
+            } else {
+                preview
+                Spacer(minLength: 0)
+                HStack(alignment: .center, spacing: 32) {
+                    VStack(spacing: 12) {
+                        listenButton(size: 112)
+                        StartPrompt(model: model)
+                    }
+                    .frame(maxWidth: .infinity)
+                    HomeTiles(model: model) { presentation = $0 }
+                        .frame(maxWidth: .infinity)
+                }
+                .transition(.opacity)
+                Spacer(minLength: 0)
+            }
+        }
+        .padding(.horizontal, 24)
+        .padding(.top, 8)
+        .padding(.bottom, 16)
+        .frame(maxWidth: 1000)
+        .frame(maxWidth: .infinity)
+    }
+
+    /// The inline layer must stay on screen: PiP starts from it when the user leaves the app.
+    private var preview: some View {
+        SubtitlePreview(pip: model.pip)
+            .aspectRatio(SubtitleRenderer.aspectRatio, contentMode: .fit)
+            .clipShape(.rect(cornerRadius: 22, style: .continuous))
+            .accessibilityLabel(model.listening ? "Live subtitles" : "Subtitle preview")
+    }
+
+    private func listenButton(size: CGFloat) -> some View {
+        ListenButton(listening: model.listening, busy: model.busy, size: size) {
+            Task { await model.toggleListening() }
+        }
+        .accessibilityIdentifier("listenToggle")
     }
 
     /// Before onboarding is done the request is dropped rather than kept, so it can't start listening at some later, unexpected moment.

@@ -22,6 +22,13 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 - [ ] Leaving the app while listening starts the floating window ("Float when I leave Hearvia"), and Back to app doesn't stop listening.
 - [ ] Transcripts: a session is saved after Stop and after leaving the app mid-session; with Sync with iCloud on, a Mac session appears on the iPhone and a delete on one device removes it on the other (iPhone → Mac works, 2026-10-18).
 
+## Check on iPhone Duo (ships 2026-10-23)
+
+- Xcode 27.1 (final, 2026-10-15) is at /Applications/Xcode-27.1.app with the iOS 27.1 and 27.0 simulators and a "Hearvia Duo" simulator; build with `DEVELOPER_DIR=/Applications/Xcode-27.1.app/Contents/Developer` (the selected Xcode is still 27.0). Simulator screenshots come back black while the Mac is locked.
+- [ ] Move builds to Xcode 27.1 (the 27.1 SDK gives the full-screen layout on iPhone Duo): `sudo xcode-select -s /Applications/Xcode-27.1.app`, then TestFlight.
+- [ ] Open and closed: home switches between one and two columns; transcripts show as a split view when open; onboarding stays readable; uneven safe areas don't clip anything.
+- [ ] Standing half-folded (landscape) while listening shows full-screen captions; PiP still starts when leaving the app from caption mode.
+
 ## Check on Mac
 
 - [ ] Microphone source end to end in the sandboxed build, launched from Finder (from a terminal, macOS asks for the terminal's microphone access).

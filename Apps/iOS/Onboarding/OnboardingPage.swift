@@ -1,6 +1,11 @@
 import HearviaUI
 import SwiftUI
 
+/// Kept to a phone-like width on wide screens (iPad, the open iPhone Duo).
+enum OnboardingLayout {
+    static let readableWidth: CGFloat = 560
+}
+
 struct OnboardingPage<Content: View>: View {
     let symbol: String?
     let title: LocalizedStringKey
@@ -26,6 +31,8 @@ struct OnboardingPage<Content: View>: View {
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 48)
+            .frame(maxWidth: OnboardingLayout.readableWidth)
+            .frame(maxWidth: .infinity)
         }
     }
 }

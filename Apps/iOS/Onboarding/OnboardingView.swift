@@ -31,6 +31,7 @@ struct OnboardingView: View {
                 Text(page < lastPage ? "Continue" : "Get Started")
             }
             .buttonStyle(HVButtonStyle(.primary, height: 54))
+            .frame(maxWidth: OnboardingLayout.readableWidth)
             .padding()
             .accessibilityIdentifier("onboardingNext")
         }

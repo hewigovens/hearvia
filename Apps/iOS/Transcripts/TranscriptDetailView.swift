@@ -5,6 +5,8 @@ import SwiftUI
 struct TranscriptDetailView: View {
     let transcript: Transcript
     let delete: (() -> Void)?
+    /// Pops back to the list after a delete; a split view's detail column has nothing to pop to.
+    var closesOnDelete = true
     @Environment(\.dismiss) private var dismiss
     @State private var confirmingDelete = false
 
@@ -32,7 +34,9 @@ struct TranscriptDetailView: View {
         .confirmationDialog("Delete this transcript?", isPresented: $confirmingDelete, titleVisibility: .visible) {
             Button("Delete", role: .destructive) {
                 delete?()
-                dismiss()
+                if closesOnDelete {
+                    dismiss()
+                }
             }
         }
     }
