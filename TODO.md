@@ -7,7 +7,7 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 - Version control: jj only, in the default workspace (no sibling workspaces); `git` only for gaps jj doesn't cover, never index-writing commands. See `agents/version-control.md`. Codex sometimes works in the same checkout: check `jj op log` and `jj diff --stat` for edits you didn't make before describing or pushing.
 - `main` on `origin` (github.com/hewigovens/hearvia) is at mxvtsnvo (2026-10-18). `jj log -r 'main::@'` shows what isn't pushed yet; publish with `jj bookmark set main -r <rev>` and `jj git push --bookmark main`.
 - Checks: `just format lint build test` locally; CI (`.github/workflows/ci.yml`, GitHub's `xcode-27` image) runs the kit tests, SwiftFormat, SwiftLint and unsigned builds of both apps on every push and pull request.
-- Releases: `just testflight` / `just testflight-macos` upload to TestFlight (`docs/release.md`). Internal testers get every build; the external "Public Beta" group (public link, up to 1,000 testers) gets a build once it's added to the group, and the first build of each version needs Beta App Review. Latest: 0.1 (202610180934 iOS, 202610180937 Mac), 2026-10-18.
+- Releases: `just testflight` / `just testflight-macos` upload to TestFlight (`docs/release.md`). Internal testers get every build; the external "Public Beta" group (public link, up to 1,000 testers) gets a build once it's added to the group, and the first build of each version needs Beta App Review. Latest: 0.1 (202610180938 iOS, 202610180939 Mac, with the CJK UI), 2026-10-18.
 
 ## Next: TestFlight
 
