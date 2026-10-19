@@ -2,6 +2,7 @@
 """Frames raw App Store captures with a headline at Apple's required sizes.
 
 Usage: python3 scripts/frame_screenshots.py <raw-dir> [out-dir=build/appstore/en-US]
+       python3 scripts/frame_screenshots.py --bento [framed-dir=build/appstore/en-US] (the README's docs/screenshots/bento.png)
 
 Raw captures come from the Debug demo mode (`-hearvia.demo YES`, see docs/release.md):
   iphone-home.png, iphone-2-listening.png, iphone-3-captions.png (landscape), iphone-4-transcripts.png,
@@ -148,7 +149,27 @@ def scene_background(size):
     return image.filter(ImageFilter.GaussianBlur(160))
 
 
+def bento(framed, out, width=2400, gap=24):
+    """Framed shots in justified rows of rounded tiles, for the README."""
+    rows = [["mac-1.png", "iphone-1.png", "iphone-2.png"], ["duo-1.png", "iphone-3.png", "iphone-5.png", "duo-2.png"]]
+    rows = [[Image.open(framed / name).convert("RGB") for name in row] for row in rows]
+    heights = [(width - gap * (len(row) + 1)) / sum(im.width / im.height for im in row) for row in rows]
+    image = Image.new("RGB", (width, int(sum(heights) + gap * (len(rows) + 1))), GROUND)
+    y = gap
+    for row, height in zip(rows, heights):
+        x = gap
+        for shot in row:
+            tile = rounded(shot.resize((round(height * shot.width / shot.height), round(height)), Image.LANCZOS), 28)
+            image.paste(tile, (round(x), round(y)), tile)
+            x += tile.width + gap
+        y += height + gap
+    image.save(out, optimize=True)
+
+
 def main():
+    if sys.argv[1] == "--bento":
+        bento(Path(sys.argv[2] if len(sys.argv) > 2 else "build/appstore/en-US"), Path("docs/screenshots/bento.png"))
+        return
     raw = Path(sys.argv[1])
     out = Path(sys.argv[2] if len(sys.argv) > 2 else "build/appstore/en-US")
     out.mkdir(parents=True, exist_ok=True)

@@ -65,7 +65,7 @@ English only (Apple reuses them for every locale), framed with a headline by `sc
 - iPad 13" (2064×2752): an iPad Pro 13-inch (M5) simulator on iOS 27.0: listening, transcripts (split view), and the home screen after Float subtitles (real PiP).
 - iPhone Duo (2853×2007 landscape, 2007×2853 portrait; display type `IPHONE_DUO`): the "Hearvia Duo" simulator on iOS 27.1. The Duo ignores `-hearvia.demoLandscape`, so open, fold and rotate it in Device Hub: open in landscape for the book layout (`duo-1-book.png`), half-folded in portrait for tabletop (`duo-2-tabletop.png`). `-hearvia.demoPresent <sheet>` (for example `transcripts`) opens a sheet at launch.
 - Mac (2880×1800): run the Mac app with the same demo arguments plus `-hearvia.overlayVisible YES`, then capture the control window, the overlay and the Transcripts window with `screencapture -o -l <window id>`.
-- `xcrun simctl io <udid> screenshot <file>` saves full-resolution captures; then `python3 scripts/frame_screenshots.py <raw-dir>`.
+- `xcrun simctl io <udid> screenshot <file>` saves full-resolution captures; then `python3 scripts/frame_screenshots.py <raw-dir>`. `python3 scripts/frame_screenshots.py --bento` then lays the framed shots out as the README's `docs/screenshots/bento.png`.
 
 ## macOS: hardened runtime, sandbox, notarization
 

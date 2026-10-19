@@ -8,12 +8,7 @@
 **Live translated subtitles for anything you hear, on iPhone and Mac.** Hearvia listens to other apps' audio or the microphone and shows subtitles on top of whatever you're doing: videos, podcasts, calls, or the person in front of you.
 
 <p align="center">
-  <img src="docs/screenshots/iphone.png" alt="Hearvia on iPhone" width="260">
-  &nbsp;&nbsp;
-  <img src="docs/screenshots/mac.png" alt="Hearvia on Mac" width="420">
-</p>
-<p align="center">
-  <img src="docs/screenshots/mac-overlay.png" alt="The Mac subtitle overlay translating English speech into Chinese" width="720">
+  <img src="docs/screenshots/bento.png" alt="Hearvia on Mac, iPhone and iPhone Duo: subtitles over any app, a floating window, live transcripts, big captions and a choice of translators">
 </p>
 
 ## Features
@@ -31,7 +26,7 @@
 
 ## Get Hearvia
 
-Hearvia is in internal testing on TestFlight; a public beta is coming. It needs iOS 27 or macOS 26.4. Updates are on the [website](https://hewigovens.github.io/hearvia/).
+Join the public beta on [TestFlight](https://testflight.apple.com/join/GZddk344) for iPhone and Mac; version 1.0 is in App Store review. It needs iOS 27 or macOS 26.4. Updates are on the [website](https://hewigovens.github.io/hearvia/).
 
 To build it yourself, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
