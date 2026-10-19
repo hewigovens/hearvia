@@ -3,11 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hearvia</title>
-<meta name="description" content="Live translated subtitles for anything you hear, on iPhone and Mac: videos, podcasts, calls, or the person in front of you.">
+<title>Hearvia · Live translated subtitles on iPhone and Mac</title>
+<meta name="description" content="Live translated subtitles for anything you hear, on iPhone and Mac: videos, podcasts, calls, or the person in front of you. Free on-device translation, no accounts, no tracking.">
+<link rel="canonical" href="https://hearvia.hewig.dev/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Hearvia">
+<meta property="og:url" content="https://hearvia.hewig.dev/">
 <meta property="og:title" content="Hearvia">
 <meta property="og:description" content="Live translated subtitles for anything you hear, on iPhone and Mac.">
-<meta property="og:image" content="https://hewigovens.github.io/hearvia/icon.png">
+<meta property="og:image" content="https://hearvia.hewig.dev/screenshots/bento.png">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1465">
+<meta property="og:image:alt" content="Hearvia on Mac, iPhone and iPhone Duo showing translated subtitles over other apps">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Hearvia">
+<meta name="twitter:description" content="Live translated subtitles for anything you hear, on iPhone and Mac.">
+<meta name="twitter:image" content="https://hearvia.hewig.dev/screenshots/bento.png">
+<meta name="twitter:image:alt" content="Hearvia on Mac, iPhone and iPhone Duo showing translated subtitles over other apps">
 <meta name="theme-color" content="#0E1020" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#F7F7F5" media="(prefers-color-scheme: light)">
 <link rel="icon" href="favicon.png">
@@ -15,46 +27,173 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<main class="landing">
-  <header class="hero">
-    <img class="app-icon" src="icon.png" width="96" height="96" alt="">
-    <p class="name">Hearvia</p>
-    <h1>Live subtitles for anything you hear, in your language.</h1>
-    <p class="lede">Hearvia listens to other apps or the microphone and shows translated subtitles on top of whatever you're doing, on iPhone and Mac.</p>
-    <p class="availability"><span class="pill">Coming soon to TestFlight</span> <span class="platforms">iPhone and Mac · iOS 27 and macOS 26.4</span></p>
-  </header>
+<a class="skip" href="#features">Skip to features</a>
+<header class="site-header">
+  <div class="wrap site-header-inner">
+    <a class="brand" href="./"><img src="favicon.png" width="28" height="28" alt=""> Hearvia</a>
+    <nav aria-label="Main">
+      <a href="#features">Features</a>
+      <a href="#privacy">Privacy</a>
+      <a href="https://github.com/hewigovens/hearvia">GitHub</a>
+    </nav>
+  </div>
+</header>
 
-  <figure class="strip" aria-label="Example subtitles">
-    <p class="strip-pair" id="pair">English → 中文</p>
-    <p class="strip-original" id="original" lang="en">Tonight we're looking at how small changes in daily routines can improve sleep.</p>
-    <p class="strip-translation" id="translation" lang="zh-Hans">今晚，我们将探讨日常习惯中的小改变如何改善睡眠。</p>
-  </figure>
+<main>
+  <section class="hero wrap" aria-labelledby="title">
+    <img class="hero-icon" src="icon.png" width="112" height="112" alt="">
+    <h1 id="title">Hearvia</h1>
+    <p class="hero-pitch">Live translated subtitles for anything you hear, on iPhone and Mac.</p>
+    <p class="hero-lede">Hearvia listens to other apps or the microphone and shows subtitles on top of whatever you're doing: videos, podcasts, calls, or the person in front of you.</p>
+    <div class="actions">
+      <a class="button button-primary" href="https://testflight.apple.com/join/GZddk344">Join the beta on TestFlight</a>
+      <a class="button button-secondary" href="https://github.com/hewigovens/hearvia">
+        <svg aria-hidden="true" viewBox="0 0 16 16" width="18" height="18"><path fill="currentColor" d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.71 1.22 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.66 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0Z"/></svg>
+        View on GitHub
+      </a>
+    </div>
+    <p class="hero-note">Free public beta for iPhone and Mac. Needs iOS 27 or macOS 26.4. Version 1.0 is in App Store review.</p>
 
-  <section class="features">
-    <div class="feature">
-      <h2>Hears other apps</h2>
-      <p>On iPhone, a floating window shows subtitles over videos, podcasts and calls. On Mac, an overlay follows all system audio or just one app.</p>
-    </div>
-    <div class="feature">
-      <h2>Never gets in the way</h2>
-      <p>Hearvia doesn't play sound or pause anything. What you're watching keeps playing.</p>
-    </div>
-    <div class="feature">
-      <h2>Your choice of translator</h2>
-      <p>Free on-device translation that works offline, an experimental local model you run yourself, or OpenAI Realtime and Gemini Live with your own API key.</p>
-    </div>
-    <div class="feature">
-      <h2>Private by default</h2>
-      <p>No accounts, no analytics, no tracking. Transcripts stay on your device, or in your own iCloud if you turn on sync.</p>
+    <figure class="stage" aria-label="Example subtitles">
+      <div class="stage-scene" aria-hidden="true"></div>
+      <p class="stage-status"><span class="dot" aria-hidden="true"></span><span>Listening · <span id="pair">English → 中文</span></span></p>
+      <div class="caption">
+        <p class="caption-original" id="original" lang="en">Tonight we're looking at how small changes in daily routines can improve sleep.</p>
+        <p class="caption-translation" id="translation" lang="zh-Hans">今晚，我们将探讨日常习惯中的小改变如何改善睡眠。</p>
+      </div>
+    </figure>
+  </section>
+
+  <section id="features" class="section wrap" aria-labelledby="features-title">
+    <header class="section-head">
+      <p class="eyebrow">Features</p>
+      <h2 id="features-title">Subtitles wherever you listen</h2>
+      <p>On your Mac, your iPhone, or an iPhone Duo standing on the table. What you're watching keeps playing.</p>
+    </header>
+
+    <div class="bento">
+      <article class="card card-wide">
+        <div class="card-text">
+          <p class="eyebrow">Mac</p>
+          <h3>Subtitles over any app</h3>
+          <p>An overlay follows all system audio or just one app. Start and stop from the menu bar or the Dock.</p>
+        </div>
+        <div class="shot"><img src="screenshots/mac-overlay.webp" width="1200" height="583" loading="lazy" alt="A Mac playing a video, with a subtitle overlay at the bottom: the Japanese original in small grey text and the English translation in white below it."></div>
+      </article>
+
+      <article class="card card-tall">
+        <div class="card-text">
+          <p class="eyebrow">iPhone</p>
+          <h3>A floating window</h3>
+          <p>Subtitles float over videos, podcasts and calls. Hearvia doesn't play sound or pause anything.</p>
+        </div>
+        <div class="shot shot-phone"><img src="screenshots/iphone-floating.webp" width="638" height="1200" loading="lazy" alt="An iPhone home screen with a floating subtitle window showing a Japanese sentence and its English translation."></div>
+      </article>
+
+      <article class="card card-wide">
+        <div class="card-text">
+          <p class="eyebrow">Conversations</p>
+          <h3>Big captions for the room</h3>
+          <p>Turn your iPhone sideways and the subtitles fill the screen, easy to read across a table.</p>
+        </div>
+        <div class="shot"><img src="screenshots/iphone-captions.webp" width="1200" height="427" loading="lazy" alt="An iPhone in landscape filled with large white English subtitles under the Japanese original."></div>
+      </article>
+
+      <article class="card card-tall">
+        <div class="card-text">
+          <p class="eyebrow">Translators</p>
+          <h3>Free on device, or your own AI</h3>
+          <ul class="options">
+            <li><strong>On-device.</strong> Free, private, and works offline once the languages are downloaded.</li>
+            <li><strong>OpenAI Realtime and Gemini Live.</strong> The lowest lag, with your own API key.</li>
+            <li><strong>Local model.</strong> Experimental: a model you run yourself with Ollama, LM Studio or another OpenAI-compatible server.</li>
+          </ul>
+        </div>
+        <div class="shot shot-phone"><img src="screenshots/iphone-translators.webp" width="662" height="1200" loading="lazy" alt="The iPhone translator picker listing On-device, OpenAI Realtime, Gemini Live and Local LLM."></div>
+      </article>
+
+      <article class="card card-wide">
+        <div class="card-text">
+          <p class="eyebrow">iPhone Duo</p>
+          <h3>Two pages, two jobs</h3>
+          <p>Subtitles on one page and the transcript on the other. Half-fold it and stand it up for the room.</p>
+        </div>
+        <div class="shot"><img src="screenshots/iphone-duo.webp" width="1200" height="684" loading="lazy" alt="An unfolded iPhone Duo with live subtitles on the left page and the running transcript on the right page."></div>
+      </article>
+
+      <article class="card card-wide">
+        <div class="card-text">
+          <p class="eyebrow">Transcripts</p>
+          <h3>Every session, saved</h3>
+          <p>Read, copy or export any transcript later. They stay on your device, or sync through your own iCloud if you turn it on.</p>
+        </div>
+        <div class="shot"><img src="screenshots/mac-transcripts.webp" width="1200" height="579" loading="lazy" alt="The Mac transcript window: a list of past sessions on the left and one transcript with original and translated lines on the right."></div>
+      </article>
+
+      <article class="card card-small">
+        <h3>In your language</h3>
+        <ul class="chips" aria-label="App languages">
+          <li lang="en">English</li>
+          <li lang="zh-Hans">简体中文</li>
+          <li lang="zh-Hant">繁體中文</li>
+          <li lang="ja">日本語</li>
+          <li lang="ko">한국어</li>
+        </ul>
+        <p>Hearvia itself speaks all five, and subtitles can be in Traditional Chinese too.</p>
+      </article>
+
+      <article class="card card-small">
+        <h3>Never in the way</h3>
+        <p>Hearvia never plays sound or pauses what you're watching. It only listens while you've started it.</p>
+      </article>
+
+      <article class="card card-small">
+        <h3>Quick start</h3>
+        <p>On iPhone, start listening from a widget, Control Center, Shortcuts or the app icon.</p>
+      </article>
     </div>
   </section>
 
-  <footer class="footer">
-    <a href="privacy.html">Privacy Policy</a>
-    <a href="https://github.com/hewigovens/hearvia/issues">Support</a>
-    <a href="https://github.com/hewigovens/hearvia">Source on GitHub</a>
-  </footer>
+  <section id="privacy" class="section wrap" aria-labelledby="privacy-title">
+    <div class="privacy">
+      <svg class="privacy-icon" aria-hidden="true" viewBox="0 0 24 24" width="40" height="40"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M12 3 4.5 6v5.5c0 4.6 3.1 8.4 7.5 9.5 4.4-1.1 7.5-4.9 7.5-9.5V6L12 3Z"/><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="m8.8 12.2 2.2 2.2 4.2-4.6"/></svg>
+      <div>
+        <p class="eyebrow">Privacy</p>
+        <h2 id="privacy-title">Private by default</h2>
+        <ul class="checks">
+          <li>No accounts</li>
+          <li>No analytics</li>
+          <li>No tracking</li>
+        </ul>
+        <p>The on-device translator keeps everything on your iPhone or Mac. Audio goes to OpenAI or Google only if you pick their translator and add your own key. Transcripts stay on your device, or in your own iCloud if you turn on sync.</p>
+        <p><a class="link-arrow" href="privacy.html">Read the privacy policy</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section wrap cta" aria-labelledby="cta-title">
+    <img src="icon.png" width="64" height="64" alt="">
+    <h2 id="cta-title">Try the beta</h2>
+    <p>Free on TestFlight for iPhone and Mac. Needs iOS 27 or macOS 26.4.</p>
+    <div class="actions">
+      <a class="button button-primary" href="https://testflight.apple.com/join/GZddk344">Join the beta on TestFlight</a>
+      <a class="button button-secondary" href="https://github.com/hewigovens/hearvia/issues">Send feedback</a>
+    </div>
+  </section>
 </main>
+
+<footer class="site-footer">
+  <div class="wrap site-footer-inner">
+    <p class="footer-brand"><img src="favicon.png" width="20" height="20" alt=""> Hearvia</p>
+    <nav aria-label="Footer">
+      <a href="https://github.com/hewigovens/hearvia">GitHub</a>
+      <a href="https://github.com/hewigovens/hearvia/issues">Issues</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="https://hewig.dev">hewig.dev</a>
+    </nav>
+  </div>
+</footer>
+
 <script>
   // Cycles a few subtitle examples; stays on the first with Reduce Motion.
   // [pair, original, translation, original language, translation language]
@@ -62,20 +201,21 @@
     ["English → 中文", "Tonight we're looking at how small changes in daily routines can improve sleep.", "今晚，我们将探讨日常习惯中的小改变如何改善睡眠。", "en", "zh-Hans"],
     ["English → 日本語", "Let's start with where we landed last quarter.", "まずは前四半期の結果から始めましょう。", "en", "ja"],
     ["日本語 → English", "次の電車は10分遅れて到着します。", "The next train will arrive 10 minutes late.", "ja", "en"],
-    ["Español → English", "¿Dónde está la estación más cercana?", "Where is the nearest station?", "es", "en"]
+    ["Español → English", "¿Dónde está la estación más cercana?", "Where is the nearest station?", "es", "en"],
+    ["한국어 → English", "오늘 회의는 3시에 시작합니다.", "Today's meeting starts at three.", "ko", "en"]
   ];
-  const strip = document.querySelector(".strip");
+  const caption = document.querySelector(".caption");
   const fields = ["pair", "original", "translation"].map((id) => document.getElementById(id));
   if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
     let index = 0;
     setInterval(() => {
-      strip.classList.add("fading");
+      caption.classList.add("fading");
       setTimeout(() => {
         index = (index + 1) % examples.length;
         fields.forEach((field, i) => { field.textContent = examples[index][i]; });
         fields[1].lang = examples[index][3];
         fields[2].lang = examples[index][4];
-        strip.classList.remove("fading");
+        caption.classList.remove("fading");
       }, 350);
     }, 4200);
   }

@@ -26,7 +26,7 @@
 
 ## Get Hearvia
 
-Join the public beta on [TestFlight](https://testflight.apple.com/join/GZddk344) for iPhone and Mac; version 1.0 is in App Store review. It needs iOS 27 or macOS 26.4. Updates are on the [website](https://hewigovens.github.io/hearvia/).
+Join the public beta on [TestFlight](https://testflight.apple.com/join/GZddk344) for iPhone and Mac; version 1.0 is in App Store review. It needs iOS 27 or macOS 26.4. Updates are on the [website](https://hearvia.hewig.dev/).
 
 To build it yourself, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
