@@ -8,7 +8,7 @@ Load before changing package boundaries, engines, or what the app shells own.
 HearviaKit (one Swift package, one `HearviaKit` product, five modules)
   HearviaCore     Foundation only: Languages, LanguageName, EngineKind, TranslatorStatus, Transcript + TranscriptLine,
                   SentenceSegmenter, SubtitleText, SecretStore + KeychainStore, RetiredFiles (removes old model files)
-  HearviaAudio    AudioFeed (capture → 200 ms PCM16 chunks), PCM16Resampler, MicrophoneCapture, LevelMeter
+  HearviaAudio    AudioFeed (capture → 200 ms PCM16 chunks), PCM16Resampler, MicrophoneCapture, LevelMeter + LevelHistory (level bars)
   HearviaEngines  TranslationEngine protocol + EngineUpdate;
                   Cloud/     CloudEngine (+Audio: buffering, silence pause, rotation; +Events), CloudTiming,
                              TranslationSocket protocol + SocketEvent: one engine for every streaming provider
@@ -19,11 +19,12 @@ HearviaKit (one Swift package, one `HearviaKit` product, five modules)
                   Local/     LocalModelServer: OpenAI-compatible chat server (Ollama, LM Studio, Unsloth Studio); the
                              `.local` engine is OnDeviceEngine.localModel, speech on device and text to the server
   HearviaSession  LiveTranslator (+Run, +Status, +Demo for screenshots): preferences, one engine run at a time, observable
-                  text/transcript/TranslatorStats;
+                  text/transcript/TranslatorStats; TranslatorSetup (missing key, local model or on-device models);
                   TranscriptHistory: one JSON file per finished session in Application Support/Hearvia/Transcripts, or
                   the iCloud container's Transcripts folder while syncsWithICloud is on (+iCloud: NSMetadataQuery, coordinated writes)
   HearviaUI       palette, Appearance, HearviaMark/Icon, HVButtonStyle, ListenButton, ControlTile, LevelBars,
-                  TranscriptList, OnDeviceModelsView, OnDeviceLanguages (picker lists per engine), LocalModelSettingsView
+                  TranscriptList, OnDeviceModelsView, OnDeviceLanguages (picker lists per engine), LiveTranslator+Pickers
+                  (language picker bindings and choices), LocalModelSettingsView
   hearvia-translate  CLI over Audio + Engines: streams an audio file through any engine
 Apps/iOS     SwiftUI shell: ScreenCaptureKit / mic capture, PiP subtitle strip, home, onboarding, settings
 Apps/macOS   SwiftUI shell: Core Audio process tap / mic capture, overlay panel, control window, menu bar,

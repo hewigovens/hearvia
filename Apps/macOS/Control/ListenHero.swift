@@ -30,7 +30,7 @@ struct ListenHero: View {
             }
             if listening {
                 Spacer(minLength: 0)
-                LevelBars(levels: model.levels)
+                LevelBars(levels: model.levels.peaks)
                     .scaleEffect(0.66, anchor: .trailing)
                     .frame(width: 52, alignment: .trailing)
             }

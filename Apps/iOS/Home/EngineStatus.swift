@@ -6,29 +6,27 @@ import SwiftUI
 struct EngineStatus: View {
     let translator: LiveTranslator
     let openSettings: () -> Void
-    @State private var ready: Bool?
+    @State private var checked: TranslatorSetup?
 
     var body: some View {
         Group {
-            if translator.engine.isCloud {
-                if translator.apiKey.isEmpty {
-                    Button(action: openSettings) {
-                        Label("Add a \(translator.engine.title) key in Settings", systemImage: "key")
-                    }
-                    .font(.footnote)
-                } else {
-                    readyLine("Using your \(translator.engine.title) key")
+            switch translator.knownSetup ?? checked {
+            case .needsKey:
+                Button(action: openSettings) {
+                    Label("Add a \(translator.engine.title) key in Settings", systemImage: "key")
                 }
-            } else if translator.engine == .local, translator.localModel.isEmpty {
+                .font(.footnote)
+            case .needsLocalModel:
                 Button(action: openSettings) {
                     Label("Choose a local model in Settings", systemImage: "desktopcomputer")
                 }
                 .font(.footnote)
-            } else if ready == true {
-                readyLine(translator.engine == .local ? "Using \(translator.localModel)" : "Speech and translation models ready")
-            } else if ready == nil {
+            case .ready:
+                Label { Text(readyText) } icon: { Image(systemName: "checkmark.circle.fill").foregroundStyle(Color.hvReady) }
+                    .font(.footnote).foregroundStyle(Color.hvMuted)
+            case nil:
                 Label("Checking on-device models…", systemImage: "hourglass").font(.footnote).foregroundStyle(Color.hvMuted)
-            } else {
+            case .needsModels:
                 VStack(alignment: .leading, spacing: 8) {
                     OnDeviceModelsView(source: translator.sourceLanguage, target: translator.targetLanguage,
                                        translates: translator.engine == .onDevice)
@@ -41,14 +39,16 @@ struct EngineStatus: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 4)
         .task(id: translator.readinessKey) {
-            ready = nil
-            guard !translator.engine.isCloud else { return }
-            ready = await translator.isReady()
+            checked = nil
+            checked = await translator.checkSetup()
         }
     }
 
-    private func readyLine(_ text: LocalizedStringKey) -> some View {
-        Label { Text(text) } icon: { Image(systemName: "checkmark.circle.fill").foregroundStyle(Color.hvReady) }
-            .font(.footnote).foregroundStyle(Color.hvMuted)
+    private var readyText: LocalizedStringKey {
+        switch translator.engine {
+        case .realtime, .gemini: "Using your \(translator.engine.title) key"
+        case .local: "Using \(translator.localModel)"
+        case .onDevice: "Speech and translation models ready"
+        }
     }
 }

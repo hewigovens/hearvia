@@ -5,7 +5,7 @@ import SwiftUI
 
 struct ControlTiles: View {
     @Bindable var model: AppModel
-    @State private var ready: Bool?
+    let ready: Bool?
 
     private var translator: LiveTranslator {
         model.translator
@@ -27,7 +27,6 @@ struct ControlTiles: View {
         .buttonStyle(.plain)
         .menuIndicator(.hidden)
         .fixedSize(horizontal: false, vertical: true)
-        .task(id: translator.readinessKey) { ready = await translator.isReady() }
     }
 
     @ViewBuilder private var sourceChoices: some View {
@@ -57,29 +56,21 @@ struct ControlTiles: View {
         if translator.engine.detectsSpokenLanguage {
             Text("Spoken language: detected automatically")
         } else {
-            Picker("Spoken", selection: Binding(get: { translator.sourceLanguage },
-                                                set: { language in Task { await translator.setSourceLanguage(language) } })) {
-                ForEach(OnDeviceLanguages.shared.spokenChoices(for: translator.engine, including: translator.sourceLanguage), id: \.self) {
+            Picker("Spoken", selection: translator.sourceLanguageSelection) {
+                ForEach(translator.spokenChoices, id: \.self) {
                     Text(LanguageName.of($0)).tag($0)
                 }
             }
             .pickerStyle(.menu)
         }
-        Picker("Subtitles", selection: Binding(get: { translator.targetLanguage },
-                                               set: { language in Task { await translator.setTargetLanguage(language) } })) {
-            ForEach(OnDeviceLanguages.shared.subtitleChoices(for: translator.engine, including: translator.targetLanguage), id: \.self) {
+        Picker("Subtitles", selection: translator.targetLanguageSelection) {
+            ForEach(translator.subtitleChoices, id: \.self) {
                 Text(LanguageName.of($0)).tag($0)
             }
         }
         .pickerStyle(.menu)
-        if !translator.engine.detectsSpokenLanguage, !translator.sourceLanguage.isEmpty {
-            Button("Swap Languages", systemImage: "arrow.left.arrow.right") {
-                let spoken = translator.sourceLanguage, target = translator.targetLanguage
-                Task {
-                    await translator.setSourceLanguage(target)
-                    await translator.setTargetLanguage(spoken)
-                }
-            }
+        if translator.canSwapLanguages {
+            Button("Swap Languages", systemImage: "arrow.left.arrow.right") { Task { await translator.swapLanguages() } }
         }
     }
 

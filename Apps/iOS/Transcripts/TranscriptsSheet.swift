@@ -6,7 +6,7 @@ import SwiftUI
 struct TranscriptsSheet: View {
     let translator: LiveTranslator
     private var saved: [Transcript] {
-        translator.history.transcripts.filter { !translator.isActive || $0.id != translator.transcript.id } // In progress is "Now".
+        translator.savedTranscripts
     }
 
     @Environment(\.horizontalSizeClass) private var widthClass

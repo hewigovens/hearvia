@@ -4,28 +4,26 @@ import SwiftUI
 
 struct EngineStatusLine: View {
     let translator: LiveTranslator
-    @State private var modelsMissing = false
+    let setup: TranslatorSetup?
 
     var body: some View {
-        Group {
-            if translator.engine.isCloud, translator.apiKey.isEmpty {
-                SettingsLink { Label("Add a \(translator.engine.title) key in Settings", systemImage: "key") }
-                    .buttonStyle(.link).font(.caption)
-            } else if translator.engine == .local, translator.localModel.isEmpty {
-                SettingsLink { Label("Choose a local model in Settings", systemImage: "desktopcomputer") }
-                    .buttonStyle(.link).font(.caption)
-            } else if !translator.engine.isCloud, modelsMissing {
-                VStack(alignment: .leading, spacing: 6) {
-                    OnDeviceModelsView(source: translator.sourceLanguage, target: translator.targetLanguage,
-                                       translates: translator.engine == .onDevice)
-                }
-                .font(.caption)
-                .padding(10)
-                .background(Color.hvSurface, in: .rect(cornerRadius: 8))
+        switch setup {
+        case .needsKey:
+            SettingsLink { Label("Add a \(translator.engine.title) key in Settings", systemImage: "key") }
+                .buttonStyle(.link).font(.caption)
+        case .needsLocalModel:
+            SettingsLink { Label("Choose a local model in Settings", systemImage: "desktopcomputer") }
+                .buttonStyle(.link).font(.caption)
+        case .needsModels:
+            VStack(alignment: .leading, spacing: 6) {
+                OnDeviceModelsView(source: translator.sourceLanguage, target: translator.targetLanguage,
+                                   translates: translator.engine == .onDevice)
             }
-        }
-        .task(id: translator.readinessKey) {
-            modelsMissing = translator.engine.isCloud ? false : await !translator.isReady()
+            .font(.caption)
+            .padding(10)
+            .background(Color.hvSurface, in: .rect(cornerRadius: 8))
+        case .ready, nil:
+            EmptyView()
         }
     }
 }

@@ -11,10 +11,6 @@ struct TranscriptView: View {
         translator.history
     }
 
-    private var saved: [Transcript] {
-        history.transcripts.filter { !translator.isActive || $0.id != translator.transcript.id } // In progress is "Now".
-    }
-
     private var shown: Transcript? {
         selection == translator.transcript.id && !translator.transcript.isEmpty ? translator.transcript
             : history.transcripts.first { $0.id == selection }
@@ -27,7 +23,7 @@ struct TranscriptView: View {
                     Section("Now") { row(translator.transcript) }
                 }
                 Section("Earlier") {
-                    ForEach(saved) { transcript in
+                    ForEach(translator.savedTranscripts) { transcript in
                         row(transcript).contextMenu {
                             Button("Delete", role: .destructive) { history.delete(transcript) }
                         }

@@ -2,28 +2,48 @@ import HearviaCore
 import HearviaEngines
 
 public extension LiveTranslator {
-    func isReady() async -> Bool {
-        switch engine {
-        case .realtime, .gemini: !apiKey.isEmpty
-        case .onDevice: await OnDeviceModels.isReady(from: sourceLanguage, to: targetLanguage)
-        case .local:
-            if localModel.isEmpty {
-                false
-            } else if sourceLanguage.isEmpty {
-                await !OnDeviceModels.autoCandidates().isEmpty
-            } else {
-                await OnDeviceModels.speech(sourceLanguage) == .installed
-            }
+    /// Known without asking the system; nil while it depends on installed models, which `checkSetup()` looks up.
+    var knownSetup: TranslatorSetup? {
+        if engine.isCloud {
+            apiKey.isEmpty ? .needsKey : .ready
+        } else if engine == .local, localModel.isEmpty {
+            .needsLocalModel
+        } else {
+            nil
         }
     }
 
-    /// Changes whenever `isReady()` might; use it as a `.task(id:)`.
+    func checkSetup() async -> TranslatorSetup {
+        if let knownSetup {
+            return knownSetup
+        }
+        let installed = if engine == .onDevice {
+            await OnDeviceModels.isReady(from: sourceLanguage, to: targetLanguage)
+        } else if sourceLanguage.isEmpty {
+            await !OnDeviceModels.autoCandidates().isEmpty
+        } else {
+            await OnDeviceModels.speech(sourceLanguage) == .installed
+        }
+        return installed ? .ready : .needsModels
+    }
+
+    /// Changes whenever `checkSetup()` might; use it as a `.task(id:)`.
     var readinessKey: String {
         "\(engine.rawValue)>\(sourceLanguage)>\(targetLanguage)>\(apiKey.isEmpty)>\(localModel)"
     }
 
     var languagePair: String {
         LanguageName.pair(source: engine.detectsSpokenLanguage ? "" : sourceLanguage, target: targetLanguage)
+    }
+
+    /// One line for while listening; each app names its own audio source.
+    func summary(listeningTo source: String) -> String {
+        "\(source) · \(languagePair) · \(engine.shortTitle)"
+    }
+
+    /// The history without the session in progress, which the transcript lists show as "Now".
+    var savedTranscripts: [Transcript] {
+        history.transcripts.filter { !isActive || $0.id != transcript.id }
     }
 
     /// The large subtitle line and, when `showsSecond`, the small one above it: the translation is large unless `originalLarge`.

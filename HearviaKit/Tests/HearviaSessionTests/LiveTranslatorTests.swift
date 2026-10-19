@@ -233,4 +233,29 @@ struct LiveTranslatorTests {
         #expect(try #require(harness.engines.first).stopped)
         #expect(translator.status == .stopped && !translator.isActive)
     }
+
+    @Test func setupNamesWhatIsMissingBeforeAskingTheSystem() async {
+        let harness = Harness(apiKey: nil)
+        let translator = harness.translator
+        await translator.setEngine(.realtime)
+        #expect(await translator.checkSetup() == .needsKey)
+        translator.openAIKey = "sk-test"
+        #expect(await translator.checkSetup() == .ready)
+        await translator.setEngine(.local)
+        #expect(await translator.checkSetup() == .needsLocalModel)
+        translator.localModel = "qwen3:8b"
+        #expect(translator.knownSetup == nil) // depends on installed speech models
+    }
+
+    @Test func savedTranscriptsLeaveOutTheSessionInProgress() async throws {
+        let harness = Harness()
+        let translator = harness.translator
+        await translator.start()
+        try #require(harness.engines.first).send(.sentence(source: "Bonjour.", translation: "Hello."))
+        await harness.settle()
+        translator.saveTranscript()
+        #expect(translator.history.transcripts.count == 1 && translator.savedTranscripts.isEmpty)
+        await translator.stop()
+        #expect(translator.savedTranscripts.map(\.id) == [translator.transcript.id])
+    }
 }

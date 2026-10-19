@@ -8,6 +8,13 @@
             UserDefaults.standard.bool(forKey: "hearvia.demo")
         }
 
+        /// 12:34 on the apps' elapsed-time clock.
+        static var demoListeningSince: Date {
+            .now.addingTimeInterval(-demoElapsed)
+        }
+
+        private static let demoElapsed: TimeInterval = 754
+
         func loadDemo() {
             // 9:41, matching the status bar in Apple's screenshots.
             let now = Calendar.current.date(bySettingHour: 9, minute: 41, second: 0, of: .now) ?? .now
@@ -21,7 +28,7 @@
                 ("毎晩同じ時間に寝た人は、平均で20分早く眠りにつきました。", "People who went to bed at the same time every night fell asleep 20 minutes faster."),
                 ("寝る1時間前に画面を消すことも役に立ちました。", "Turning off screens an hour before bed helped too.")
             ]
-            transcript = Self.demoTranscript(podcast, language: "ja", startedAt: now.addingTimeInterval(-754), endedAt: now)
+            transcript = Self.demoTranscript(podcast, language: "ja", startedAt: now.addingTimeInterval(-Self.demoElapsed), endedAt: now)
             source = podcast.suffix(2).map(\.0).joined()
             translation = podcast.suffix(2).map(\.1).joined(separator: " ")
             status = .translating(onDevice: true)

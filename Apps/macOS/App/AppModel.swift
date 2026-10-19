@@ -13,13 +13,11 @@ final class AppModel {
     var capturing = false
     var capturingSince: Date?
     var captureError = ""
-    var levels = [Float](repeating: 0, count: 10)
+    let levels = LevelHistory()
 
     @ObservationIgnored private var overlay: OverlayPanel?
     @ObservationIgnored let tap = ProcessTapCapture()
     @ObservationIgnored let microphone = MicrophoneCapture()
-    @ObservationIgnored let meter = LevelMeter()
-    @ObservationIgnored var meterTimer: Timer?
     /// Set once the menu bar label appears; opening windows needs SwiftUI's `openWindow`.
     @ObservationIgnored var openWindow: ((String) -> Void)?
     let verbose = CommandLine.arguments.contains("--verbose")
@@ -29,7 +27,7 @@ final class AppModel {
         RetiredFiles.remove()
         refreshProcesses()
         source = CaptureSource(launchArguments: CommandLine.arguments, processes: processes) ?? source
-        followShowsOriginal()
+        translator.transcribeSource { [settings] in settings.needsOriginal }
         translator.onLog = { [verbose] name, fields in
             guard verbose else { return }
             Self.emit(name, fields)
@@ -43,8 +41,8 @@ final class AppModel {
         #if DEBUG
             if LiveTranslator.demoRequested { // App Store screenshots (see LiveTranslator+Demo).
                 capturing = true
-                capturingSince = .now.addingTimeInterval(-754)
-                levels = [0.2, 0.5, 0.35, 0.7, 0.45, 0.6, 0.3, 0.55, 0.4, 0.65]
+                capturingSince = LiveTranslator.demoListeningSince
+                levels.loadDemo()
                 translator.loadDemo()
             }
         #endif
@@ -65,15 +63,6 @@ final class AppModel {
         } onChange: { [weak self] in
             Task { @MainActor in self?.applyOverlaySettings() }
         }
-    }
-
-    private func followShowsOriginal() {
-        let shows = withObservationTracking {
-            settings.needsOriginal
-        } onChange: { [weak self] in
-            Task { @MainActor in self?.followShowsOriginal() }
-        }
-        Task { await translator.setTranscribesSource(shows) }
     }
 
     /// Debug builds may take keys from the environment or `.env`; Release users paste their own.

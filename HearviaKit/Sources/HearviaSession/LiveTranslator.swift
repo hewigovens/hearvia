@@ -121,6 +121,19 @@ public final class LiveTranslator {
         }
     }
 
+    /// Auto ("") and the cloud engines have no chosen spoken language to swap.
+    public var canSwapLanguages: Bool {
+        !engine.detectsSpokenLanguage && !sourceLanguage.isEmpty
+    }
+
+    /// Traditional Chinese is a subtitle language only; it is spoken as "zh".
+    public func swapLanguages() async {
+        guard canSwapLanguages else { return }
+        let spoken = sourceLanguage
+        await setSourceLanguage(targetLanguage == Languages.traditionalChinese ? "zh" : targetLanguage)
+        await setTargetLanguage(spoken)
+    }
+
     public func setEngine(_ engine: EngineKind) async {
         guard engine != self.engine else { return }
         self.engine = engine
@@ -137,6 +150,14 @@ public final class LiveTranslator {
         if engine.isCloud {
             await restartIfActive()
         }
+    }
+
+    /// Keeps `transcribesSource` in step with an observable setting, such as the apps' "show original".
+    public func transcribeSource(following needsSource: @escaping @MainActor @Sendable () -> Bool) {
+        let needs = withObservationTracking(needsSource) { [weak self] in
+            Task { @MainActor in self?.transcribeSource(following: needsSource) }
+        }
+        Task { await setTranscribesSource(needs) }
     }
 
     private func restartIfActive() async {

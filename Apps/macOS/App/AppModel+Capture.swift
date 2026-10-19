@@ -5,7 +5,7 @@ extension AppModel {
         guard !capturing else { return }
         captureError = ""
         let feed = translator.feed
-        let meter = meter
+        let meter = levels.meter
         let sink: @Sendable (AVAudioPCMBuffer) -> Void = { buffer in
             meter.measure(buffer)
             feed.push(buffer)
@@ -24,11 +24,7 @@ extension AppModel {
         capturing = true
         capturingSince = Date()
         Self.emit("capture_started", ["source": source.label, "format": tap.format.map { "\($0)" } ?? "mic"])
-        meterTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
-            Task { @MainActor in guard let self else { return }
-                self.levels = Array(self.levels.dropFirst()) + [self.meter.take()]
-            }
-        }
+        levels.start()
         await translator.start()
     }
 
@@ -36,9 +32,7 @@ extension AppModel {
         guard capturing else { return }
         tap.stop()
         microphone.stop()
-        meterTimer?.invalidate()
-        meterTimer = nil
-        levels = levels.map { _ in 0 }
+        levels.stop()
         capturing = false
         capturingSince = nil
         await translator.stop()

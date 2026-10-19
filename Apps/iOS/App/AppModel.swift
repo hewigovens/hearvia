@@ -23,7 +23,7 @@ final class AppModel {
     var micRunning = false
     var micStarting = false
     var micError = ""
-    var levels = [Float](repeating: 0, count: 10)
+    let levels = LevelHistory()
 
     // MARK: Developer tools
 
@@ -34,8 +34,6 @@ final class AppModel {
     var observationNote = ""
 
     @ObservationIgnored let microphone = MicrophoneCapture()
-    @ObservationIgnored let meter = LevelMeter()
-    @ObservationIgnored var levelTimer: Timer?
     @ObservationIgnored var wasListening = false
     @ObservationIgnored var renderQueued = false
     @ObservationIgnored private var ticking = false
@@ -51,7 +49,7 @@ final class AppModel {
         pip = PiPController(log: log, session: session)
         translation = LiveTranslator(fallbackKeys: [.realtime: DevSecrets.openAIKey, .gemini: DevSecrets.geminiKey])
         capture.probe.translationFeed = translation.feed
-        capture.probe.levelMeter = meter
+        capture.probe.levelMeter = levels.meter
         if let label = ProcessInfo.processInfo.environment["HEARVIA_EXPERIMENT"] {
             observationSource = label
         }
@@ -69,26 +67,17 @@ final class AppModel {
         translation.onTextChange = { [weak self] in self?.scheduleRender() }
         translation.onLog = { [log] name, fields in log.event(name, fields) }
         pip.onClose = { [weak self] in Task { await self?.stopListening() } }
-        followShowsOriginal()
+        translation.transcribeSource { [settings] in settings.needsOriginal }
         #if DEBUG
             if LiveTranslator.demoRequested {
                 demo = true
                 wasListening = true
-                listeningSince = .now.addingTimeInterval(-754)
-                levels = [0.2, 0.5, 0.35, 0.7, 0.45, 0.6, 0.3, 0.55, 0.4, 0.65]
+                listeningSince = LiveTranslator.demoListeningSince
+                levels.loadDemo()
                 translation.loadDemo()
                 scheduleRender()
             }
         #endif
-    }
-
-    private func followShowsOriginal() {
-        let shows = withObservationTracking {
-            settings.needsOriginal
-        } onChange: { [weak self] in
-            Task { @MainActor in self?.followShowsOriginal() }
-        }
-        Task { await translation.setTranscribesSource(shows) }
     }
 
     func tick() async {

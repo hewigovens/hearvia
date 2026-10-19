@@ -27,6 +27,6 @@ struct HomeTiles: View {
         }
         .buttonStyle(.plain)
         .fixedSize(horizontal: false, vertical: true)
-        .task(id: translator.readinessKey) { ready = await translator.isReady() }
+        .task(id: translator.readinessKey) { ready = await translator.checkSetup() == .ready }
     }
 }

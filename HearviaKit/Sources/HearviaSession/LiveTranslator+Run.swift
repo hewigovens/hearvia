@@ -6,14 +6,15 @@ import HearviaEngines
 public extension LiveTranslator {
     func start() async {
         guard !isActive else { return }
-        guard !engine.isCloud || !apiKey.isEmpty else {
+        switch knownSetup {
+        case .needsKey:
             status = .needsAPIKey
             error = String(localized: "Add an API key for \(engine.title) in Settings, or switch to on-device translation.")
             return
-        }
-        guard engine != .local || !localModel.isEmpty else {
+        case .needsLocalModel:
             error = LocalModelError.noModel.localizedDescription
             return
+        default: break
         }
         isActive = true
         error = ""

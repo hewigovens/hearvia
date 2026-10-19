@@ -1,3 +1,4 @@
+import HearviaSession
 import HearviaUI
 import SwiftUI
 
@@ -5,21 +6,22 @@ struct ControlPanel: View {
     let model: AppModel
     let inMenuBar: Bool
     @Environment(\.openWindow) private var openWindow
+    @State private var checked: TranslatorSetup?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             header
             ListenHero(model: model)
             if model.capturing {
-                Text("\(model.source.label) · \(model.translator.languagePair) · \(model.translator.engine.shortTitle)")
+                Text(model.translator.summary(listeningTo: model.source.label))
                     .font(.caption).foregroundStyle(Color.hvMuted).lineLimit(1)
                     .frame(maxWidth: .infinity)
                     .transition(.opacity)
             } else {
-                ControlTiles(model: model)
+                ControlTiles(model: model, ready: checked.map { $0 == .ready })
                     .transition(.offset(y: -30).combined(with: .opacity))
             }
-            EngineStatusLine(translator: model.translator)
+            EngineStatusLine(translator: model.translator, setup: model.translator.knownSetup ?? checked)
             ForEach([model.captureError, model.translator.displayError].filter { !$0.isEmpty }, id: \.self) { error in
                 Text(error).font(.caption).foregroundStyle(.red)
             }
@@ -37,6 +39,7 @@ struct ControlPanel: View {
         .foregroundStyle(Color.hvText)
         .tint(.hvAccent)
         .onAppear { model.refreshProcesses() }
+        .task(id: model.translator.readinessKey) { checked = await model.translator.checkSetup() }
     }
 
     private var header: some View {

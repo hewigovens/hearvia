@@ -7,11 +7,11 @@ struct ListeningSummary: View {
     var body: some View {
         VStack(spacing: 16) {
             HStack(spacing: 10) {
-                LevelBars(levels: model.levels)
+                LevelBars(levels: model.levels.peaks)
                     .scaleEffect(0.75, anchor: .leading)
                     .frame(width: 60, alignment: .leading)
                 if model.errorMessage.isEmpty {
-                    Text("\(model.settings.input.title) · \(model.translation.languagePair) · \(model.translation.engine.shortTitle)")
+                    Text(model.translation.summary(listeningTo: model.settings.input.title))
                         .foregroundStyle(Color.hvMuted)
                 } else {
                     Text(model.errorMessage).foregroundStyle(.red)

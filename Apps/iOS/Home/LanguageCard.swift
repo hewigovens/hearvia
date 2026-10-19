@@ -10,34 +10,28 @@ struct LanguageCard: View {
         translator.engine.detectsSpokenLanguage
     }
 
-    private var canSwap: Bool {
-        !autoDetects && !translator.sourceLanguage.isEmpty
-    }
-
     var body: some View {
         HStack(spacing: 4) {
             Menu {
-                Picker("Spoken language", selection: Binding(get: { translator.sourceLanguage },
-                                                             set: { language in Task { await translator.setSourceLanguage(language) } })) {
-                    ForEach(OnDeviceLanguages.shared.spokenChoices(for: translator.engine, including: translator.sourceLanguage), id: \.self) { Text(LanguageName.of($0)).tag($0) }
+                Picker("Spoken language", selection: translator.sourceLanguageSelection) {
+                    ForEach(translator.spokenChoices, id: \.self) { Text(LanguageName.of($0)).tag($0) }
                 }
             } label: {
                 LanguageField(caption: "Spoken", value: autoDetects || translator.sourceLanguage.isEmpty ? LanguageName.of("") : LanguageName.short(translator.sourceLanguage), alignment: .leading)
             }
             .disabled(autoDetects)
-            Button(action: swap) {
+            Button { Task { await translator.swapLanguages() } } label: {
                 Image(systemName: "arrow.left.arrow.right").font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(Color.hvAccent)
                     .frame(width: 44, height: 44)
                     .background(Color.hvSurfaceRaised, in: .circle)
             }
-            .disabled(!canSwap)
-            .opacity(canSwap ? 1 : 0.4)
+            .disabled(!translator.canSwapLanguages)
+            .opacity(translator.canSwapLanguages ? 1 : 0.4)
             .accessibilityLabel("Swap languages")
             Menu {
-                Picker("Subtitles in", selection: Binding(get: { translator.targetLanguage },
-                                                          set: { language in Task { await translator.setTargetLanguage(language) } })) {
-                    ForEach(OnDeviceLanguages.shared.subtitleChoices(for: translator.engine, including: translator.targetLanguage), id: \.self) { Text(LanguageName.of($0)).tag($0) }
+                Picker("Subtitles in", selection: translator.targetLanguageSelection) {
+                    ForEach(translator.subtitleChoices, id: \.self) { Text(LanguageName.of($0)).tag($0) }
                 }
             } label: {
                 LanguageField(caption: "Subtitles", value: LanguageName.short(translator.targetLanguage), alignment: .trailing)
@@ -45,14 +39,6 @@ struct LanguageCard: View {
         }
         .padding(6)
         .background(Color.hvSurface, in: .rect(cornerRadius: 16, style: .continuous))
-    }
-
-    private func swap() {
-        let spoken = translator.sourceLanguage, target = translator.targetLanguage
-        Task {
-            await translator.setSourceLanguage(target)
-            await translator.setTargetLanguage(spoken)
-        }
     }
 }
 

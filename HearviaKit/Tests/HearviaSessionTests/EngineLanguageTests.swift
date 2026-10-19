@@ -1,4 +1,5 @@
 import Foundation
+import HearviaCore
 @testable import HearviaSession
 import Testing
 
@@ -33,5 +34,20 @@ struct EngineLanguageTests {
         await translator.setTargetLanguage("ja")
         await translator.setEngine(.realtime)
         #expect(translator.targetLanguage == "ja")
+    }
+
+    @Test func swapTradesSpokenAndSubtitleLanguages() async {
+        let translator = Harness().translator
+        await translator.setEngine(.onDevice)
+        await translator.setSourceLanguage("ja")
+        await translator.setTargetLanguage(Languages.traditionalChinese)
+        await translator.swapLanguages()
+        #expect(translator.sourceLanguage == "zh" && translator.targetLanguage == "ja") // Traditional Chinese is spoken as "zh"
+        await translator.setSourceLanguage("") // Auto has nothing to swap
+        await translator.swapLanguages()
+        #expect(translator.sourceLanguage.isEmpty && translator.targetLanguage == "ja")
+        await translator.setSourceLanguage("en")
+        await translator.setEngine(.realtime) // detects the spoken language itself
+        #expect(!translator.canSwapLanguages)
     }
 }

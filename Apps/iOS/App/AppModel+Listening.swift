@@ -50,18 +50,8 @@ extension AppModel {
         guard listening != wasListening else { return }
         wasListening = listening
         listeningSince = listening ? Date() : nil
-        levelTimer?.invalidate()
-        levelTimer = nil
-        levels = levels.map { _ in 0 }
         if listening {
-            let timer = Timer(timeInterval: 0.1, repeats: true) { [weak self] _ in
-                Task { @MainActor in
-                    guard let self else { return }
-                    self.levels = Array(self.levels.dropFirst()) + [self.meter.take()]
-                }
-            }
-            RunLoop.main.add(timer, forMode: .common)
-            levelTimer = timer
+            levels.start()
             if settings.floatsWhenLeaving {
                 await pip.armAutoStart()
             }
@@ -69,6 +59,7 @@ extension AppModel {
                 await translation.start()
             }
         } else {
+            levels.stop()
             pip.disarmAutoStart()
             await translation.stop()
         }
@@ -79,7 +70,7 @@ extension AppModel {
         micStarting = true
         micError = ""
         defer { micStarting = false }
-        let feed = translation.feed, meter = meter
+        let feed = translation.feed, meter = levels.meter
         do {
             try await session.acquire("mic-input", microphone: true)
             try await microphone.start { buffer in

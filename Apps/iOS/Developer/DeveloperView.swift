@@ -15,7 +15,7 @@
                     pipSection.id("pip")
                     captureSection
                     Section("Microphone input (home screen source)") {
-                        Text(model.micRunning ? String(format: "Running · peak %.3f", model.levels.last ?? 0) : model.micStarting ? "Starting" : "Off")
+                        Text(model.micRunning ? String(format: "Running · peak %.3f", model.levels.peaks.last ?? 0) : model.micStarting ? "Starting" : "Off")
                             .monospacedDigit()
                         if !model.micError.isEmpty {
                             Text(model.micError).foregroundStyle(.red)
@@ -74,10 +74,8 @@
         private var translationSection: some View {
             Section("Live translation · \(model.translation.engine.title)") {
                 Toggle("Translate while capturing", isOn: $model.translationEnabled)
-                Picker("Target language", selection: Binding(get: { model.translation.targetLanguage },
-                                                             set: { language in Task { await model.translation.setTargetLanguage(language) } })) {
-                    ForEach(OnDeviceLanguages.shared.subtitleChoices(for: model.translation.engine, including: model.translation.targetLanguage),
-                            id: \.self) { Text(LanguageName.of($0)).tag($0) }
+                Picker("Target language", selection: model.translation.targetLanguageSelection) {
+                    ForEach(model.translation.subtitleChoices, id: \.self) { Text(LanguageName.of($0)).tag($0) }
                 }
                 SecureField("OpenAI API key", text: Bindable(model.translation).openAIKey)
                     .textInputAutocapitalization(.never).autocorrectionDisabled()
