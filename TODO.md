@@ -11,7 +11,7 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 
 ## Next: TestFlight
 
-- [ ] Beta App Review of 1.0 (3) iOS and (4) Mac (submitted 2026-10-18, both in the Public Beta group; the 0.1 builds were expired). Once approved, share the public link.
+- [ ] Public Beta: 1.0 passed Beta App Review (2026-10-19); iOS 1.0 (7) is approved for the group and Mac 1.0 (8) is waiting for its review. The public link is in the Public Beta group in App Store Connect.
 - [ ] App Store 1.0 in review (submitted 2026-10-19: iOS 1.0 (7), Mac 1.0 (8), with iPhone Duo screenshots); it goes live automatically once approved. Watch for reviewer questions in App Store Connect.
 
 ## Check on iPhone
