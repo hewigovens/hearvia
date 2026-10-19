@@ -19,3 +19,6 @@ TestMedia/test.mp4
 
 .DS_Store
 __pycache__/
+
+# Wrangler cache (account details)
+.wrangler/

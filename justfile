@@ -47,6 +47,10 @@ testflight:
 testflight-macos:
   scripts/testflight.sh upload-macos
 
+# Deploy the hearvia.hewig.dev Worker, which serves the GitHub Pages site in docs/ (only needed when cloudflare/ changes)
+site-deploy:
+  cd cloudflare && wrangler deploy
+
 # Build and launch the Mac app with JSON event logging
 run-mac *args: generate
   xcodebuild -project Hearvia.xcodeproj -scheme HearviaMac -destination 'platform=macOS' -quiet build

@@ -1,0 +1,6 @@
+# The hearvia.hewig.dev site (see worker.js). Deploy with `just site-deploy`; Cloudflare creates the DNS record and certificate for the custom domain.
+name = "hearvia-site"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+workers_dev = false
+routes = [{ pattern = "hearvia.hewig.dev", custom_domain = true }]
