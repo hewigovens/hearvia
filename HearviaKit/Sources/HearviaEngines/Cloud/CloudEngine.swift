@@ -42,13 +42,13 @@ public final class CloudEngine: TranslationEngine {
     var segmenter = SentenceSegmenter()
 
     /// `transcribesSource: false` skips the original-language text, which is billed separately.
-    public static func openAI(targetLanguage: String, apiKey: String, transcribesSource: Bool = true) -> CloudEngine {
+    public static func openAI(targetLanguage: String, apiKey: String, transcribesSource: Bool) -> CloudEngine {
         CloudEngine(provider: "OpenAI", targetLanguage: targetLanguage, transcribesSource: transcribesSource, timing: CloudTiming()) {
-            OpenAIRealtimeClient(configuration: OpenAIRealtimeConfiguration(targetLanguage: $0, transcribesSource: $1), credential: apiKey)
+            OpenAIRealtimeClient(configuration: OpenAIRealtimeConfiguration(targetLanguage: $0, transcribesSource: $1), apiKey: apiKey)
         }
     }
 
-    public static func gemini(targetLanguage: String, apiKey: String, transcribesSource: Bool = true) -> CloudEngine {
+    public static func gemini(targetLanguage: String, apiKey: String, transcribesSource: Bool) -> CloudEngine {
         CloudEngine(provider: "Gemini", targetLanguage: targetLanguage, transcribesSource: transcribesSource, timing: CloudTiming()) {
             GeminiLiveClient(configuration: GeminiLiveConfiguration(targetLanguage: $0, transcribesSource: $1), apiKey: apiKey)
         }

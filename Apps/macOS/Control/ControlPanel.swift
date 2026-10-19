@@ -20,7 +20,7 @@ struct ControlPanel: View {
                     .transition(.offset(y: -30).combined(with: .opacity))
             }
             EngineStatusLine(translator: model.translator)
-            ForEach([model.captureError, model.translator.error].filter { !$0.isEmpty }, id: \.self) { error in
+            ForEach([model.captureError, model.translator.displayError].filter { !$0.isEmpty }, id: \.self) { error in
                 Text(error).font(.caption).foregroundStyle(.red)
             }
             OverlayOptions()

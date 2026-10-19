@@ -1,4 +1,5 @@
 import Foundation
+import HearviaCore
 
 public struct GeminiLiveConfiguration: Sendable {
     public var targetLanguage: String
@@ -20,7 +21,7 @@ public struct GeminiLiveConfiguration: Sendable {
             "model": "models/\(model)",
             "generationConfig": [
                 "responseModalities": ["AUDIO"],
-                "translationConfig": ["targetLanguageCode": Self.languageCode(targetLanguage), "echoTargetLanguage": true]
+                "translationConfig": ["targetLanguageCode": Languages.qualified(targetLanguage), "echoTargetLanguage": true]
             ],
             "outputAudioTranscription": [String: Any]()
         ]
@@ -28,14 +29,5 @@ public struct GeminiLiveConfiguration: Sendable {
             setup["inputAudioTranscription"] = [String: Any]()
         }
         return ["setup": setup]
-    }
-
-    /// Gemini names the script for Chinese and the region for Portuguese; the app's other codes are what it expects.
-    static func languageCode(_ code: String) -> String {
-        switch code {
-        case "zh": "zh-Hans"
-        case "pt": "pt-BR"
-        default: code
-        }
     }
 }

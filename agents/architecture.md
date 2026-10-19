@@ -6,22 +6,24 @@ Load before changing package boundaries, engines, or what the app shells own.
 
 ```text
 HearviaKit (one Swift package, one `HearviaKit` product, five modules)
-  HearviaCore     Foundation only: Languages, LanguageName, EngineKind, TranslatorStatus, Transcript,
-                  SentenceSegmenter, SubtitleText, SecretStore + KeychainStore
+  HearviaCore     Foundation only: Languages, LanguageName, EngineKind, TranslatorStatus, Transcript + TranscriptLine,
+                  SentenceSegmenter, SubtitleText, SecretStore + KeychainStore, RetiredFiles (removes old model files)
   HearviaAudio    AudioFeed (capture → 200 ms PCM16 chunks), PCM16Resampler, MicrophoneCapture, LevelMeter
   HearviaEngines  TranslationEngine protocol + EngineUpdate;
                   Cloud/     CloudEngine (+Audio: buffering, silence pause, rotation; +Events), CloudTiming,
                              TranslationSocket protocol + SocketEvent: one engine for every streaming provider
                   OpenAI/    OpenAIRealtimeClient (WebSocket actor) + configuration
                   Gemini/    GeminiLiveClient (WebSocket actor, 24 → 16 kHz) + configuration
-                  OnDevice/  OnDeviceEngine (+Text), OnDeviceSpeech (SpeechAnalyzer, +Detection for Auto), OnDeviceTextTranslator, OnDeviceModels
+                  OnDevice/  OnDeviceEngine (+Text), OnDeviceModelSet, SpeechInput, OnDeviceSpeech (SpeechAnalyzer, +Detection
+                             with LanguageContest for Auto), OnDeviceTextTranslator, OnDeviceModels, OnDeviceError
                   Local/     LocalModelServer: OpenAI-compatible chat server (Ollama, LM Studio, Unsloth Studio); the
                              `.local` engine is OnDeviceEngine.localModel, speech on device and text to the server
-  HearviaSession  LiveTranslator (+Run, +Status): preferences, one engine run at a time, observable text/transcript/stats;
+  HearviaSession  LiveTranslator (+Run, +Status, +Demo for screenshots): preferences, one engine run at a time, observable
+                  text/transcript/TranslatorStats;
                   TranscriptHistory: one JSON file per finished session in Application Support/Hearvia/Transcripts, or
                   the iCloud container's Transcripts folder while syncsWithICloud is on (+iCloud: NSMetadataQuery, coordinated writes)
   HearviaUI       palette, Appearance, HearviaMark/Icon, HVButtonStyle, ListenButton, ControlTile, LevelBars,
-                  TranscriptList, OnDeviceModelsView, OnDeviceLanguages (picker lists per engine)
+                  TranscriptList, OnDeviceModelsView, OnDeviceLanguages (picker lists per engine), LocalModelSettingsView
   hearvia-translate  CLI over Audio + Engines: streams an audio file through any engine
 Apps/iOS     SwiftUI shell: ScreenCaptureKit / mic capture, PiP subtitle strip, home, onboarding, settings
 Apps/macOS   SwiftUI shell: Core Audio process tap / mic capture, overlay panel, control window, menu bar,
@@ -69,7 +71,7 @@ A streaming cloud provider needs no new engine: write a `TranslationSocket` clie
 
 ## Release files
 
-Each app has a `PrivacyInfo.xcprivacy`; the Mac app has `Hearvia.entitlements` (hardened runtime, audio input). `scripts/strip_release_plist.sh` removes the Files-sharing keys from the iOS Release Info.plist. See `docs/release.md`.
+Each app has a `PrivacyInfo.xcprivacy` and entitlements: the iCloud container on both, plus the sandbox, audio input and network client on the Mac (hardened runtime is a build setting). `scripts/strip_release_plist.sh` removes the Files-sharing keys from the iOS Release Info.plist. See `docs/release.md`.
 
 ## Engine contracts
 

@@ -16,6 +16,8 @@ struct LanguageContest {
     private var nextID = 0
     private var reason = "start"
     private var undecidedTicks = 0
+    /// Ticks come every 3 s (see +Detection), so Auto settles on its best guess after about 12 s.
+    private static let patience = 4
     /// While re-detecting, the language in use; an unclear contest keeps it.
     private var previous: Int?
 
@@ -47,7 +49,7 @@ struct LanguageContest {
     private var settled: Bool {
         guard candidates.keys.allSatisfy({ finals[$0] != nil }) else { return false }
         let scores = candidates.keys.map { Self.confidence(finals[$0] ?? []) }.sorted(by: >)
-        return undecidedTicks >= 4 || scores.count < 2 || scores[0] - scores[1] >= 0.2
+        return undecidedTicks >= Self.patience || scores.count < 2 || scores[0] - scores[1] >= 0.2
     }
 
     /// Keeps only the winner; returns it with its withheld sentences and a note for the log.
@@ -55,7 +57,7 @@ struct LanguageContest {
         var best = candidates.keys.max { Self.confidence(finals[$0] ?? []) < Self.confidence(finals[$1] ?? []) }!
         if case let .pick(id) = decision {
             best = id
-        } else if undecidedTicks >= 4, let previous, candidates[previous] != nil {
+        } else if undecidedTicks >= Self.patience, let previous, candidates[previous] != nil {
             best = previous
         }
         let scores = candidates.keys.sorted().map { String(format: "%@ %.2f", candidates[$0]!.language, Self.confidence(finals[$0] ?? [])) }

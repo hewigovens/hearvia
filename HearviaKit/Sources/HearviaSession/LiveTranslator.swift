@@ -11,7 +11,7 @@ public final class LiveTranslator {
     public private(set) var engine: EngineKind {
         didSet { defaults.set(engine.rawValue, forKey: Keys.engine) }
     }
-    /// Spoken language; only the on-device engine uses it (the cloud engines detect it).
+    /// Spoken language for the on-device and local engines, "" for Auto; the cloud engines detect it.
     public private(set) var sourceLanguage: String {
         didSet { defaults.set(sourceLanguage, forKey: Keys.sourceLanguage) }
     }
@@ -84,7 +84,7 @@ public final class LiveTranslator {
         let openAIKey = key(.realtime)
         self.openAIKey = openAIKey
         geminiKey = key(.gemini)
-        localKey = secrets.read(account: EngineKind.local.keyAccount!) ?? ""
+        localKey = key(.local)
         localServerURL = defaults.string(forKey: Keys.localServerURL) ?? LocalModelServer.presets[0].baseURL
         localModel = defaults.string(forKey: Keys.localModel) ?? ""
         engine = defaults.string(forKey: Keys.engine).flatMap(EngineKind.init) ?? (openAIKey.isEmpty ? .onDevice : .realtime)
@@ -125,7 +125,7 @@ public final class LiveTranslator {
         guard engine != self.engine else { return }
         self.engine = engine
         if engine.isCloud {
-            targetLanguage = Languages.target(targetLanguage, for: engine) // On-device offers more languages.
+            targetLanguage = Languages.target(targetLanguage, for: engine) // The new engine may not offer the current one.
         }
         await restartIfActive()
     }
@@ -160,6 +160,6 @@ public struct EngineRequest: Sendable {
     public let targetLanguage: String
     public let apiKey: String
     public let transcribesSource: Bool
-    public var localServer = LocalModelServer(baseURL: "")
-    public var localModel = ""
+    public let localServer: LocalModelServer
+    public let localModel: String
 }

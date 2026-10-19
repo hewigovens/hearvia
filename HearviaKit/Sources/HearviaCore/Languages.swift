@@ -11,6 +11,15 @@ public enum Languages {
     /// A subtitle language only: speech is recognized as "zh", and OpenAI Realtime doesn't offer it.
     public static let traditionalChinese = "zh-Hant"
 
+    /// The script or region providers expect: Simplified Chinese for "zh", Brazilian Portuguese for "pt".
+    public static func qualified(_ code: String) -> String {
+        switch code {
+        case "zh": "zh-Hans"
+        case "pt": "pt-BR"
+        default: code
+        }
+    }
+
     public static let unspaced: Set<String> = ["zh", traditionalChinese, "ja", "yue", "th", "lo", "km", "my"]
 
     /// `selected` is always included so a picker never loses its current value.

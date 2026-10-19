@@ -17,7 +17,7 @@ settings:
     TARGETED_DEVICE_FAMILY: "1,2"
     CODE_SIGN_STYLE: Automatic
     MARKETING_VERSION: "1.0"
-    # Debug builds stay at 1; `just upload-ios` passes a timestamp so every upload is unique.
+    # Debug builds stay at 1; scripts/testflight.sh counts up per MARKETING_VERSION for uploads.
     CURRENT_PROJECT_VERSION: "1"
 packages:
   HearviaKit:

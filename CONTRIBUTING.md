@@ -9,7 +9,7 @@ Hearvia uses [Jujutsu](https://github.com/jj-vcs/jj) for version control, not gi
 
 ## Setup
 
-Needs macOS 27, Xcode 27, [XcodeGen](https://github.com/yonaskolb/XcodeGen), [just](https://github.com/casey/just), SwiftFormat and SwiftLint:
+Needs macOS 27, Xcode 27.1 (its SDK has the iPhone Duo APIs), [XcodeGen](https://github.com/yonaskolb/XcodeGen), [just](https://github.com/casey/just), SwiftFormat and SwiftLint:
 
 ```sh
 brew install xcodegen just swiftformat swiftlint
@@ -28,7 +28,10 @@ HearviaKit/      Swift package shared by both apps, one product with five module
   HearviaUI      colors, appearance, icon mark, buttons, tiles, transcript list, model downloads
   hearvia-translate: CLI that streams an audio file through any engine
 Apps/iOS/        App, Home, Onboarding, Settings, Capture (ScreenCaptureKit), Subtitles (PiP), QuickStart, Developer
-Apps/macOS/      App, Control, Overlay, Transcript, Settings, MenuBar, Capture (Core Audio process tap)
+Apps/iOSWidgets/ Quick-start widget and Control Center control
+Apps/macOS/      App, Control, Overlay, Transcript, Settings, MenuBar, Permissions, Capture (Core Audio process tap)
+Apps/Shared/     the string catalog shared by all targets
+cloudflare/      the Worker that serves the docs/ site at hearvia.hewig.dev
 agents/          architecture, SwiftUI, design, testing, version-control and run/debug guides
 docs/            release notes, screenshots, and the GitHub Pages site (index.html, privacy.html)
 scripts/         dev secrets, icons, TestFlight uploads
@@ -45,6 +48,7 @@ just build         # both apps
 just test          # HearviaKit unit tests
 just run-mac       # launch the Mac app with JSON event logging
 just install-ios   # build, install and launch on the paired iPhone (HEARVIA_DEVICE=<udid>)
+just site-deploy   # redeploy the hearvia.hewig.dev Worker (only when cloudflare/ changes)
 just format lint
 ```
 

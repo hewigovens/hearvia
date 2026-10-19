@@ -23,7 +23,7 @@ struct PermissionsView: View {
                               detail: "Asked when you first choose Microphone.",
                               isNext: model.source == .microphone)
             }
-            Text("Audio stays on this Mac unless you use OpenAI Realtime. Change access in System Settings → Privacy & Security.")
+            Text("Audio stays on this Mac unless you use a cloud translator. Change access in System Settings → Privacy & Security.")
                 .font(.caption).foregroundStyle(Color.hvMuted)
                 .fixedSize(horizontal: false, vertical: true)
             HStack(spacing: 10) {

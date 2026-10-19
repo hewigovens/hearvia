@@ -44,8 +44,8 @@ public enum OnDeviceModels {
         return { $0.applyingTransform(StringTransform("Hans-Hant"), reverse: false) ?? $0 }
     }
 
-    public static func translationLanguage(_ code: String) -> Locale.Language {
-        Locale.Language(identifier: code == "zh" ? "zh-Hans" : code == "pt" ? "pt-BR" : code)
+    static func translationLanguage(_ code: String) -> Locale.Language {
+        Locale.Language(identifier: Languages.qualified(code))
     }
 
     static func transcriber(_ code: String, confidence: Bool = false) async throws -> SpeechTranscriber {

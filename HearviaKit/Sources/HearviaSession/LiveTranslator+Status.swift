@@ -32,3 +32,16 @@ public extension LiveTranslator {
         return (main, showsSecond && !main.isEmpty && !second.isEmpty ? second : nil)
     }
 }
+
+public extension LiveTranslator {
+    /// `error` in plain words when the provider rejected the key or ran out of quota.
+    var displayError: String {
+        if error.contains("invalid_api_key") || error.contains("API key not valid") {
+            return String(localized: "The \(engine.title) key was rejected. Check it in Settings.")
+        }
+        if error.contains("insufficient_quota") || error.contains("RESOURCE_EXHAUSTED") {
+            return String(localized: "\(engine.title) has no remaining quota for this key. Try the on-device translator.")
+        }
+        return error
+    }
+}

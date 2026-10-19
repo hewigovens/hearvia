@@ -21,8 +21,7 @@ extension CloudEngine {
         case let .expiring(at):
             expiresAt = at
             continuation.yield(.log("translation_expiring", ["seconds_left": "\(Int(at.timeIntervalSince(timing.now())))"]))
-        case .audioDelta: break
-        case let .sourceDelta(delta, _): appendSource(startingSession(delta, isSource: true))
+        case let .sourceDelta(delta): appendSource(startingSession(delta, isSource: true))
         case let .translationDelta(delta, _): appendTranslation(startingSession(delta, isSource: false))
         case let .serverError(code, message, fatal):
             lastProblem = "\(code): \(message)"
@@ -41,7 +40,7 @@ extension CloudEngine {
     /// A socket closed for a pause or rotation still flushes the translation of its last words.
     private func handleRetiring(_ event: SocketEvent) {
         switch event {
-        case let .sourceDelta(delta, _): appendSource(delta)
+        case let .sourceDelta(delta): appendSource(delta)
         case let .translationDelta(delta, _): appendTranslation(delta)
         case .closed: retiring = nil
         default: break
@@ -92,8 +91,7 @@ extension CloudEngine {
         failures += 1
         reconnects += 1
         let delay = timing.backoff(failures)
-        let seconds = Double(delay.components.seconds) + Double(delay.components.attoseconds) / 1e18
-        continuation.yield(.status(.reconnecting(inSeconds: Int(seconds.rounded(.up)))))
+        continuation.yield(.status(.reconnecting(inSeconds: Int((delay / .seconds(1)).rounded(.up)))))
         reconnectTask = Task { [weak self] in
             try? await Task.sleep(for: delay)
             guard !Task.isCancelled else { return }

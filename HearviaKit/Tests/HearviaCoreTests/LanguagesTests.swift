@@ -33,6 +33,12 @@ import Testing
     #expect(choices.contains("nl") && choices.contains("sw") && choices.count == Set(choices).count)
 }
 
+@Test func providersGetTheScriptForChineseAndTheRegionForPortuguese() {
+    #expect(Languages.qualified("zh") == "zh-Hans")
+    #expect(Languages.qualified("pt") == "pt-BR")
+    #expect(Languages.qualified("nl") == "nl")
+}
+
 @Test func thaiJoinsWithoutSpaces() {
     #expect(SubtitleText.join("สวัสดี", "ครับ", language: "th") == "สวัสดีครับ")
 }

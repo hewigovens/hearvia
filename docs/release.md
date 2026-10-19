@@ -1,6 +1,6 @@
 # Release Checklist
 
-What a distributable Hearvia build needs, and what is already in place. State as of 2026-10-15.
+What a distributable Hearvia build needs, and what is already in place. State as of 2026-10-20.
 
 ## Build configuration
 
@@ -12,7 +12,7 @@ What a distributable Hearvia build needs, and what is already in place. State as
 | iOS `UIFileSharingEnabled`, `LSSupportsOpeningDocumentsInPlace` | Present | Removed from the built Info.plist by `scripts/strip_release_plist.sh` |
 | Mac hardened runtime | On | On |
 
-The Mac app also reads `OPENAI_API_KEY` and `GEMINI_API_KEY` from the process environment as fallbacks. That only works when someone launches the binary with that variable set, so it never ships a key, but drop it if a release should only use the Keychain.
+Debug builds of the Mac app also read `OPENAI_API_KEY` and `GEMINI_API_KEY` from the process environment; Release builds use only the Keychain.
 
 ## API keys in TestFlight builds
 
@@ -81,7 +81,7 @@ Still to check on a real run: start capture from system audio and from the micro
 
 ### App Sandbox (enabled 2026-10-16)
 
-`Apps/macOS/Hearvia.entitlements`: `com.apple.security.app-sandbox`, `com.apple.security.device.audio-input`, `com.apple.security.network.client`. Core Audio taps need no temporary exception: the tap, the process list and the private aggregate device are all calls to the Core Audio system object, and the system asks for the audio-capture permission itself.
+`Apps/macOS/Hearvia.entitlements`: `com.apple.security.app-sandbox`, `com.apple.security.device.audio-input`, `com.apple.security.network.client`, plus the iCloud container keys for transcript sync (the iOS app has the same iCloud keys). Core Audio taps need no temporary exception: the tap, the process list and the private aggregate device are all calls to the Core Audio system object, and the system asks for the audio-capture permission itself.
 
 Checked with the sandboxed Debug build (`--autostart`, `--source=`, logs on stdout):
 
@@ -93,7 +93,7 @@ Checked with the sandboxed Debug build (`--autostart`, `--source=`, logs on stdo
 | Microphone | Starts; not confirmed with speech (the test Mac played into headphones) |
 | Saving a key in Settings (Keychain) | Works in a Release build. Keys live in the data protection keychain, so no build prompts; keys an earlier build left in the login keychain move over once on first read (2026-10-19) |
 
-The only sandbox denials logged were disk-space probes (`system-info vfs.disk-space`) and one NVMe user client, neither affecting capture. Moving into the sandbox gives the app a container: settings, transcripts and Keychain items from unsandboxed builds don't carry over.
+The only sandbox denials logged were disk-space probes (`system-info vfs.disk-space`) and one NVMe user client, neither affecting capture. Moving into the sandbox gives the app a container, so settings and transcripts from unsandboxed builds don't carry over; API keys do, through the one-time move from the login keychain.
 
 ### Notarization checklist (Developer ID, outside the App Store)
 

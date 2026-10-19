@@ -100,9 +100,3 @@ private extension OnDeviceSpeech {
         }
     }
 }
-
-extension SpeechResult {
-    init(_ result: SpeechTranscriber.Result, language: String) {
-        self.init(text: String(result.text.characters), isFinal: result.isFinal, language: language)
-    }
-}

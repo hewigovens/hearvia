@@ -5,12 +5,8 @@ enum RenderError: Error { case pixelBuffer(OSStatus), context, format(OSStatus),
 
 @MainActor
 final class SubtitleRenderer {
-    let layer: AVSampleBufferDisplayLayer
     let synchronizer = AVSampleBufferRenderSynchronizer()
     private let receiver: AVSampleBufferVideoRenderer.Receiver
-    var timebase: CMTimebase {
-        synchronizer.timebase
-    }
     private(set) var lastPTS = CMTime.invalid
     private(set) var frames = 0
     /// The frame size is fixed, so larger text shows fewer lines.
@@ -21,7 +17,6 @@ final class SubtitleRenderer {
     let height = 400
 
     init(layer: AVSampleBufferDisplayLayer) throws {
-        self.layer = layer
         receiver = synchronizer.sampleBufferReceiver(adding: layer.sampleBufferRenderer)
         synchronizer.delaysRateChangeUntilHasSufficientMediaData = false
         synchronizer.setRate(1, time: .zero)
@@ -32,11 +27,10 @@ final class SubtitleRenderer {
         synchronizer.setRate(playing ? 1 : 0, time: .invalid)
     }
 
-    @discardableResult
-    func render(subtitle: String, second: String? = nil, detail: String?) async throws -> Bool {
+    func render(subtitle: String, second: String?, detail: String?) async throws -> Bool {
         let pixel = try makePixelBuffer()
         try draw(subtitle: subtitle, second: second, detail: detail, scale: fontScale, into: pixel)
-        var pts = CMTimeAdd(CMTimebaseGetTime(timebase), CMTime(value: 1, timescale: 30))
+        var pts = CMTimeAdd(CMTimebaseGetTime(synchronizer.timebase), CMTime(value: 1, timescale: 30))
         if lastPTS.isValid, CMTimeCompare(pts, lastPTS) <= 0 {
             pts = CMTimeAdd(lastPTS, CMTime(value: 1, timescale: 30))
         }

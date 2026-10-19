@@ -7,15 +7,15 @@ Load before changing app file layout, models, settings, or presentation.
 ```text
 Apps/iOS/
 ├── App/          HearviaApp, AppModel (+Listening, +Subtitles, +Diagnostics, +QuickStart), AppSettings, InputSource
-├── Home/         HomeView, HomePresentation, HomeHeader, StartPrompt, HomeTiles, ListeningSummary,
-│                 TileSheet + SourceSheet, LanguagesSheet (LanguageCard), TranslatorSheet (EngineStatus),
-│                 ChoiceRow, CircleButton
+├── Home/         HomeView, HomePresentation, HomeHeader, StartPrompt, HomeTiles, ListeningSummary, LiveTranscriptCard,
+│                 CaptionMode, DuoPosture + TabletopMode (iPhone Duo), TileSheet + SourceSheet,
+│                 LanguagesSheet (LanguageCard), TranslatorSheet (EngineStatus), ChoiceRow, CircleButton
 ├── Transcripts/  TranscriptsSheet (in progress + saved), TranscriptDetailView (export, delete)
 ├── Onboarding/   OnboardingView, OnboardingPage, FeatureCard, Bullet, MicrophonePermissionRow
-├── Settings/     SettingsView, TranslatorSettingsView (API keys and on-device models)
-├── Capture/      CaptureController (ScreenCaptureKit), AudioProbe, ProbeSnapshot, AudioAnalysis,
-│                 AudioSessionController, SessionMode
-├── Subtitles/    PiPController, SubtitleRenderer, SubtitlePreview
+├── Settings/     SettingsView, SettingsIcon, TranslatorSettingsView (API keys and on-device models)
+├── Capture/      CaptureController (ScreenCaptureKit; +Simulator stand-in), AudioProbe (+ScreenCapture), ProbeSnapshot,
+│                 AudioMetrics, PCMDecoder, AudioSessionController, SessionMode
+├── Subtitles/    PiPController, SubtitleRenderer (+Drawing), SubtitlePreview, ExternalSubtitles (external display / AirPlay)
 ├── Developer/    DeveloperView, DiagnosticsPanel, DiagnosticLog (PoC diagnostics)
 ├── QuickStart/   StartListeningIntent (+ QuickStart request, InputSource as AppEnum), HearviaShortcuts,
 │                 QuickActionSceneDelegate (Home Screen quick actions, installed by HearviaApp)
@@ -23,7 +23,8 @@ Apps/iOS/
 Apps/iOSWidgets/  HearviaWidgets extension: QuickStartWidget (Home/Lock Screen), QuickStartControl (Control Center).
                   Also compiles QuickStart/StartListeningIntent.swift and App/InputSource.swift; the intent runs in the app
 Apps/macOS/
-├── App/          HearviaMacApp (scenes), AppModel (+Capture), AppSettings, CaptureSource
+├── App/          HearviaMacApp (scenes), AppDelegate (Dock menu), AppModel (+Capture, +Listening), AppSettings, CaptureSource
+├── Permissions/  PermissionsView, PermissionRow (first-run explainer)
 ├── Capture/      ProcessTapCapture, AudioProcesses, AudioProcess, CoreAudioProperty, CoreAudioError
 ├── Control/      ControlPanel (menu bar popover and main window), ListenHero, ControlTiles, OverlayOptions,
 │                 EngineStatusLine
@@ -31,7 +32,7 @@ Apps/macOS/
 ├── Settings/     SettingsView (tabs: General, Translators, Overlay, Diagnostics)
 ├── Transcript/   TranscriptView (Transcripts window: sidebar of sessions, export/copy/delete)
 └── MenuBar/      MenuBarLabel, MenuBarMenu
-Apps/Shared/      DevSecrets.generated.swift (generated, optional in project.yml)
+Apps/Shared/      Localizable.xcstrings (all three targets), DevSecrets.generated.swift (generated, optional in project.yml)
 ```
 
 `project.yml` globs `Apps/iOS` and `Apps/macOS`, so moves need no project edits. `Hearvia.xcodeproj` is generated (`just generate`) and not checked in.
@@ -40,8 +41,8 @@ Apps/Shared/      DevSecrets.generated.swift (generated, optional in project.yml
 
 - **State ownership**: the `App` creates `AppSettings` and `AppModel(settings:)` once in `init` as `@State`, and injects settings with `.environment(settings)`. Views read `@Environment(AppSettings.self)` and use a local `@Bindable var settings = settings` for bindings. Pass the model explicitly (`let model: AppModel`); use `@Bindable` only in views that bind model properties.
 - **Settings side effects**: views or the model react to settings with `.onChange` (iOS home) or `withObservationTracking` (macOS overlay panel, which is AppKit). Settings objects only persist values; they do not call back into models.
-- **Composition over long bodies**: a screen is a thin composer (`HomeView`, `ControlPanel`) over focused subviews (`HomeHeader`, `StartPrompt`, `HomeTiles`, `TranscriptCard`). Prefer a small `View` type over a long `@ViewBuilder` property when it has its own inputs.
-- **Wide screens (iPhone Duo open, iPad)**: decide by size class, never idiom or `UIScreen.main`. Regular width and height gets two columns on the iPhone home (subtitles and button | tiles, or the live transcript while listening), a split view for transcripts, and onboarding held to a readable width. On the Duo, `DuoPosture` reads the fold (`reservedRegions(kind: .division)`, already in the reader's own space), and the layout follows its direction, flat or half-folded. In landscape the fold runs down the middle: the book layout (subtitles and the button on the left page; the transcript, or the tiles while idle, on the right). In portrait it runs across: the preview above it and the button and tiles below while idle, `TabletopMode` while listening (subtitles above, transcript and Stop below). Elsewhere, listening in landscape switches to `CaptionMode`: the subtitle layer full screen. Only one `SubtitlePreview` may be on screen, since PiP starts from it. While listening with Hearvia in front, an external display or AirPlay screen mirroring (Apple TV, or a Mac's AirPlay Receiver for testing) shows `ExternalSubtitles` through `ExternalNonInteractiveAccessory`; with another app in front, the mirror shows that app plus the PiP subtitles. The app delegate leaves that scene's configuration alone. Checked 2026-10-18 by mirroring an iPhone to a Mac (log events `external_display`, `external_subtitles_shown`).
+- **Composition over long bodies**: a screen is a thin composer (`HomeView`, `ControlPanel`) over focused subviews (`HomeHeader`, `StartPrompt`, `HomeTiles`, `LiveTranscriptCard`). Prefer a small `View` type over a long `@ViewBuilder` property when it has its own inputs.
+- **Wide screens (iPhone Duo open, iPad)**: decide by size class, never idiom or `UIScreen.main`. Regular width and height gets the idle iPhone home as a wide preview over the button and the tiles side by side (listening uses the single column), a split view for transcripts, and onboarding held to a readable width. On the Duo, `DuoPosture` reads the fold (`reservedRegions(kind: .division)`, already in the reader's own space), and the layout follows its direction, flat or half-folded. In landscape the fold runs down the middle: the book layout (subtitles and the button on the left page; the transcript, or the tiles while idle, on the right). In portrait it runs across: the preview above it and the button and tiles below while idle, `TabletopMode` while listening (subtitles above, transcript and Stop below). Elsewhere, listening in landscape switches to `CaptionMode`: the subtitle layer full screen. Only one `SubtitlePreview` may be on screen, since PiP starts from it. While listening with Hearvia in front, an external display or AirPlay screen mirroring (Apple TV, or a Mac's AirPlay Receiver for testing) shows `ExternalSubtitles` through `ExternalNonInteractiveAccessory`; with another app in front, the mirror shows that app plus the PiP subtitles. The app delegate leaves that scene's configuration alone. Checked 2026-10-18 by mirroring an iPhone to a Mac (log events `external_display`, `external_subtitles_shown`).
 - **Main screens**: both apps centre a `ListenButton` over three `ControlTile`s (Listen to · Languages · Translator). Starting animates one layout into the other, so keep the button's identity across states: one slot in a stable stack on iOS, `AnyLayout` on macOS. Drive it with one `.animation(_:value:)` on the listening flag.
 - **Theme**: on macOS `AppSettings.applyAppearance()` sets `NSApp.appearance`, so every window (menu bar popover and overlay included) resolves the palette's dynamic colors the same way; don't add per-view `preferredColorScheme` there. iOS views use `preferredColorScheme`.
 - **Shared look**: colors are `Color.hv*` tokens; buttons use `HVButtonStyle` or `ListenButton`. Never hard-code hex colors in an app view; the subtitle surfaces stay dark in both themes.
@@ -59,4 +60,4 @@ Apps/Shared/      DevSecrets.generated.swift (generated, optional in project.yml
 
 - iOS: the PiP inline layer (`SubtitlePreview`) must stay in the view hierarchy while listening, or PiP cannot start on leaving the app.
 - iOS: ScreenCaptureKit shows the system picker on every start; the app never plays audio (own-audio exclusion is unreliable on 27.0.1).
-- macOS: the overlay hosting view returns itself from `hitTest` so any click drags the window.
+- macOS: the overlay drags with `WindowDragGesture`, and its panel accepts the first click so it works without activating Hearvia.

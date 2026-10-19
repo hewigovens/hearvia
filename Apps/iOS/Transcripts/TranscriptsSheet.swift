@@ -85,8 +85,8 @@ private struct TranscriptListStyle: ViewModifier {
             .overlay {
                 if isEmpty {
                     ContentUnavailableView("No Transcripts", systemImage: "text.bubble",
-                                           description: Text(translator.savesTranscripts ? "Each listening session is kept here, on this iPhone."
-                                               : "Saving transcripts is off in Settings."))
+                                           description: Text(translator.savesTranscripts ? translator.history.storageNote(device: UIDevice.current.model)
+                                               : String(localized: "Saving transcripts is off in Settings.")))
                 }
             }
             .scrollContentBackground(.hidden)

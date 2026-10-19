@@ -36,25 +36,20 @@ public final class OnDeviceEngine: TranslationEngine {
     private static func loadModels(_ source: String, _ target: String,
                                    progress: @escaping @Sendable (Double) -> Void) async throws -> OnDeviceModelSet {
         if source.isEmpty {
-            return try await detecting(strategy: "auto") { source in
-                guard source != target else { return nil }
-                if let conversion = OnDeviceModels.scriptConversion(from: source, to: target) {
-                    return conversion
-                }
-                let translator = try await OnDeviceTextTranslator(source: source, target: target)
-                return { try await translator.translate($0) }
-            }
+            return try await detecting(label: "auto") { try await translation(from: $0, to: target).translate }
         }
-        guard source != target else {
-            return try await OnDeviceModelSet(speech: OnDeviceSpeech(language: source, progress: progress), translate: nil, strategy: "none")
-        }
+        let (translate, strategy) = try await translation(from: source, to: target)
+        return try await OnDeviceModelSet(speech: OnDeviceSpeech(language: source, progress: progress), translate: translate, strategy: strategy)
+    }
+
+    /// None for the same language, ICU for Simplified → Traditional Chinese, otherwise Apple's translator; `strategy` is for logs.
+    private static func translation(from source: String, to target: String) async throws -> (translate: Translate?, strategy: String) {
+        guard source != target else { return (nil, "none") }
         if let conversion = OnDeviceModels.scriptConversion(from: source, to: target) {
-            return try await OnDeviceModelSet(speech: OnDeviceSpeech(language: source, progress: progress), translate: conversion, strategy: "Hans-Hant")
+            return (conversion, "Hans-Hant")
         }
         let translator = try await OnDeviceTextTranslator(source: source, target: target)
-        let speech = try await OnDeviceSpeech(language: source, progress: progress)
-        let translate: @Sendable (String) async throws -> String = { try await translator.translate($0) }
-        return OnDeviceModelSet(speech: speech, translate: translate, strategy: translator.strategy)
+        return ({ try await translator.translate($0) }, translator.strategy)
     }
 
     public static func localModel(sourceLanguage: String, targetLanguage: String, server: LocalModelServer,
@@ -62,17 +57,17 @@ public final class OnDeviceEngine: TranslationEngine {
         OnDeviceEngine(sourceLanguage: sourceLanguage, targetLanguage: targetLanguage) { progress in
             guard !model.isEmpty else { throw LocalModelError.noModel }
             guard !sourceLanguage.isEmpty else {
-                return try await detecting(strategy: model) { server.translator(from: $0, to: targetLanguage, model: model) }
+                return try await detecting(label: model) { server.translator(from: $0, to: targetLanguage, model: model) }
             }
             let speech = try await OnDeviceSpeech(language: sourceLanguage, progress: progress)
             return OnDeviceModelSet(speech: speech, translate: server.translator(from: sourceLanguage, to: targetLanguage, model: model), strategy: model)
         }
     }
 
-    private static func detecting(strategy: String, translator: @escaping @Sendable (String) async throws -> Translate?) async throws -> OnDeviceModelSet {
+    private static func detecting(label: String, translator: @escaping @Sendable (String) async throws -> Translate?) async throws -> OnDeviceModelSet {
         let candidates = await OnDeviceModels.autoCandidates()
         var models = try await OnDeviceModelSet(speech: OnDeviceSpeech.detecting(candidates), translate: nil,
-                                                strategy: "\(strategy) \(candidates.joined(separator: ","))")
+                                                strategy: "\(label) \(candidates.joined(separator: ","))")
         models.translator = translator
         return models
     }

@@ -93,7 +93,7 @@ public struct OnDeviceModelsView: View {
             } else if status == .downloadable {
                 Button("Download", action: action).buttonStyle(.bordered)
             } else {
-                Text(status?.label ?? "Checking…")
+                Text(status?.label ?? String(localized: "Checking…"))
                     .foregroundStyle(status == .installed ? .green : status == .unsupported ? .red : .secondary)
             }
         }

@@ -7,7 +7,7 @@ public enum TranslatorStatus: Equatable, Sendable {
     case connecting(attempt: Int)
     case reconnecting(inSeconds: Int)
     case translating(onDevice: Bool)
-    /// The Realtime socket is closed during a long silence (it bills per connected minute) and reopens on sound.
+    /// The cloud socket is closed during a long silence (it bills per connected minute) and reopens on sound.
     case paused
     case stopped
     case failed

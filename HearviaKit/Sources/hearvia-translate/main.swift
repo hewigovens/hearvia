@@ -56,7 +56,7 @@ print("audio: \(file.fileFormat.sampleRate) Hz × \(file.fileFormat.channelCount
 
 let client: any TranslationSocket = gemini
     ? GeminiLiveClient(configuration: GeminiLiveConfiguration(targetLanguage: language), apiKey: key)
-    : OpenAIRealtimeClient(configuration: OpenAIRealtimeConfiguration(targetLanguage: language), credential: key)
+    : OpenAIRealtimeClient(configuration: OpenAIRealtimeConfiguration(targetLanguage: language), apiKey: key)
 let start = Date()
 nonisolated(unsafe) var streamStart = Date.distantFuture
 func stamp() -> String {
@@ -64,7 +64,7 @@ func stamp() -> String {
 }
 
 let receiver = Task {
-    var source = "", translation = "", audioBytes = 0
+    var source = "", translation = ""
     var firstSource: TimeInterval?, firstTranslation: TimeInterval?
     var lags: [Double] = []
     for await event in client.events {
@@ -72,7 +72,7 @@ let receiver = Task {
         switch event {
         case let .sessionStarted(id, expires): print("[\(stamp())] session started \(id) expires=\(expires.map { "\($0)" } ?? "-")")
         case let .expiring(at): print("[\(stamp())] expiring in \(Int(at.timeIntervalSinceNow)) s")
-        case let .sourceDelta(d, _):
+        case let .sourceDelta(d):
             if firstSource == nil {
                 firstSource = now
             }
@@ -87,7 +87,6 @@ let receiver = Task {
             }
             translation += d
             print("[\(stamp())] TR   \(d.debugDescription) elapsed_ms=\(ms.map(String.init) ?? "-")")
-        case let .audioDelta(bytes, _): audioBytes += bytes
         case let .serverError(code, message, fatal): print("[\(stamp())] ERROR \(code) \(message)\(fatal ? " (fatal)" : "")")
         case let .closed(reason): print("[\(stamp())] closed \(reason ?? "session.closed")")
         }

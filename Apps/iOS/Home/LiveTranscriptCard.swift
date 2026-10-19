@@ -2,7 +2,7 @@ import HearviaSession
 import HearviaUI
 import SwiftUI
 
-/// Beside the subtitles on a wide screen: the session's finished sentences as they arrive.
+/// The session's finished sentences as they arrive, below or beside the subtitles.
 struct LiveTranscriptCard: View {
     let translator: LiveTranslator
 

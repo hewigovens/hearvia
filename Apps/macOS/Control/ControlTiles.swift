@@ -35,7 +35,14 @@ struct ControlTiles: View {
             Label("All system audio", systemImage: "speaker.wave.2").tag(CaptureSource.allApps)
             Section("Apps") {
                 ForEach(model.processes.sorted { $0.isOutputting && !$1.isOutputting }) { process in
-                    Text(process.isOutputting ? "\(process.name) — playing audio" : process.name).tag(CaptureSource.process(process))
+                    Group {
+                        if process.isOutputting {
+                            Text("\(process.name) — playing audio")
+                        } else {
+                            Text(verbatim: process.name)
+                        }
+                    }
+                    .tag(CaptureSource.process(process))
                 }
             }
             Label("Microphone", systemImage: "mic").tag(CaptureSource.microphone)

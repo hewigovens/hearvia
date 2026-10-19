@@ -58,7 +58,7 @@ struct OverlayView: View {
 
     private var placeholder: String {
         if !model.translator.error.isEmpty {
-            return model.translator.error
+            return model.translator.displayError
         }
         return model.capturing ? String(localized: "Listening… (\(model.translator.status.label))") : String(localized: "Subtitles appear here")
     }

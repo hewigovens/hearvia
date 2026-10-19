@@ -60,7 +60,7 @@ struct SettingsView: View {
                     }
                     .disabled(model.translation.history.transcripts.isEmpty)
                 } header: { Text("Transcripts") } footer: {
-                    Text(model.translation.history.storageNote(device: "iPhone"))
+                    Text(model.translation.history.storageNote(device: UIDevice.current.model))
                 }
                 .listRowBackground(Color.hvSurface)
 

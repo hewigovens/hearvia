@@ -1,6 +1,6 @@
 /// A sentence is committed when the translation ends one; the original is cut at its own last sentence end, so the pairing is approximate.
 public struct SentenceSegmenter: Sendable {
-    public static let sentenceEnds: Set<Character> = [".", "!", "?", "。", "！", "？", "…"]
+    static let sentenceEnds: Set<Character> = [".", "!", "?", "。", "！", "？", "…"]
 
     private var source = ""
     private var translation = ""

@@ -24,9 +24,6 @@ final class AppModel {
     var micStarting = false
     var micError = ""
     var levels = [Float](repeating: 0, count: 10)
-    var level: Float {
-        levels.last ?? 0
-    }
 
     // MARK: Developer tools
 

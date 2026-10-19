@@ -88,7 +88,7 @@ public actor GeminiLiveClient: TranslationSocket {
         continuation.finish()
     }
 
-    /// One server message can carry the original text, the translation and audio at once.
+    /// One server message can carry both the original text and the translation; translated audio is ignored.
     static func parse(_ data: Data, receivedAt now: Date) -> [SocketEvent] {
         guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return [] }
         if json["setupComplete"] != nil {
@@ -100,15 +100,10 @@ public actor GeminiLiveClient: TranslationSocket {
         guard let content = json["serverContent"] as? [String: Any] else { return [] }
         var events: [SocketEvent] = []
         if let text = (content["inputTranscription"] as? [String: Any])?["text"] as? String, !text.isEmpty {
-            events.append(.sourceDelta(text, elapsedMs: nil))
+            events.append(.sourceDelta(text))
         }
         if let text = (content["outputTranscription"] as? [String: Any])?["text"] as? String, !text.isEmpty {
             events.append(.translationDelta(text, elapsedMs: nil))
-        }
-        let parts = (content["modelTurn"] as? [String: Any])?["parts"] as? [[String: Any]] ?? []
-        let audio = parts.compactMap { ($0["inlineData"] as? [String: Any])?["data"] as? String }.reduce(0) { $0 + $1.count * 3 / 4 }
-        if audio > 0 {
-            events.append(.audioDelta(bytes: audio, elapsedMs: nil))
         }
         return events
     }

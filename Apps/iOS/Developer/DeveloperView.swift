@@ -15,7 +15,7 @@
                     pipSection.id("pip")
                     captureSection
                     Section("Microphone input (home screen source)") {
-                        Text(model.micRunning ? String(format: "Running · peak %.3f", model.level) : model.micStarting ? "Starting" : "Off")
+                        Text(model.micRunning ? String(format: "Running · peak %.3f", model.levels.last ?? 0) : model.micStarting ? "Starting" : "Off")
                             .monospacedDigit()
                         if !model.micError.isEmpty {
                             Text(model.micError).foregroundStyle(.red)

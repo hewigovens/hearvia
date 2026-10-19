@@ -117,7 +117,7 @@ final class CloudHarness {
     func feed(_ chunk: Data) async throws {
         let before = engine.chunksReceived
         input.yield(chunk)
-        try await eventually { self.engine.chunksReceived > before }
+        try await waitUntil { self.engine.chunksReceived > before }
     }
 
     var statuses: [TranslatorStatus] {
@@ -137,21 +137,13 @@ func chunk(_ marker: Int16) -> Data {
 }
 
 @MainActor
-func eventually(_ condition: @MainActor () -> Bool) async throws {
-    for _ in 0 ..< 400 where !condition() {
-        try await Task.sleep(for: .milliseconds(2))
-    }
-    #expect(condition())
-}
-
-@MainActor
 struct CloudEngineTests {
     let harness = CloudHarness()
 
     @Test func reconnectsWithBackoffThenGivesUp() async throws {
         harness.failsToConnect = true
         await harness.start()
-        try await eventually { self.harness.updates.last == .failed("Lost the connection to OpenAI.") }
+        try await waitUntil { self.harness.updates.last == .failed("Lost the connection to OpenAI.") }
         #expect(harness.sockets.count == 4) // first try + maxFailures reconnects
         #expect(harness.statuses.filter {
             if case .reconnecting = $0 {
@@ -167,7 +159,7 @@ struct CloudEngineTests {
         let socket = try #require(harness.sockets.first)
         socket.send(.serverError(code: "invalid_api_key", message: "Incorrect API key", fatal: true))
         socket.send(.closed(reason: nil))
-        try await eventually { self.harness.updates.last == .failed("invalid_api_key: Incorrect API key") }
+        try await waitUntil { self.harness.updates.last == .failed("invalid_api_key: Incorrect API key") }
         #expect(harness.sockets.count == 1)
     }
 
@@ -175,22 +167,22 @@ struct CloudEngineTests {
         await harness.start()
         harness.sockets[0].send(.sessionStarted(id: "s1", expiresAt: nil))
         harness.sockets[0].send(.closed(reason: "network"))
-        try await eventually { self.harness.sockets.count == 2 }
-        try await eventually { self.harness.statuses.contains(.connecting(attempt: 1)) }
+        try await waitUntil { self.harness.sockets.count == 2 }
+        try await waitUntil { self.harness.statuses.contains(.connecting(attempt: 1)) }
     }
 
     @Test func separatesTextFromConsecutiveSessions() async throws {
         await harness.start()
         harness.sockets[0].send(.sessionStarted(id: "s1", expiresAt: nil))
-        harness.sockets[0].send(.sourceDelta("than expected", elapsedMs: nil))
+        harness.sockets[0].send(.sourceDelta("than expected"))
         harness.sockets[0].send(.translationDelta("比预期的要小。", elapsedMs: nil))
-        try await eventually { self.harness.engine.translation == "比预期的要小。" }
+        try await waitUntil { self.harness.engine.translation == "比预期的要小。" }
         harness.sockets[0].send(.closed(reason: "rotated"))
-        try await eventually { self.harness.sockets.count == 2 }
+        try await waitUntil { self.harness.sockets.count == 2 }
         harness.sockets[1].send(.sessionStarted(id: "s2", expiresAt: nil))
-        harness.sockets[1].send(.sourceDelta("Good evening", elapsedMs: nil))
+        harness.sockets[1].send(.sourceDelta("Good evening"))
         harness.sockets[1].send(.translationDelta("晚上好", elapsedMs: nil))
-        try await eventually { self.harness.engine.translation.hasSuffix("晚上好") }
+        try await waitUntil { self.harness.engine.translation.hasSuffix("晚上好") }
         #expect(harness.engine.source == "than expected Good evening")
         #expect(harness.engine.translation == "比预期的要小。晚上好")
     }
@@ -199,12 +191,12 @@ struct CloudEngineTests {
         await harness.start()
         let first = try #require(harness.sockets.first)
         first.send(.sessionStarted(id: "s1", expiresAt: nil))
-        try await eventually { self.harness.engine.socketReady }
+        try await waitUntil { self.harness.engine.socketReady }
         try await harness.feed(chunk(1000))
         for _ in 0 ..< 5 {
             try await harness.feed(chunk(0))
         }
-        try await eventually { self.harness.statuses.last == .paused }
+        try await waitUntil { self.harness.statuses.last == .paused }
         #expect(first.closed)
         #expect(harness.sockets.count == 1)
 
@@ -213,7 +205,7 @@ struct CloudEngineTests {
         try await harness.feed(chunk(1))
         try await harness.feed(chunk(2))
         try await harness.feed(chunk(1001)) // sound returns
-        try await eventually { self.harness.sockets.count == 2 && self.harness.engine.socketReady }
+        try await waitUntil { self.harness.sockets.count == 2 && self.harness.engine.socketReady }
         try await harness.feed(chunk(1002))
         #expect(harness.sockets[1].appended == [chunk(2), chunk(1001), chunk(1002)])
         // A pause is not a reconnect.
@@ -232,19 +224,19 @@ struct CloudEngineTests {
         let first = try #require(harness.sockets.first)
         let expiry = harness.clock.now.addingTimeInterval(3600)
         first.send(.sessionStarted(id: "s1", expiresAt: expiry))
-        try await eventually { self.harness.engine.expiresAt == expiry && self.harness.engine.socketReady }
+        try await waitUntil { self.harness.engine.expiresAt == expiry && self.harness.engine.socketReady }
 
         harness.clock.advance(to: expiry.addingTimeInterval(-170)) // inside the 180 s lead
         try await harness.feed(chunk(1000))
         #expect(harness.sockets.count == 1) // still speaking
         try await harness.feed(chunk(0))
         try await harness.feed(chunk(0))
-        try await eventually { self.harness.sockets.count == 2 }
+        try await waitUntil { self.harness.sockets.count == 2 }
         #expect(first.closed)
 
         // The retired socket still delivers the translation of its last words.
         first.send(.translationDelta("再见。", elapsedMs: nil))
-        try await eventually { self.harness.updates.contains(.sentence(source: "", translation: "再见。")) }
+        try await waitUntil { self.harness.updates.contains(.sentence(source: "", translation: "再见。")) }
         let connecting = harness.statuses.filter {
             if case .connecting = $0 {
                 true
@@ -259,10 +251,10 @@ struct CloudEngineTests {
         await harness.start()
         let expiry = harness.clock.now.addingTimeInterval(3600)
         harness.sockets[0].send(.sessionStarted(id: "s1", expiresAt: expiry))
-        try await eventually { self.harness.engine.expiresAt == expiry && self.harness.engine.socketReady }
+        try await waitUntil { self.harness.engine.expiresAt == expiry && self.harness.engine.socketReady }
         harness.clock.advance(to: expiry.addingTimeInterval(-30))
         try await harness.feed(chunk(1000))
-        try await eventually { self.harness.sockets.count == 2 }
+        try await waitUntil { self.harness.sockets.count == 2 }
     }
 
     @Test func skipsSourceTranscriptionWhenAsked() async {
@@ -279,7 +271,7 @@ struct CloudEngineTests {
     @Test func switchesLanguageInPlaceWhenTheProviderCan() async throws {
         await harness.start()
         harness.sockets[0].send(.sessionStarted(id: "s1", expiresAt: nil))
-        try await eventually { self.harness.engine.socketReady }
+        try await waitUntil { self.harness.engine.socketReady }
         #expect(await harness.engine.setTargetLanguage("ja"))
         #expect(harness.sockets.count == 1)
     }
@@ -289,20 +281,20 @@ struct CloudEngineTests {
         await harness.start()
         let first = try #require(harness.sockets.first)
         first.send(.sessionStarted(id: "s1", expiresAt: nil))
-        try await eventually { self.harness.engine.socketReady }
+        try await waitUntil { self.harness.engine.socketReady }
         #expect(await harness.engine.setTargetLanguage("ja"))
-        try await eventually { self.harness.sockets.count == 2 }
+        try await waitUntil { self.harness.sockets.count == 2 }
         #expect(first.closed && harness.sockets[1].targetLanguage == "ja")
     }
 
     @Test func rotatesWhenTheServerAnnouncesItWillClose() async throws {
         await harness.start()
         harness.sockets[0].send(.sessionStarted(id: "s1", expiresAt: nil))
-        try await eventually { self.harness.engine.socketReady }
+        try await waitUntil { self.harness.engine.socketReady }
         harness.sockets[0].send(.expiring(at: harness.clock.now.addingTimeInterval(30)))
-        try await eventually { self.harness.engine.expiresAt != nil }
+        try await waitUntil { self.harness.engine.expiresAt != nil }
         try await harness.feed(chunk(1000))
-        try await eventually { self.harness.sockets.count == 2 }
+        try await waitUntil { self.harness.sockets.count == 2 }
     }
 
     @Test func measuresChunkPeaks() {

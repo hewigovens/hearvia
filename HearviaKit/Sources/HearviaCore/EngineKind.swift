@@ -36,7 +36,7 @@ public enum EngineKind: String, CaseIterable, Identifiable, Sendable, Codable {
     public var isCloud: Bool {
         self == .realtime || self == .gemini
     }
-    /// The cloud models detect the spoken language; the on-device engine needs it chosen.
+    /// The cloud models detect the spoken language; on-device and local take a choice or Auto ("").
     public var detectsSpokenLanguage: Bool {
         isCloud
     }

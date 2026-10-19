@@ -5,7 +5,7 @@ import SwiftUI
 struct OnboardingView: View {
     let translator: LiveTranslator
     var done: () -> Void
-    @State private var page = UserDefaults.standard.integer(forKey: "debugOnboardingPage") // launch arg: -debugOnboardingPage N
+    @State private var page = 0
     private let lastPage = 5
 
     var body: some View {
@@ -49,7 +49,7 @@ struct OnboardingView: View {
                        message: "Videos, podcasts, calls and people, translated as they speak.") {
             FeatureCard("apps.iphone", "Other apps", "What you're watching keeps playing.")
             FeatureCard("mic", "Microphone", "Talks, lessons and conversations.")
-            FeatureCard("checkmark.shield", "Free and private on device", "Or OpenAI Realtime for the fastest subtitles.")
+            FeatureCard("checkmark.shield", "Free and private on device", "Or OpenAI Realtime or Gemini Live for the fastest subtitles.")
         }
     }
 
@@ -58,7 +58,7 @@ struct OnboardingView: View {
                        message: "Choose **Share Entire Screen**. It's the only way iOS lets Hearvia hear other apps.") {
             Bullet("waveform", "Only the sound is used. The screen is never saved or uploaded.")
             Bullet("record.circle", "Tap the red indicator in the status bar to stop.")
-            Bullet("network", "On-device keeps everything on your iPhone. OpenAI Realtime sends speech to OpenAI.")
+            Bullet("network", "On-device keeps everything on your iPhone. OpenAI Realtime and Gemini Live send speech to OpenAI or Google.")
         }
     }
 

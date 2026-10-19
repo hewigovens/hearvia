@@ -104,6 +104,35 @@
       "extractionState": "manual",
       "shouldTranslate": false
     },
+    "%@ — playing audio": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ — 音声を再生中"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ — 오디오 재생 중"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ — 正在播放音频"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ — 正在播放音訊"
+          }
+        }
+      }
+    },
     "%lld min": {
       "extractionState": "manual",
       "localizations": {
@@ -129,6 +158,53 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld 分鐘"
+          }
+        }
+      }
+    },
+    "%lld models on this server": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld model on this server"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld models on this server"
+                }
+              }
+            }
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このサーバ上のモデル：%lld 個"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 서버의 모델 %lld개"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此服务器上有 %lld 个模型"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此伺服器上有 %lld 個模型"
           }
         }
       }
@@ -265,6 +341,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "在設定中新增 %@ 金鑰"
+          }
+        }
+      }
+    },
+    "Add an API key for %@ in Settings, or switch to on-device translation.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定で %@ の API キーを追加するか、デバイス上の翻訳に切り替えてください。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "설정에서 %@ API 키를 추가하거나 기기 내 번역으로 전환하세요."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请在设置中添加 %@ 的 API 密钥，或改用设备端翻译。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請在設定中加入 %@ 的 API 金鑰，或改用裝置端翻譯。"
           }
         }
       }
@@ -505,31 +610,31 @@
       "extractionState": "manual",
       "shouldTranslate": false
     },
-    "Audio stays on this Mac unless you use OpenAI Realtime. Change access in System Settings → Privacy & Security.": {
+    "Audio stays on this Mac unless you use a cloud translator. Change access in System Settings → Privacy & Security.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenAI Realtime を使わない限り、音声はこのMacから出ません。アクセスは「システム設定 → プライバシーとセキュリティ」で変更できます。"
+            "value": "クラウドの翻訳を使わない限り、音声はこのMacから出ません。アクセスは「システム設定 → プライバシーとセキュリティ」で変更できます。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenAI Realtime을 사용하지 않으면 오디오는 이 Mac에만 남습니다. 접근 권한은 ‘시스템 설정 → 개인정보 보호 및 보안’에서 바꿀 수 있습니다."
+            "value": "클라우드 번역기를 사용하지 않으면 오디오는 이 Mac에만 남습니다. 접근 권한은 ‘시스템 설정 → 개인정보 보호 및 보안’에서 바꿀 수 있습니다."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "除非使用 OpenAI Realtime，否则音频只留在这台 Mac 上。可在“系统设置 → 隐私与安全性”中更改访问权限。"
+            "value": "除非使用云端翻译器，否则音频只留在这台 Mac 上。可在“系统设置 → 隐私与安全性”中更改访问权限。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "除非使用 OpenAI Realtime，否則音訊只留在這台 Mac 上。可在「系統設定 → 隱私權與安全性」中更改取用權限。"
+            "value": "除非使用雲端翻譯器，否則音訊只留在這台 Mac 上。可在「系統設定 → 隱私權與安全性」中更改取用權限。"
           }
         }
       }
@@ -1639,35 +1744,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "每次收聽都會儲存在這台 Mac 上。"
-          }
-        }
-      }
-    },
-    "Each listening session is kept here, on this iPhone.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "聞き取りのたびに、このiPhoneのここに保存されます。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "듣기 세션마다 이 iPhone의 여기에 저장됩니다."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "每次收听都会保存在这台 iPhone 上。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "每次收聽都會儲存在這台 iPhone 上。"
           }
         }
       }
@@ -3331,31 +3407,31 @@
         }
       }
     },
-    "On-device keeps everything on your iPhone. OpenAI Realtime sends speech to OpenAI.": {
+    "On-device keeps everything on your iPhone. OpenAI Realtime and Gemini Live send speech to OpenAI or Google.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "デバイス上の翻訳ならすべて iPhone 内で完結。OpenAI Realtime は音声を OpenAI に送ります。"
+            "value": "デバイス上の翻訳ならすべて iPhone 内で完結。OpenAI Realtime と Gemini Live は音声を OpenAI または Google に送ります。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "기기 내 번역은 모든 것이 iPhone에 남습니다. OpenAI Realtime은 음성을 OpenAI로 보냅니다."
+            "value": "기기 내 번역은 모든 것이 iPhone에 남습니다. OpenAI Realtime과 Gemini Live는 음성을 OpenAI 또는 Google로 보냅니다."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "设备端翻译一切都留在 iPhone 上。OpenAI Realtime 会把语音发送给 OpenAI。"
+            "value": "设备端翻译一切都留在 iPhone 上。OpenAI Realtime 和 Gemini Live 会把语音发送给 OpenAI 或 Google。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "裝置端翻譯一切都留在 iPhone 上。OpenAI Realtime 會把語音發送給 OpenAI。"
+            "value": "裝置端翻譯一切都留在 iPhone 上。OpenAI Realtime 和 Gemini Live 會把語音發送給 OpenAI 或 Google。"
           }
         }
       }
@@ -3633,31 +3709,31 @@
       "extractionState": "manual",
       "shouldTranslate": false
     },
-    "Or OpenAI Realtime for the fastest subtitles.": {
+    "Or OpenAI Realtime or Gemini Live for the fastest subtitles.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "最速の字幕なら OpenAI Realtime。"
+            "value": "最速の字幕なら OpenAI Realtime か Gemini Live。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "가장 빠른 자막은 OpenAI Realtime으로."
+            "value": "가장 빠른 자막은 OpenAI Realtime이나 Gemini Live로."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "或用 OpenAI Realtime 获得最快的字幕。"
+            "value": "或用 OpenAI Realtime 或 Gemini Live 获得最快的字幕。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "或用 OpenAI Realtime 獲得最快的字幕。"
+            "value": "或用 OpenAI Realtime 或 Gemini Live 獲得最快的字幕。"
           }
         }
       }

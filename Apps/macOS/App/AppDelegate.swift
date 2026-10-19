@@ -28,7 +28,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 }
 
 @MainActor
-final class ActionMenuItem: NSMenuItem {
+private final class ActionMenuItem: NSMenuItem {
     private let handler: @MainActor () -> Void
 
     init(_ title: String, handler: @escaping @MainActor () -> Void) {

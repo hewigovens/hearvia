@@ -9,7 +9,7 @@ final class OnDeviceSpeech: SpeechInput, @unchecked Sendable {
     private let convert: (AVAudioPCMBuffer) throws -> [AnalyzerInput]
     private let reader: Task<Void, Never>
 
-    convenience init(language: String, progress: (@Sendable (Double) -> Void)? = nil) async throws {
+    convenience init(language: String, progress: @escaping @Sendable (Double) -> Void) async throws {
         try await OnDeviceModels.downloadSpeech(language, progress: progress)
         try await self.init(transcribers: [OnDeviceModels.transcriber(language)], languages: [language])
     }
@@ -83,5 +83,11 @@ final class OnDeviceSpeech: SpeechInput, @unchecked Sendable {
         input.finish()
         await analyzer.cancelAndFinishNow()
         reader.cancel()
+    }
+}
+
+extension SpeechResult {
+    init(_ result: SpeechTranscriber.Result, language: String) {
+        self.init(text: String(result.text.characters), isFinal: result.isFinal, language: language)
     }
 }

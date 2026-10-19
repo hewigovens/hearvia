@@ -44,7 +44,7 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
             renderer?.fontScale = fontScale
             // The inline subtitles work without PiP (the iPhone Simulator has none); only the floating window needs it.
             guard AVPictureInPictureController.isPictureInPictureSupported() else { state = "Unsupported device"
-                Task { await self.render(subtitle: "Subtitles appear here", detail: nil) }
+                Task { await self.render(subtitle: String(localized: "Subtitles appear here"), detail: nil) }
                 return
             }
             let source = AVPictureInPictureController.ContentSource(sampleBufferDisplayLayer: layer, playbackDelegate: self)
@@ -60,7 +60,7 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
                 }
             }
             state = "Inline ready"
-            Task { await self.render(subtitle: "Subtitles appear here", detail: nil) }
+            Task { await self.render(subtitle: String(localized: "Subtitles appear here"), detail: nil) }
         } catch { fail(error) }
     }
 

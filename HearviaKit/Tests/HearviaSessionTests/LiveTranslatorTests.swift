@@ -84,7 +84,7 @@ final class Harness {
 
 @MainActor
 struct LiveTranslatorTests {
-    @Test func localModelNeedsAModelThenPassesItsServer() async {
+    @Test func localModelNeedsAModelThenPassesItsServer() async throws {
         let harness = Harness(apiKey: nil)
         let translator = harness.translator
         await translator.setEngine(.local)
@@ -93,8 +93,8 @@ struct LiveTranslatorTests {
         translator.localServerURL = "http://localhost:1234/v1"
         translator.localModel = "qwen3:8b"
         await translator.start()
-        let request = try? #require(harness.engines.first?.request)
-        #expect(request?.localModel == "qwen3:8b" && request?.localServer.baseURL == "http://localhost:1234/v1")
+        let request = try #require(harness.engines.first?.request)
+        #expect(request.localModel == "qwen3:8b" && request.localServer.baseURL == "http://localhost:1234/v1")
     }
 
     @Test func subtitleLinesPutTheChosenLanguageFirst() {

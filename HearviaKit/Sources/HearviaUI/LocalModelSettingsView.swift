@@ -38,9 +38,15 @@ public struct LocalModelSettingsView: View {
                         id: \.self) { Text($0).tag($0) }
             }
             HStack {
-                Text(failure.isEmpty ? "\(models.count) model\(models.count == 1 ? "" : "s") on this server" : failure)
-                    .font(.footnote)
-                    .foregroundStyle(failure.isEmpty ? Color.hvMuted : .red)
+                Group {
+                    if failure.isEmpty {
+                        Text("\(models.count) models on this server")
+                    } else {
+                        Text(failure)
+                    }
+                }
+                .font(.footnote)
+                .foregroundStyle(failure.isEmpty ? Color.hvMuted : .red)
                 Spacer()
                 Button("Refresh") { Task { await refresh() } }
             }

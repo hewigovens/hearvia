@@ -18,14 +18,13 @@ struct GeminiLiveClientTests {
         #expect(parse(#"{"goAway":{"timeLeft":"12.5s"}}"#) == [.expiring(at: now.addingTimeInterval(12.5))])
     }
 
-    @Test func oneMessageCarriesBothTranscriptsAndAudio() {
+    @Test func oneMessageCarriesBothTranscriptsAndIgnoresAudio() {
         let message = #"""
         {"serverContent":{"inputTranscription":{"text":"Good evening","languageCode":"en"},
          "outputTranscription":{"text":"晚上好","languageCode":"zh-Hans"},
          "modelTurn":{"parts":[{"inlineData":{"mimeType":"audio/pcm;rate=24000","data":"AAAAAA=="}}]}}}
         """#
-        #expect(parse(message) == [.sourceDelta("Good evening", elapsedMs: nil), .translationDelta("晚上好", elapsedMs: nil),
-                                   .audioDelta(bytes: 6, elapsedMs: nil)])
+        #expect(parse(message) == [.sourceDelta("Good evening"), .translationDelta("晚上好", elapsedMs: nil)])
         #expect(parse(#"{"serverContent":{"turnComplete":true}}"#).isEmpty)
     }
 
@@ -41,12 +40,6 @@ struct GeminiLiveClientTests {
 
         let quiet = GeminiLiveConfiguration(targetLanguage: "ja", transcribesSource: false).setupMessage
         #expect((quiet["setup"] as? [String: Any])?["inputAudioTranscription"] == nil)
-    }
-
-    @Test func namesTheScriptForChineseAndTheRegionForPortuguese() {
-        #expect(GeminiLiveConfiguration.languageCode("zh") == "zh-Hans")
-        #expect(GeminiLiveConfiguration.languageCode("pt") == "pt-BR")
-        #expect(GeminiLiveConfiguration.languageCode("nl") == "nl")
     }
 
     @Test func downsamplesThreeSamplesToTwo() {

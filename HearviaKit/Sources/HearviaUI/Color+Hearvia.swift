@@ -5,7 +5,6 @@ import SwiftUI
     import AppKit
 #endif
 
-/// Subtitle surfaces stay dark in both themes.
 public extension Color {
     static let hvGround = Color(light: 0xF7F7F5, dark: 0x0E1020)
     static let hvSurface = Color(light: 0xFFFFFF, dark: 0x191C33)
@@ -20,8 +19,6 @@ public extension Color {
     static let hvReady = Color(light: 0x1E9E62, dark: 0x4CC38A)
     static let hvAttention = Color(light: 0xC2570C, dark: 0xF5A35C)
     static let hvStop = Color(hex: 0xC8352E)
-    static let hvSubtitleGround = Color(hex: 0x000000)
-    static let hvSubtitleOriginal = Color(hex: 0x8A919E)
 
     init(hex: UInt32) {
         self.init(.sRGB, red: Double((hex >> 16) & 0xFF) / 255, green: Double((hex >> 8) & 0xFF) / 255,

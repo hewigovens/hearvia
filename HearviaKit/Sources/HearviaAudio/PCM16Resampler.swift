@@ -29,7 +29,7 @@ public final class PCM16Resampler {
         return drain()
     }
 
-    /// Zero-filled chunk to keep the stream contiguous while the source is silent or paused.
+    /// Zero-filled chunk; `hearvia-translate` ends a file with a few seconds of it so the model can finish.
     public static var silenceChunk: Data {
         Data(count: chunkFrames * 2)
     }

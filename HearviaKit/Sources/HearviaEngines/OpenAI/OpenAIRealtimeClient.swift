@@ -1,19 +1,18 @@
 import Foundation
 
-/// `credential` is an API key (development) or an ephemeral client secret (production).
 public actor OpenAIRealtimeClient: TranslationSocket {
     public nonisolated let events: AsyncStream<SocketEvent>
     private let continuation: AsyncStream<SocketEvent>.Continuation
     private let configuration: OpenAIRealtimeConfiguration
-    private let credential: String
+    private let apiKey: String
     private let session: URLSession
     private var task: URLSessionWebSocketTask?
     private var finished = false
     private var closeReason: String?
 
-    public init(configuration: OpenAIRealtimeConfiguration, credential: String, session: URLSession = .shared) {
+    public init(configuration: OpenAIRealtimeConfiguration, apiKey: String, session: URLSession = .shared) {
         self.configuration = configuration
-        self.credential = credential
+        self.apiKey = apiKey
         self.session = session
         (events, continuation) = AsyncStream.makeStream(bufferingPolicy: .unbounded)
     }
@@ -22,7 +21,7 @@ public actor OpenAIRealtimeClient: TranslationSocket {
         var components = URLComponents(url: configuration.endpoint, resolvingAgainstBaseURL: false)!
         components.queryItems = [URLQueryItem(name: "model", value: configuration.model)]
         var request = URLRequest(url: components.url!)
-        request.setValue("Bearer \(credential)", forHTTPHeaderField: "Authorization")
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         let task = session.webSocketTask(with: request)
         task.maximumMessageSize = 16 * 1024 * 1024
         self.task = task
@@ -53,7 +52,7 @@ public actor OpenAIRealtimeClient: TranslationSocket {
     private func sessionUpdate() -> [String: Any] {
         var input: [String: Any] = [:]
         input["transcription"] = configuration.sourceTranscriptionModel.map { ["model": $0] } ?? NSNull()
-        input["noise_reduction"] = configuration.noiseReduction.map { ["type": $0] } ?? NSNull()
+        input["noise_reduction"] = NSNull()
         return ["type": "session.update",
                 "session": ["audio": ["input": input, "output": ["language": configuration.targetLanguage]]]]
     }
@@ -104,16 +103,13 @@ public actor OpenAIRealtimeClient: TranslationSocket {
     static func parse(_ data: Data) -> SocketEvent? {
         guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let type = json["type"] as? String else { return nil }
-        let elapsed = json["elapsed_ms"] as? Int
         switch type {
         case "session.created":
             let session = json["session"] as? [String: Any]
             let expires = (session?["expires_at"] as? Double).map { Date(timeIntervalSince1970: $0) }
             return .sessionStarted(id: session?["id"] as? String ?? "?", expiresAt: expires)
-        case "session.input_transcript.delta": return .sourceDelta(json["delta"] as? String ?? "", elapsedMs: elapsed)
-        case "session.output_transcript.delta": return .translationDelta(json["delta"] as? String ?? "", elapsedMs: elapsed)
-        case "session.output_audio.delta":
-            return .audioDelta(bytes: ((json["delta"] as? String)?.count ?? 0) * 3 / 4, elapsedMs: elapsed)
+        case "session.input_transcript.delta": return .sourceDelta(json["delta"] as? String ?? "")
+        case "session.output_transcript.delta": return .translationDelta(json["delta"] as? String ?? "", elapsedMs: json["elapsed_ms"] as? Int)
         case "session.closed": return .closed(reason: nil)
         case "error":
             let e = json["error"] as? [String: Any]

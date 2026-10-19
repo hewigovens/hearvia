@@ -8,7 +8,7 @@ public extension LiveTranslator {
         guard !isActive else { return }
         guard !engine.isCloud || !apiKey.isEmpty else {
             status = .needsAPIKey
-            error = "Add an API key for \(engine.title) in Settings, or switch to on-device translation."
+            error = String(localized: "Add an API key for \(engine.title) in Settings, or switch to on-device translation.")
             return
         }
         guard engine != .local || !localModel.isEmpty else {
