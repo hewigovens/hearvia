@@ -86,6 +86,12 @@ final class AppModel {
         defer { ticking = false }
         audio = await capture.probe.read()
         tickCount += 1
+        if listening, tickCount.isMultiple(of: 60) {
+            // Once a minute: what decides whether iOS lets a long locked session run.
+            log.event("health", ["footprint_mb": String(format: "%.0f", ProcessInfo.processInfo.footprintMegabytes),
+                                 "thermal": "\(ProcessInfo.processInfo.thermalState.rawValue)", "scene": scene,
+                                 "transcript_lines": "\(translation.transcript.lines.count)"])
+        }
         await syncListeningState()
         await renderSubtitle()
         pip.finishRestore()
