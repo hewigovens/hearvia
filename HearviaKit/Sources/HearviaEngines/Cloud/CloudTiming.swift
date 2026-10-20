@@ -4,8 +4,6 @@ import Foundation
 struct CloudTiming: Sendable {
     /// Silence before the socket is closed to stop billing (25 s).
     var silenceChunks = 125
-    /// Peak sample below which a chunk counts as silent (about -40 dBFS).
-    var silencePeak = 330
     /// Audio kept while paused and sent first after reopening, so the first words aren't lost (1.6 s).
     var preRollChunks = 8
     /// Audio kept while a socket connects (10 s); anything older is dropped.

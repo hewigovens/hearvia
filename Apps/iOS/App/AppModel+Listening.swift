@@ -63,6 +63,7 @@ extension AppModel {
             }
         } else {
             levels.stop()
+            lastHealth = nil // The next session's first CPU reading starts fresh.
             pip.disarmAutoStart()
             await translation.stop()
         }

@@ -4,13 +4,15 @@ import Foundation
 struct SilenceDetector {
     /// `peak`: other apps' audio goes digitally quiet, and dialogue over background music must still count as sound.
     /// `roomNoise`: a microphone never goes quiet, so silence is anything close to the background noise it keeps following.
-    enum Mode: Equatable {
-        case peak(Int)
+    enum Mode {
+        case peak
         case roomNoise
     }
 
-    let mode: Mode
+    private let mode: Mode
     private var floor: Double?
+    /// About -40 dBFS.
+    private static let peakLimit = 330
     /// Speech is well above a room's hum; the floor drops at once and rises 0.25 dB a second at 200 ms chunks.
     private static let margin = 10.0, quietest = -55.0, rise = 0.05
 
@@ -20,13 +22,14 @@ struct SilenceDetector {
 
     mutating func isSilent(_ chunk: Data) -> Bool {
         switch mode {
-        case let .peak(limit):
-            return Self.peak(of: chunk) < limit
+        case .peak:
+            return Self.peak(of: chunk) < Self.peakLimit
         case .roomNoise:
             let level = Self.level(of: chunk)
-            let floor = min(level, (self.floor ?? level) + Self.rise)
-            self.floor = floor
-            return level < max(Self.quietest, floor + Self.margin)
+            if level >= Self.quietest { // A dropout's digital silence would otherwise pin the floor for minutes.
+                floor = min(level, (floor ?? level) + Self.rise)
+            }
+            return level < max(Self.quietest, (floor ?? level) + Self.margin)
         }
     }
 

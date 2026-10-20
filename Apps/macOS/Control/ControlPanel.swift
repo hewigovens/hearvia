@@ -8,6 +8,10 @@ struct ControlPanel: View {
     @Environment(\.openWindow) private var openWindow
     @State private var checked: TranslatorSetup?
 
+    private var setup: TranslatorSetup? {
+        model.translator.knownSetup ?? checked
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             header
@@ -18,10 +22,10 @@ struct ControlPanel: View {
                     .frame(maxWidth: .infinity)
                     .transition(.opacity)
             } else {
-                ControlTiles(model: model, ready: checked.map { $0 == .ready })
+                ControlTiles(model: model, ready: setup.map { $0 == .ready })
                     .transition(.offset(y: -30).combined(with: .opacity))
             }
-            EngineStatusLine(translator: model.translator, setup: model.translator.knownSetup ?? checked)
+            EngineStatusLine(translator: model.translator, setup: setup)
             ForEach([model.captureError, model.translator.displayError].filter { !$0.isEmpty }, id: \.self) { error in
                 Text(error).font(.caption).foregroundStyle(.red)
             }
@@ -39,7 +43,10 @@ struct ControlPanel: View {
         .foregroundStyle(Color.hvText)
         .tint(.hvAccent)
         .onAppear { model.refreshProcesses() }
-        .task(id: model.translator.readinessKey) { checked = await model.translator.checkSetup() }
+        .task(id: model.translator.readinessKey) {
+            checked = nil
+            checked = await model.translator.checkSetup()
+        }
     }
 
     private var header: some View {

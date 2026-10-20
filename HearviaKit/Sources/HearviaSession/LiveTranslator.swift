@@ -47,7 +47,7 @@ public final class LiveTranslator {
     public private(set) var transcribesSource = true
     /// Set before `start()`: the cloud engines then judge silence against room noise, and OpenAI Realtime reduces it.
     public var listensToMicrophone = false
-    /// Off while nothing shows subtitles (in the background without the floating window, or locked), to save power.
+    /// Off while nothing shows subtitles, to save power; the transcript only needs finished sentences.
     public var translatesDrafts = true {
         didSet { running?.setTranslatesDrafts(translatesDrafts) }
     }
@@ -101,9 +101,9 @@ public final class LiveTranslator {
     public static func makeEngine(_ kind: EngineKind, _ request: EngineRequest) -> any TranslationEngine {
         switch kind {
         case .realtime: CloudEngine.openAI(targetLanguage: request.targetLanguage, apiKey: request.apiKey,
-                                           transcribesSource: request.transcribesSource, microphone: request.microphone)
+                                           transcribesSource: request.transcribesSource, listensToMicrophone: request.listensToMicrophone)
         case .gemini: CloudEngine.gemini(targetLanguage: request.targetLanguage, apiKey: request.apiKey,
-                                         transcribesSource: request.transcribesSource, microphone: request.microphone)
+                                         transcribesSource: request.transcribesSource, listensToMicrophone: request.listensToMicrophone)
         case .onDevice: OnDeviceEngine(sourceLanguage: request.sourceLanguage, targetLanguage: request.targetLanguage)
         case .local: OnDeviceEngine.localModel(sourceLanguage: request.sourceLanguage, targetLanguage: request.targetLanguage,
                                                server: request.localServer, model: request.localModel)
@@ -136,8 +136,9 @@ public final class LiveTranslator {
     public func swapLanguages() async {
         guard canSwapLanguages else { return }
         let spoken = sourceLanguage
-        await setSourceLanguage(targetLanguage == Languages.traditionalChinese ? "zh" : targetLanguage)
-        await setTargetLanguage(spoken)
+        sourceLanguage = targetLanguage == Languages.traditionalChinese ? "zh" : targetLanguage
+        targetLanguage = spoken
+        await restartIfActive()
     }
 
     public func setEngine(_ engine: EngineKind) async {
@@ -150,7 +151,7 @@ public final class LiveTranslator {
     }
 
     /// Restarts a running cloud engine so the change applies right away: turning the original on should show it now, and turning it off should stop paying for it now. The on-device engine always has the original.
-    public func setTranscribesSource(_ transcribes: Bool) async {
+    func setTranscribesSource(_ transcribes: Bool) async {
         guard transcribes != transcribesSource else { return }
         transcribesSource = transcribes
         if engine.isCloud {
@@ -187,7 +188,7 @@ public struct EngineRequest: Sendable {
     public let targetLanguage: String
     public let apiKey: String
     public let transcribesSource: Bool
-    public let microphone: Bool
+    public let listensToMicrophone: Bool
     public let localServer: LocalModelServer
     public let localModel: String
 }

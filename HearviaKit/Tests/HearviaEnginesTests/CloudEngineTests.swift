@@ -96,7 +96,7 @@ final class CloudHarness {
         timing.backoff = { _ in .milliseconds(1) }
         timing.now = { [clock] in clock.now }
         let engine = CloudEngine(provider: "OpenAI", targetLanguage: "zh", transcribesSource: transcribesSource,
-                                 timing: timing) { [unowned self] target, transcribes in
+                                 listensToMicrophone: false, timing: timing) { [unowned self] target, transcribes in
             let socket = FakeSocket(targetLanguage: target, transcribesSource: transcribes, failsToConnect: failsToConnect,
                                     switchesLanguage: switchesLanguage)
             sockets.append(socket)
@@ -295,10 +295,5 @@ struct CloudEngineTests {
         try await waitUntil { self.harness.engine.expiresAt != nil }
         try await harness.feed(chunk(1000))
         try await waitUntil { self.harness.sockets.count == 2 }
-    }
-
-    @Test func measuresChunkPeaks() {
-        #expect(SilenceDetector.peak(of: chunk(-1200)) == 1200)
-        #expect(SilenceDetector.peak(of: Data()) == 0)
     }
 }

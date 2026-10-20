@@ -34,7 +34,7 @@ public final class PCM16Resampler {
         Data(count: chunkFrames * 2)
     }
 
-    /// Chunks and the remainder get their own storage: slicing `Data` keeps the whole buffer alive and growing, about 2.8 MB a minute.
+    /// Chunks and the remainder get their own storage: slicing `Data` keeps the whole buffer alive and growing.
     private func drain() -> [Data] {
         let bytes = Self.chunkFrames * 2
         let count = pending.count / bytes

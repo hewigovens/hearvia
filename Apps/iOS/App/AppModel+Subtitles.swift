@@ -11,9 +11,10 @@ extension AppModel {
         }
     }
 
-    /// Nothing shows subtitles in the background without the floating window, or once the screen locks (protected data goes away); then skip drawing, level bars and draft translations, since the transcript only needs finished sentences.
+    /// Locked or in the background without the floating window, nobody sees subtitles; the transcript only needs finished sentences.
     func updateSubtitleVisibility() {
-        let visible = scene != "background" || (pip.active && UIApplication.shared.isProtectedDataAvailable)
+        let floating = pip.active || pip.pending || pip.autoStartArmed // PiP reports active a moment after leaving the app.
+        let visible = scene != "background" || (floating && UIApplication.shared.isProtectedDataAvailable)
         guard visible != subtitlesVisible else { return }
         subtitlesVisible = visible
         translation.translatesDrafts = visible
