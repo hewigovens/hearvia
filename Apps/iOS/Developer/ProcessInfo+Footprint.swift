@@ -11,4 +11,14 @@ extension ProcessInfo {
         }
         return result == KERN_SUCCESS ? Double(info.phys_footprint) / 1_048_576 : 0
     }
+
+    /// CPU time the process has used so far, user and system, in seconds.
+    var cpuSeconds: Double {
+        var usage = rusage()
+        getrusage(RUSAGE_SELF, &usage)
+        func seconds(_ t: timeval) -> Double {
+            Double(t.tv_sec) + Double(t.tv_usec) / 1_000_000
+        }
+        return seconds(usage.ru_utime) + seconds(usage.ru_stime)
+    }
 }

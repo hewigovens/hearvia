@@ -37,6 +37,7 @@ final class AppModel {
     @ObservationIgnored var wasListening = false
     @ObservationIgnored var renderQueued = false
     @ObservationIgnored private var ticking = false
+    @ObservationIgnored private var lastHealth: (uptime: Double, cpu: Double)?
     @ObservationIgnored private var timer: Timer?
 
     init(settings: AppSettings) {
@@ -80,6 +81,17 @@ final class AppModel {
         #endif
     }
 
+    /// Once a minute while listening: what decides whether iOS lets a long locked session run, and how warm it gets.
+    private func logHealth() {
+        let info = ProcessInfo.processInfo
+        let now = (uptime: info.systemUptime, cpu: info.cpuSeconds)
+        let cpu = lastHealth.map { String(format: "%.0f", 100 * (now.cpu - $0.cpu) / (now.uptime - $0.uptime)) } ?? "-"
+        lastHealth = now
+        log.event("health", ["footprint_mb": String(format: "%.0f", info.footprintMegabytes), "cpu_pct": cpu,
+                             "thermal": "\(info.thermalState.rawValue)", "scene": scene,
+                             "transcript_lines": "\(translation.transcript.lines.count)"])
+    }
+
     func tick() async {
         guard !ticking else { return }
         ticking = true
@@ -87,10 +99,7 @@ final class AppModel {
         audio = await capture.probe.read()
         tickCount += 1
         if listening, tickCount.isMultiple(of: 60) {
-            // Once a minute: what decides whether iOS lets a long locked session run.
-            log.event("health", ["footprint_mb": String(format: "%.0f", ProcessInfo.processInfo.footprintMegabytes),
-                                 "thermal": "\(ProcessInfo.processInfo.thermalState.rawValue)", "scene": scene,
-                                 "transcript_lines": "\(translation.transcript.lines.count)"])
+            logHealth()
         }
         await syncListeningState()
         await renderSubtitle()
