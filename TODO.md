@@ -34,7 +34,7 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 
 - [ ] Local LLM translator with Ollama / LM Studio. With a slow model, consider translating finished sentences only, since in-progress text is re-sent as it changes.
 - [ ] iOS UI tests for the redesigned UI (this Mac now has the iOS 27.0 and 27.1 simulators).
-- [ ] Tune the cloud silence threshold (about −40 dBFS peak, `CloudTiming.silencePeak`): videos with background music may never pause.
+- [ ] Cloud silence pause: the microphone follows the room's noise (`SilenceDetector.roomNoise`; check it pauses in real rooms, iPhone and a Mac with a mic), while other apps' audio still uses a fixed −40 dBFS peak, so videos with background music may never pause.
 - [ ] Transcript lines are cut at sentence punctuation in the translation, so original/translation pairing is approximate.
 - [ ] Gemini Live en → ja drops the last clause of a clip ("…smaller than expected"), and en → nl / pt cut the end too; recheck when the model leaves preview.
 - [ ] Mac menu-bar-only launch closes the control window by polling for it (`MenuBarLabel.closeLaunchWindow`) because `.defaultLaunchBehavior` was unreliable; replace if SwiftUI gets a dependable way.

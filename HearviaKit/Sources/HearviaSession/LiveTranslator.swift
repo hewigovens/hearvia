@@ -45,7 +45,7 @@ public final class LiveTranslator {
     }
     /// Whether a cloud engine also returns the original-language text, which OpenAI bills separately. The apps follow their "show original speech" setting. Not persisted.
     public private(set) var transcribesSource = true
-    /// Set before `start()`; OpenAI Realtime then reduces room noise, which only the microphone has.
+    /// Set before `start()`: the cloud engines then judge silence against room noise, and OpenAI Realtime reduces it.
     public var listensToMicrophone = false
     /// Off while nothing shows subtitles (in the background without the floating window, or locked), to save power.
     public var translatesDrafts = true {
@@ -101,9 +101,9 @@ public final class LiveTranslator {
     public static func makeEngine(_ kind: EngineKind, _ request: EngineRequest) -> any TranslationEngine {
         switch kind {
         case .realtime: CloudEngine.openAI(targetLanguage: request.targetLanguage, apiKey: request.apiKey,
-                                           transcribesSource: request.transcribesSource, reducesRoomNoise: request.microphone)
+                                           transcribesSource: request.transcribesSource, microphone: request.microphone)
         case .gemini: CloudEngine.gemini(targetLanguage: request.targetLanguage, apiKey: request.apiKey,
-                                         transcribesSource: request.transcribesSource)
+                                         transcribesSource: request.transcribesSource, microphone: request.microphone)
         case .onDevice: OnDeviceEngine(sourceLanguage: request.sourceLanguage, targetLanguage: request.targetLanguage)
         case .local: OnDeviceEngine.localModel(sourceLanguage: request.sourceLanguage, targetLanguage: request.targetLanguage,
                                                server: request.localServer, model: request.localModel)

@@ -4,7 +4,7 @@ extension CloudEngine {
     func consume(_ chunk: Data) async {
         guard running else { return }
         chunksReceived += 1
-        let silent = Self.peak(of: chunk) < timing.silencePeak
+        let silent = silence.isSilent(chunk)
         silentChunks = silent ? silentChunks + 1 : 0
         if paused {
             remember(chunk, limit: timing.preRollChunks)
@@ -73,15 +73,5 @@ extension CloudEngine {
         let left = expiresAt.timeIntervalSince(timing.now())
         guard left <= timing.rotationDeadline || (left <= timing.rotationLead && silentChunks >= timing.pauseChunks) else { return }
         rotate(reason: "expiry")
-    }
-
-    nonisolated static func peak(of chunk: Data) -> Int {
-        chunk.withUnsafeBytes { raw in
-            var peak = 0
-            for offset in stride(from: 0, to: raw.count - 1, by: 2) {
-                peak = max(peak, abs(Int(raw.loadUnaligned(fromByteOffset: offset, as: Int16.self))))
-            }
-            return peak
-        }
     }
 }

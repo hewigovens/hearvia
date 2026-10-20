@@ -298,7 +298,7 @@ struct CloudEngineTests {
     }
 
     @Test func measuresChunkPeaks() {
-        #expect(CloudEngine.peak(of: chunk(-1200)) == 1200)
-        #expect(CloudEngine.peak(of: Data()) == 0)
+        #expect(SilenceDetector.peak(of: chunk(-1200)) == 1200)
+        #expect(SilenceDetector.peak(of: Data()) == 0)
     }
 }

@@ -22,6 +22,7 @@ public final class CloudEngine: TranslationEngine {
     var paused = false
     var backlog: [Data] = []
     var silentChunks = 0
+    var silence: SilenceDetector
     var expiresAt: Date?
     var pump: Task<Void, Never>?
     var reconnectTask: Task<Void, Never>?
@@ -42,24 +43,29 @@ public final class CloudEngine: TranslationEngine {
     var segmenter = SentenceSegmenter()
 
     /// `transcribesSource: false` skips the original-language text, which is billed separately.
-    public static func openAI(targetLanguage: String, apiKey: String, transcribesSource: Bool, reducesRoomNoise: Bool) -> CloudEngine {
-        CloudEngine(provider: "OpenAI", targetLanguage: targetLanguage, transcribesSource: transcribesSource, timing: CloudTiming()) {
-            OpenAIRealtimeClient(configuration: OpenAIRealtimeConfiguration(targetLanguage: $0, transcribesSource: $1, reducesRoomNoise: reducesRoomNoise),
+    /// `microphone`: far-field noise reduction, and silence judged against the room's background noise.
+    public static func openAI(targetLanguage: String, apiKey: String, transcribesSource: Bool, microphone: Bool) -> CloudEngine {
+        CloudEngine(provider: "OpenAI", targetLanguage: targetLanguage, transcribesSource: transcribesSource, microphone: microphone,
+                    timing: CloudTiming()) {
+            OpenAIRealtimeClient(configuration: OpenAIRealtimeConfiguration(targetLanguage: $0, transcribesSource: $1, reducesRoomNoise: microphone),
                                  apiKey: apiKey)
         }
     }
 
-    public static func gemini(targetLanguage: String, apiKey: String, transcribesSource: Bool) -> CloudEngine {
-        CloudEngine(provider: "Gemini", targetLanguage: targetLanguage, transcribesSource: transcribesSource, timing: CloudTiming()) {
+    public static func gemini(targetLanguage: String, apiKey: String, transcribesSource: Bool, microphone: Bool) -> CloudEngine {
+        CloudEngine(provider: "Gemini", targetLanguage: targetLanguage, transcribesSource: transcribesSource, microphone: microphone,
+                    timing: CloudTiming()) {
             GeminiLiveClient(configuration: GeminiLiveConfiguration(targetLanguage: $0, transcribesSource: $1), apiKey: apiKey)
         }
     }
 
-    init(provider: String, targetLanguage: String, transcribesSource: Bool, timing: CloudTiming, makeSocket: @escaping SocketFactory) {
+    init(provider: String, targetLanguage: String, transcribesSource: Bool, microphone: Bool = false, timing: CloudTiming,
+         makeSocket: @escaping SocketFactory) {
         self.provider = provider
         self.targetLanguage = targetLanguage
         self.transcribesSource = transcribesSource
         self.timing = timing
+        silence = SilenceDetector(microphone ? .roomNoise : .peak(timing.silencePeak))
         self.makeSocket = makeSocket
         (updates, continuation) = AsyncStream.makeStream()
     }
