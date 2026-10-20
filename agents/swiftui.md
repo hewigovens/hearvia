@@ -59,5 +59,6 @@ Apps/Shared/      Localizable.xcstrings (all three targets), DevSecrets.generate
 ## Platform notes
 
 - iOS: the PiP inline layer (`SubtitlePreview`) must stay in the view hierarchy while listening, or PiP cannot start on leaving the app.
+- iOS: microphone listening keeps going in the background and with the screen locked (the `audio` background mode and a play-and-record session; no floating window needed). Checked 2026-10-20 on an iPhone with the on-device translator, Debug build launched without a debugger: 35 minutes locked on the charger kept 69 of 71 spoken test sentences, memory 26–58 MB without growth, thermal nominal to fair (log event `health`, once a minute while listening).
 - iOS: ScreenCaptureKit shows the system picker on every start; the app never plays audio (own-audio exclusion is unreliable on 27.0.1).
 - macOS: the overlay drags with `WindowDragGesture`, and its panel accepts the first click so it works without activating Hearvia.
