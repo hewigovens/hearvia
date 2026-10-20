@@ -13,3 +13,13 @@ import Testing
     let rejected = #"{"type":"error","error":{"type":"invalid_request_error","code":"invalid_api_key","message":"Incorrect API key"}}"#
     #expect(OpenAIRealtimeClient.parse(Data(rejected.utf8)) == .serverError(code: "invalid_api_key", message: "Incorrect API key", fatal: true))
 }
+
+@Test func reducesRoomNoiseOnlyWhenAsked() {
+    func noiseReduction(_ configuration: OpenAIRealtimeConfiguration) -> Any? {
+        let session = configuration.sessionUpdate["session"] as? [String: Any]
+        return ((session?["audio"] as? [String: Any])?["input"] as? [String: Any])?["noise_reduction"]
+    }
+    #expect(noiseReduction(OpenAIRealtimeConfiguration(targetLanguage: "zh")) is NSNull)
+    let reduced = noiseReduction(OpenAIRealtimeConfiguration(targetLanguage: "zh", reducesRoomNoise: true)) as? [String: String]
+    #expect(reduced == ["type": "far_field"])
+}

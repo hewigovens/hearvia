@@ -25,6 +25,7 @@ extension AppModel {
         capturingSince = Date()
         Self.emit("capture_started", ["source": source.label, "format": tap.format.map { "\($0)" } ?? "mic"])
         levels.start()
+        translator.listensToMicrophone = source == .microphone
         await translator.start()
     }
 

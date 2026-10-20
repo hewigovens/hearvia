@@ -26,7 +26,7 @@ public actor OpenAIRealtimeClient: TranslationSocket {
         task.maximumMessageSize = 16 * 1024 * 1024
         self.task = task
         task.resume()
-        try await send(sessionUpdate())
+        try await send(configuration.sessionUpdate)
         Task { await self.receiveLoop() }
     }
 
@@ -47,14 +47,6 @@ public actor OpenAIRealtimeClient: TranslationSocket {
     public func cancel() {
         task?.cancel(with: .goingAway, reason: nil)
         finish(reason: "cancelled")
-    }
-
-    private func sessionUpdate() -> [String: Any] {
-        var input: [String: Any] = [:]
-        input["transcription"] = configuration.sourceTranscriptionModel.map { ["model": $0] } ?? NSNull()
-        input["noise_reduction"] = NSNull()
-        return ["type": "session.update",
-                "session": ["audio": ["input": input, "output": ["language": configuration.targetLanguage]]]]
     }
 
     private func send(_ object: [String: Any]) async throws {

@@ -4,7 +4,7 @@ import HearviaAudio
 import HearviaEngines
 
 // Streams an audio file through an engine at real-time pace and prints the text as it arrives.
-// Usage: hearvia-translate <audio-file> [target-lang=zh] [--fast] [--gemini | --on-device=<spoken-lang or auto>]
+// Usage: hearvia-translate <audio-file> [target-lang=zh] [--fast] [--far-field] [--gemini | --on-device=<spoken-lang or auto>]
 // OpenAI Realtime by default (it also reports lag); --fast sends the audio as quickly as possible.
 
 /// `name` from the environment, else from the nearest `.env` up to four directories above.
@@ -25,7 +25,7 @@ func secret(_ name: String) -> String? {
 }
 
 let args = CommandLine.arguments.dropFirst().filter { !$0.hasPrefix("--") }
-guard let path = args.first else { print("usage: hearvia-translate <audio-file> [lang] [--fast] [--gemini | --on-device=<spoken-lang or auto>]")
+guard let path = args.first else { print("usage: hearvia-translate <audio-file> [lang] [--fast] [--far-field] [--gemini | --on-device=<spoken-lang or auto>]")
     exit(2)
 }
 let language = args.dropFirst().first ?? "zh"
@@ -56,7 +56,9 @@ print("audio: \(file.fileFormat.sampleRate) Hz × \(file.fileFormat.channelCount
 
 let client: any TranslationSocket = gemini
     ? GeminiLiveClient(configuration: GeminiLiveConfiguration(targetLanguage: language), apiKey: key)
-    : OpenAIRealtimeClient(configuration: OpenAIRealtimeConfiguration(targetLanguage: language), apiKey: key)
+    : OpenAIRealtimeClient(configuration: OpenAIRealtimeConfiguration(targetLanguage: language,
+                                                                      reducesRoomNoise: CommandLine.arguments.contains("--far-field")),
+                           apiKey: key)
 let start = Date()
 nonisolated(unsafe) var streamStart = Date.distantFuture
 func stamp() -> String {

@@ -23,7 +23,8 @@ public extension LiveTranslator {
         transcript = Transcript(engine: engine, sourceLanguage: engine.detectsSpokenLanguage ? "" : sourceLanguage, targetLanguage: targetLanguage)
         stats = TranslatorStats()
         let request = EngineRequest(sourceLanguage: sourceLanguage, targetLanguage: targetLanguage, apiKey: apiKey,
-                                    transcribesSource: transcribesSource, localServer: localServer, localModel: localModel)
+                                    transcribesSource: transcribesSource, microphone: listensToMicrophone,
+                                    localServer: localServer, localModel: localModel)
         let engine = makeEngine(engine, request)
         running = engine
         listener = Task { [weak self] in

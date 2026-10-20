@@ -56,6 +56,7 @@ extension AppModel {
                 await pip.armAutoStart()
             }
             if translationEnabled {
+                translation.listensToMicrophone = micRunning
                 await translation.start()
             }
         } else {

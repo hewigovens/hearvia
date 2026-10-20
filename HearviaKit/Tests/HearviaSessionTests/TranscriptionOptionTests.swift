@@ -17,6 +17,13 @@ struct TranscriptionOptionTests {
         #expect(harness.engines.first?.request.transcribesSource == false)
     }
 
+    @Test func requestSaysWhenTheInputIsTheMicrophone() async {
+        let harness = Harness()
+        harness.translator.listensToMicrophone = true
+        await harness.translator.start()
+        #expect(harness.engines.first?.request.microphone == true)
+    }
+
     @Test func changeRestartsARunningRealtimeEngine() async {
         let harness = Harness()
         await harness.translator.start()
