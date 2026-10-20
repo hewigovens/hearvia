@@ -18,6 +18,7 @@ import Testing
     }
     #expect(chunks.count >= 4) // converter latency may hold back part of the last chunk
     #expect(chunks.allSatisfy { $0.count == 9600 })
+    #expect(chunks.allSatisfy { $0.startIndex == 0 }) // Own storage, not a slice that keeps the whole buffer alive
     let last = try #require(chunks.last?.withUnsafeBytes { Array($0.bindMemory(to: Int16.self)) })
     #expect(abs(Int(last[2000]) - 16384) < 200) // DC 0.5 survives downmix at full scale
 }
