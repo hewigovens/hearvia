@@ -130,6 +130,21 @@ struct OnDeviceEngineTests {
         await engine.stop()
     }
 
+    @Test func translatesOnlyFinishedSentencesWhileDraftsAreOff() async throws {
+        let engine = makeEngine()
+        let recorder = Recorder(engine)
+        await engine.start(audio: AsyncStream { $0.finish() })
+        engine.setTranslatesDrafts(false)
+        speech.say("one two", final: false)
+        speech.say("one two three.", final: true)
+        try await waitUntil { !recorder.sentences.isEmpty }
+        #expect(await translator.requests == ["one two three."])
+        speech.say("four", final: false)
+        engine.setTranslatesDrafts(true)
+        try await waitUntil { await translator.requests.last == "four" }
+        await engine.stop()
+    }
+
     @Test func showsATranslationErrorUntilTranslatingWorksAgain() async throws {
         let engine = makeEngine()
         let recorder = Recorder(engine)

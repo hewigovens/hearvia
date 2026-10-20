@@ -47,6 +47,10 @@ public final class LiveTranslator {
     public private(set) var transcribesSource = true
     /// Set before `start()`; OpenAI Realtime then reduces room noise, which only the microphone has.
     public var listensToMicrophone = false
+    /// Off while nothing shows subtitles (in the background without the floating window, or locked), to save power.
+    public var translatesDrafts = true {
+        didSet { running?.setTranslatesDrafts(translatesDrafts) }
+    }
 
     public internal(set) var isActive = false
     public internal(set) var status = TranslatorStatus.idle

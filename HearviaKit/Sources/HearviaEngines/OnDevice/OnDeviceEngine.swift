@@ -25,6 +25,7 @@ public final class OnDeviceEngine: TranslationEngine {
     var volatileTranslation = ""
     var finalQueue: [String] = []
     var pendingVolatile: String?
+    var translatesDrafts = true
     var translationProblem = ""
 
     public convenience init(sourceLanguage: String, targetLanguage: String) {

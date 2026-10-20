@@ -36,6 +36,7 @@ final class AppModel {
     @ObservationIgnored let microphone = MicrophoneCapture()
     @ObservationIgnored var wasListening = false
     @ObservationIgnored var renderQueued = false
+    @ObservationIgnored var subtitlesVisible = true
     @ObservationIgnored private var ticking = false
     @ObservationIgnored private var lastHealth: (uptime: Double, cpu: Double)?
     @ObservationIgnored private var timer: Timer?
@@ -102,6 +103,7 @@ final class AppModel {
             logHealth()
         }
         await syncListeningState()
+        updateSubtitleVisibility()
         await renderSubtitle()
         pip.finishRestore()
     }
@@ -114,6 +116,7 @@ final class AppModel {
             capture.probe.markBackground(true)
             translation.saveTranscript() // iOS may end a backgrounded app without warning.
         }
+        updateSubtitleVisibility()
         if phase == .active {
             capture.probe.markBackground(false)
             pip.finishRestore()

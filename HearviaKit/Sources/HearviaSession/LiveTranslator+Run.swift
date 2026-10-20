@@ -26,6 +26,7 @@ public extension LiveTranslator {
                                     transcribesSource: transcribesSource, microphone: listensToMicrophone,
                                     localServer: localServer, localModel: localModel)
         let engine = makeEngine(engine, request)
+        engine.setTranslatesDrafts(translatesDrafts)
         running = engine
         listener = Task { [weak self] in
             for await update in engine.updates {

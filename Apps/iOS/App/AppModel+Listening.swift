@@ -51,7 +51,9 @@ extension AppModel {
         wasListening = listening
         listeningSince = listening ? Date() : nil
         if listening {
-            levels.start()
+            if subtitlesVisible {
+                levels.start()
+            }
             if settings.floatsWhenLeaving {
                 await pip.armAutoStart()
             }

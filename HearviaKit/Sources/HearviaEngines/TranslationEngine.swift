@@ -13,7 +13,15 @@ public protocol TranslationEngine: AnyObject {
     /// Switches the subtitle language in place. Returns false when the engine must be restarted instead.
     func setTargetLanguage(_ language: String) async -> Bool
 
+    /// Off while nothing shows subtitles: only finished sentences, which the transcript needs, are translated.
+    func setTranslatesDrafts(_ translates: Bool)
+
     func stop() async
+}
+
+public extension TranslationEngine {
+    /// Cloud providers send their own drafts at no extra cost.
+    func setTranslatesDrafts(_: Bool) {}
 }
 
 public enum EngineUpdate: Equatable, Sendable {

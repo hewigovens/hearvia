@@ -15,7 +15,7 @@ extension OnDeviceEngine {
             }
         } else {
             volatileSource = text
-            pendingVolatile = text
+            pendingVolatile = translatesDrafts ? text : nil
         }
         guard translate != nil else { // Same language: subtitles are the transcript.
             finalQueue = []
@@ -29,6 +29,16 @@ extension OnDeviceEngine {
         }
         continuation.yield(.text(source: currentSource, translation: currentTranslation))
         kick?.yield()
+    }
+
+    public func setTranslatesDrafts(_ translates: Bool) {
+        translatesDrafts = translates
+        pendingVolatile = translates && !volatileSource.isEmpty ? volatileSource : nil
+        if translates {
+            kick?.yield()
+        } else {
+            volatileTranslation = ""
+        }
     }
 
     /// One request at a time: finished segments first, then the newest volatile text (older ones are skipped).

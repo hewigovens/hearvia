@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 
 extension AppModel {
     func scheduleRender() {
@@ -11,7 +11,25 @@ extension AppModel {
         }
     }
 
+    /// Nothing shows subtitles in the background without the floating window, or once the screen locks (protected data goes away); then skip drawing, level bars and draft translations, since the transcript only needs finished sentences.
+    func updateSubtitleVisibility() {
+        let visible = scene != "background" || (pip.active && UIApplication.shared.isProtectedDataAvailable)
+        guard visible != subtitlesVisible else { return }
+        subtitlesVisible = visible
+        translation.translatesDrafts = visible
+        if visible, listening {
+            levels.start()
+        } else {
+            levels.stop()
+        }
+        if visible {
+            scheduleRender()
+        }
+        log.event("subtitles_visible", ["value": "\(visible)"])
+    }
+
     func renderSubtitle() async {
+        guard subtitlesVisible else { return }
         pip.fontScale = settings.subtitleScale
         let lines = translation.subtitleLines(originalLarge: settings.originalLarge, showsSecond: settings.showsOriginal)
         let subtitle: String = if diagnosticsInPiP {
