@@ -4,27 +4,88 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hearvia · Live translated subtitles on iPhone and Mac</title>
-<meta name="description" content="Live translated subtitles for anything you hear, on iPhone and Mac: videos, podcasts, calls, or the person in front of you. Free on-device translation, no accounts, no tracking.">
+<meta name="description" content="Live translated subtitles for videos, podcasts, calls and conversations on iPhone and Mac. Free on-device translation or your own AI. No accounts, no tracking.">
 <link rel="canonical" href="https://hearvia.hewig.dev/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Hearvia">
+<meta property="og:locale" content="en_US">
 <meta property="og:url" content="https://hearvia.hewig.dev/">
-<meta property="og:title" content="Hearvia">
-<meta property="og:description" content="Live translated subtitles for anything you hear, on iPhone and Mac.">
-<meta property="og:image" content="https://hearvia.hewig.dev/screenshots/bento.png">
-<meta property="og:image:width" content="2400">
-<meta property="og:image:height" content="1465">
+<meta property="og:title" content="Hearvia · Live translated subtitles on iPhone and Mac">
+<meta property="og:description" content="Live translated subtitles for anything you hear, on iPhone and Mac: videos, podcasts, calls, or the person in front of you.">
+<meta property="og:image" content="https://hearvia.hewig.dev/screenshots/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="733">
 <meta property="og:image:alt" content="Hearvia on Mac, iPhone and iPhone Duo showing translated subtitles over other apps">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Hearvia">
-<meta name="twitter:description" content="Live translated subtitles for anything you hear, on iPhone and Mac.">
-<meta name="twitter:image" content="https://hearvia.hewig.dev/screenshots/bento.png">
+<meta name="twitter:title" content="Hearvia · Live translated subtitles on iPhone and Mac">
+<meta name="twitter:description" content="Live translated subtitles for anything you hear, on iPhone and Mac: videos, podcasts, calls, or the person in front of you.">
+<meta name="twitter:image" content="https://hearvia.hewig.dev/screenshots/og.jpg">
 <meta name="twitter:image:alt" content="Hearvia on Mac, iPhone and iPhone Duo showing translated subtitles over other apps">
 <meta name="theme-color" content="#0E1020" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#F7F7F5" media="(prefers-color-scheme: light)">
-<link rel="icon" href="favicon.png">
-<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="favicon.png" type="image/png" sizes="64x64">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://hearvia.hewig.dev/#website",
+      "url": "https://hearvia.hewig.dev/",
+      "name": "Hearvia",
+      "inLanguage": "en",
+      "publisher": { "@id": "https://hewig.dev/#person" }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://hewig.dev/#person",
+      "name": "Tao Xu",
+      "url": "https://hewig.dev"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://hearvia.hewig.dev/#app",
+      "name": "Hearvia",
+      "url": "https://hearvia.hewig.dev/",
+      "description": "Live translated subtitles for other apps' audio or the microphone, on iPhone and Mac. Translate on device for free, or use OpenAI Realtime, Gemini Live or a local model with your own key.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "iOS 27, macOS 26.4",
+      "image": "https://hearvia.hewig.dev/icon.png",
+      "screenshot": [
+        "https://hearvia.hewig.dev/screenshots/mac-overlay.webp",
+        "https://hearvia.hewig.dev/screenshots/iphone-floating.webp",
+        "https://hearvia.hewig.dev/screenshots/iphone-captions.webp",
+        "https://hearvia.hewig.dev/screenshots/iphone-translators.webp",
+        "https://hearvia.hewig.dev/screenshots/iphone-duo.webp",
+        "https://hearvia.hewig.dev/screenshots/mac-transcripts.webp"
+      ],
+      "featureList": [
+        "Translated subtitles over any app on Mac",
+        "Floating subtitle window on iPhone",
+        "Large captions for conversations",
+        "Free on-device translation",
+        "OpenAI Realtime and Gemini Live with your own API key",
+        "Local model through an OpenAI-compatible server",
+        "Saved transcripts with optional iCloud sync"
+      ],
+      "inLanguage": ["en", "zh-Hans", "zh-Hant", "ja", "ko"],
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "url": "https://testflight.apple.com/join/GZddk344"
+      },
+      "author": { "@id": "https://hewig.dev/#person" },
+      "publisher": { "@id": "https://hewig.dev/#person" },
+      "sameAs": ["https://github.com/hewigovens/hearvia"]
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <a class="skip" href="#features">Skip to features</a>
@@ -41,9 +102,8 @@
 
 <main>
   <section class="hero wrap" aria-labelledby="title">
-    <img class="hero-icon" src="icon.png" width="112" height="112" alt="">
-    <h1 id="title">Hearvia</h1>
-    <p class="hero-pitch">Live translated subtitles for anything you hear, on iPhone and Mac.</p>
+    <img class="hero-icon" src="icon.png" width="112" height="112" alt="" fetchpriority="high">
+    <h1 id="title">Hearvia <span class="hero-pitch">Live translated subtitles for anything you hear, on iPhone and Mac.</span></h1>
     <p class="hero-lede">Hearvia listens to other apps or the microphone and shows subtitles on top of whatever you're doing: videos, podcasts, calls, or the person in front of you.</p>
     <div class="actions">
       <a class="button button-primary" href="https://testflight.apple.com/join/GZddk344">Join the beta on TestFlight</a>
@@ -68,7 +128,7 @@
     <header class="section-head">
       <p class="eyebrow">Features</p>
       <h2 id="features-title">Subtitles wherever you listen</h2>
-      <p>On your Mac, your iPhone, or an iPhone Duo standing on the table. What you're watching keeps playing.</p>
+      <p>Real-time translated captions on your Mac, your iPhone, or an iPhone Duo standing on the table. What you're watching keeps playing.</p>
     </header>
 
     <div class="bento">
@@ -78,7 +138,7 @@
           <h3>Subtitles over any app</h3>
           <p>An overlay follows all system audio or just one app. Start and stop from the menu bar or the Dock.</p>
         </div>
-        <div class="shot"><img src="screenshots/mac-overlay.webp" width="1200" height="583" loading="lazy" alt="A Mac playing a video, with a subtitle overlay at the bottom: the Japanese original in small grey text and the English translation in white below it."></div>
+        <div class="shot"><img src="screenshots/mac-overlay.webp" width="1200" height="583" loading="lazy" decoding="async" alt="A Mac playing a video, with Hearvia's subtitle overlay at the bottom: the Japanese original in small grey text and the English translation in white below it."></div>
       </article>
 
       <article class="card card-tall">
@@ -87,7 +147,7 @@
           <h3>A floating window</h3>
           <p>Subtitles float over videos, podcasts and calls. Hearvia doesn't play sound or pause anything.</p>
         </div>
-        <div class="shot shot-phone"><img src="screenshots/iphone-floating.webp" width="638" height="1200" loading="lazy" alt="An iPhone home screen with a floating subtitle window showing a Japanese sentence and its English translation."></div>
+        <div class="shot shot-phone"><img src="screenshots/iphone-floating.webp" width="638" height="1200" loading="lazy" decoding="async" alt="An iPhone home screen with Hearvia's floating subtitle window showing a Japanese sentence and its English translation."></div>
       </article>
 
       <article class="card card-wide">
@@ -96,7 +156,7 @@
           <h3>Big captions for the room</h3>
           <p>Turn your iPhone sideways and the subtitles fill the screen, easy to read across a table.</p>
         </div>
-        <div class="shot"><img src="screenshots/iphone-captions.webp" width="1200" height="427" loading="lazy" alt="An iPhone in landscape filled with large white English subtitles under the Japanese original."></div>
+        <div class="shot"><img src="screenshots/iphone-captions.webp" width="1200" height="427" loading="lazy" decoding="async" alt="An iPhone in landscape filled with large white English subtitles under the Japanese original."></div>
       </article>
 
       <article class="card card-tall">
@@ -109,7 +169,7 @@
             <li><strong>Local model.</strong> Experimental: a model you run yourself with Ollama, LM Studio or another OpenAI-compatible server.</li>
           </ul>
         </div>
-        <div class="shot shot-phone"><img src="screenshots/iphone-translators.webp" width="662" height="1200" loading="lazy" alt="The iPhone translator picker listing On-device, OpenAI Realtime, Gemini Live and Local LLM."></div>
+        <div class="shot shot-phone"><img src="screenshots/iphone-translators.webp" width="662" height="1200" loading="lazy" decoding="async" alt="Hearvia's translator picker on iPhone, listing On-device, OpenAI Realtime, Gemini Live and Local LLM."></div>
       </article>
 
       <article class="card card-wide">
@@ -118,7 +178,7 @@
           <h3>Two pages, two jobs</h3>
           <p>Subtitles on one page and the transcript on the other. Half-fold it and stand it up for the room.</p>
         </div>
-        <div class="shot"><img src="screenshots/iphone-duo.webp" width="1200" height="684" loading="lazy" alt="An unfolded iPhone Duo with live subtitles on the left page and the running transcript on the right page."></div>
+        <div class="shot"><img src="screenshots/iphone-duo.webp" width="1200" height="684" loading="lazy" decoding="async" alt="An unfolded iPhone Duo with live subtitles on the left page and the running transcript on the right page."></div>
       </article>
 
       <article class="card card-wide">
@@ -127,7 +187,7 @@
           <h3>Every session, saved</h3>
           <p>Read, copy or export any transcript later. They stay on your device, or sync through your own iCloud if you turn it on.</p>
         </div>
-        <div class="shot"><img src="screenshots/mac-transcripts.webp" width="1200" height="579" loading="lazy" alt="The Mac transcript window: a list of past sessions on the left and one transcript with original and translated lines on the right."></div>
+        <div class="shot"><img src="screenshots/mac-transcripts.webp" width="1200" height="579" loading="lazy" decoding="async" alt="Hearvia's transcript window on Mac: a list of past sessions on the left and one transcript with original and translated lines on the right."></div>
       </article>
 
       <article class="card card-small">
@@ -172,12 +232,12 @@
   </section>
 
   <section class="section wrap cta" aria-labelledby="cta-title">
-    <img src="icon.png" width="64" height="64" alt="">
+    <img src="icon.png" width="64" height="64" alt="" loading="lazy" decoding="async">
     <h2 id="cta-title">Try the beta</h2>
     <p>Free on TestFlight for iPhone and Mac. Needs iOS 27 or macOS 26.4.</p>
     <div class="actions">
       <a class="button button-primary" href="https://testflight.apple.com/join/GZddk344">Join the beta on TestFlight</a>
-      <a class="button button-secondary" href="https://github.com/hewigovens/hearvia/issues">Send feedback</a>
+      <a class="button button-secondary" href="https://github.com/hewigovens/hearvia/issues">Send feedback on GitHub</a>
     </div>
   </section>
 </main>

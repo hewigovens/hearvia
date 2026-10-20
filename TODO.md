@@ -41,6 +41,7 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 
 ## Release
 
+- [ ] Site: add hearvia.hewig.dev to Google Search Console and submit `sitemap.xml`; once 1.0 is approved, add the App Store link and an `apple-itunes-app` meta tag to `docs/index.html`.
 - [ ] Optional, only for downloads outside the Mac App Store: notarize a Developer ID build (needs a Developer ID Application certificate and a notarytool profile); see `docs/release.md`. The App Store build only needs the sandbox, which is in place.
 - [ ] Liquid Glass icon via Icon Composer (`.icon`) instead of the PNG asset sets.
 
