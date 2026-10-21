@@ -11,6 +11,12 @@ struct EngineStatusLine: View {
         case .needsKey:
             SettingsLink { Label("Add a \(translator.engine.title) key in Settings", systemImage: "key") }
                 .buttonStyle(.link).font(.caption)
+        case .keyRejected:
+            SettingsLink { Label("The \(translator.engine.title) key was rejected. Check it in Settings.", systemImage: "key") }
+                .buttonStyle(.link).font(.caption).tint(.red)
+        case let .unreachable(reason):
+            SettingsLink { Label(reason, systemImage: "wifi.exclamationmark") }
+                .buttonStyle(.link).font(.caption).tint(.red)
         case .needsLocalModel:
             SettingsLink { Label("Choose a local model in Settings", systemImage: "desktopcomputer") }
                 .buttonStyle(.link).font(.caption)

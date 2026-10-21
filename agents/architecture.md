@@ -11,7 +11,8 @@ HearviaKit (one Swift package, one `HearviaKit` product, five modules)
   HearviaAudio    AudioFeed (capture → 200 ms PCM16 chunks), PCM16Resampler, MicrophoneCapture, LevelMeter + LevelHistory (level bars)
   HearviaEngines  TranslationEngine protocol + EngineUpdate;
                   Cloud/     CloudEngine (+Audio: buffering, silence pause, rotation; +Events), CloudTiming, SilenceDetector,
-                             TranslationSocket protocol + SocketEvent: one engine for every streaming provider
+                             TranslationSocket protocol + SocketEvent: one engine for every streaming provider;
+                             APIKeyCheck: key format, then a free model-list request, before saving and at launch
                   OpenAI/    OpenAIRealtimeClient (WebSocket actor) + configuration
                   Gemini/    GeminiLiveClient (WebSocket actor, 24 → 16 kHz) + configuration
                   OnDevice/  OnDeviceEngine (+Text), OnDeviceModelSet, SpeechInput, OnDeviceSpeech (SpeechAnalyzer, +Detection
@@ -19,12 +20,12 @@ HearviaKit (one Swift package, one `HearviaKit` product, five modules)
                   Local/     LocalModelServer: OpenAI-compatible chat server (Ollama, LM Studio, Unsloth Studio); the
                              `.local` engine is OnDeviceEngine.localModel, speech on device and text to the server
   HearviaSession  LiveTranslator (+Run, +Status, +Demo for screenshots): preferences, one engine run at a time, observable
-                  text/transcript/TranslatorStats; TranslatorSetup (missing key, local model or on-device models);
+                  text/transcript/TranslatorStats; TranslatorSetup (missing or rejected key, unreachable provider or local server, local model or on-device models);
                   TranscriptHistory: one JSON file per finished session in Application Support/Hearvia/Transcripts, or
                   the iCloud container's Transcripts folder while syncsWithICloud is on (+iCloud: NSMetadataQuery, coordinated writes)
   HearviaUI       palette, Appearance, HearviaMark/Icon, HVButtonStyle, ListenButton, ControlTile, LevelBars,
                   TranscriptList, OnDeviceModelsView, OnDeviceLanguages (picker lists per engine), LiveTranslator+Pickers
-                  (language picker bindings and choices), LocalModelSettingsView
+                  (language picker bindings and choices), LocalModelSettingsView, APIKeyField (saves a key only once APIKeyCheck passes)
   hearvia-translate  CLI over Audio + Engines: streams an audio file through any engine
 Apps/iOS     SwiftUI shell: ScreenCaptureKit / mic capture, PiP subtitle strip, home, onboarding, settings
 Apps/macOS   SwiftUI shell: Core Audio process tap / mic capture, overlay panel, control window, menu bar,

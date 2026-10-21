@@ -9,21 +9,19 @@ struct TranslatorSettingsView: View {
         Form {
             Section {
                 LabeledContent {
-                    SecureField("sk-…", text: $translator.openAIKey)
-                        .textInputAutocapitalization(.never).autocorrectionDisabled()
+                    APIKeyField(.realtime, prompt: "sk-…", key: $translator.openAIKey)
                 } label: { SettingsIcon("waveform", .teal) }
             } header: { Text("OpenAI Realtime") } footer: {
-                Text("Stored in your Keychain.")
+                Text("Checked with OpenAI, then stored in your Keychain.")
             }
             .listRowBackground(Color.hvSurface)
 
             Section {
                 LabeledContent {
-                    SecureField("AIza…", text: $translator.geminiKey)
-                        .textInputAutocapitalization(.never).autocorrectionDisabled()
+                    APIKeyField(.gemini, prompt: "API key", key: $translator.geminiKey)
                 } label: { SettingsIcon("sparkle", .blue) }
             } header: { Text("Gemini Live") } footer: {
-                Text("Free key at [aistudio.google.com](https://aistudio.google.com/apikey). Stored in your Keychain.")
+                Text("Free key at [aistudio.google.com](https://aistudio.google.com/apikey). Checked with Google, then stored in your Keychain.")
             }
             .listRowBackground(Color.hvSurface)
 

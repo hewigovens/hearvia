@@ -67,14 +67,14 @@ private struct TranslatorSettings: View {
     var body: some View {
         SettingsPane {
             Section {
-                SecureField("API key", text: $translator.openAIKey)
+                APIKeyField(.realtime, prompt: "API key", key: $translator.openAIKey)
             } header: { Text("OpenAI Realtime") } footer: {
-                Text("Stored in your Keychain.").foregroundStyle(Color.hvMuted)
+                Text("Checked with OpenAI, then stored in your Keychain.").foregroundStyle(Color.hvMuted)
             }
             Section {
-                SecureField("API key", text: $translator.geminiKey)
+                APIKeyField(.gemini, prompt: "API key", key: $translator.geminiKey)
             } header: { Text("Gemini Live") } footer: {
-                Text("Free key at [aistudio.google.com](https://aistudio.google.com/apikey). Stored in your Keychain.")
+                Text("Free key at [aistudio.google.com](https://aistudio.google.com/apikey). Checked with Google, then stored in your Keychain.")
                     .foregroundStyle(Color.hvMuted)
             }
             Section("On-device models") {

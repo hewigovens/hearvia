@@ -27,6 +27,7 @@ Open work, grouped by what it needs. Finished work lives in `jj log`. State as o
 
 ## Check on Mac
 
+- [ ] Translator checks at launch and on key save, on both apps: a wrong key shows "rejected" in Settings and isn't saved; a stopped local server shows the reach error under the tiles at launch; a real key and a running server show ready.
 - [ ] A long session rotates without losing text: OpenAI Realtime near 60 minutes, Gemini Live every few minutes (log event `translation_rotated`).
 - [ ] On a macOS 26.4 Mac (none here; everything so far ran on 27): microphone source and the on-device translator end to end. Those two take the 26 fallbacks (`installTap` with a buffer copy in `MicrophoneCapture`, `AVAudioConverter` to `SpeechAnalyzer.bestAvailableAudioFormat` in `OnDeviceSpeech`); also check that the process tap, model downloads and Auto spoken language behave as on 27.
 

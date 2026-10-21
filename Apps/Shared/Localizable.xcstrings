@@ -30,6 +30,35 @@
         }
       }
     },
+    "%@ answered %lld while checking the key. Try again later.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キーの確認中に %@ が %lld を返しました。しばらくしてからもう一度お試しください。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "키를 확인하는 중 %@에서 %lld 응답이 왔습니다. 나중에 다시 시도하세요."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "检查密钥时 %@ 返回 %lld。请稍后再试。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "檢查金鑰時 %@ 回傳 %lld。請稍後再試。"
+          }
+        }
+      }
+    },
     "%@ has no remaining quota for this key. Try the on-device translator.": {
       "extractionState": "manual",
       "localizations": {
@@ -55,6 +84,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ 的這個金鑰已沒有額度。試試裝置端翻譯。"
+          }
+        }
+      }
+    },
+    "%@ rejected this key.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ がこのキーを拒否しました。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@에서 이 키를 거부했습니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 拒绝了这个密钥。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 拒絕了這個金鑰。"
           }
         }
       }
@@ -867,6 +925,35 @@
         }
       }
     },
+    "Can't reach %@ to check the key: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キーを確認するために %@ に接続できません：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "키를 확인하기 위해 %@에 연결할 수 없습니다: %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法连接 %@ 来检查密钥：%@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法連線 %@ 來檢查金鑰：%@"
+          }
+        }
+      }
+    },
     "Can't reach the local model server at %@: %@ If it's on another machine, allow Hearvia under Privacy & Security → Local Network.": {
       "extractionState": "manual",
       "localizations": {
@@ -933,6 +1020,64 @@
       "extractionState": "manual",
       "shouldTranslate": false
     },
+    "Checked and saved": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "確認して保存しました"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "확인 후 저장됨"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已检查并保存"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已檢查並儲存"
+          }
+        }
+      }
+    },
+    "Checked with OpenAI, then stored in your Keychain.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OpenAI で確認してから、キーチェーンに保存されます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OpenAI에서 확인한 뒤 키체인에 저장됩니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "经 OpenAI 检查后保存在你的钥匙串中。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "經 OpenAI 檢查後儲存在你的鑰匙圈中。"
+          }
+        }
+      }
+    },
     "Checking on-device models…": {
       "extractionState": "manual",
       "localizations": {
@@ -958,6 +1103,64 @@
           "stringUnit": {
             "state": "translated",
             "value": "正在檢查裝置端模型…"
+          }
+        }
+      }
+    },
+    "Checking the local model server…": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ローカルモデルサーバを確認中…"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "로컬 모델 서버 확인 중…"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在检查本地模型服务器…"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在檢查本機模型伺服器…"
+          }
+        }
+      }
+    },
+    "Checking your %@ key…": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ のキーを確認中…"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 키 확인 중…"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在检查你的 %@ 密钥…"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在檢查你的 %@ 金鑰…"
           }
         }
       }
@@ -2046,31 +2249,31 @@
         }
       }
     },
-    "Free key at [aistudio.google.com](https://aistudio.google.com/apikey). Stored in your Keychain.": {
+    "Free key at [aistudio.google.com](https://aistudio.google.com/apikey). Checked with Google, then stored in your Keychain.": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "キーは [aistudio.google.com](https://aistudio.google.com/apikey) で無料で取得できます。キーチェーンに保存されます。"
+            "value": "キーは [aistudio.google.com](https://aistudio.google.com/apikey) で無料で取得できます。Google で確認してから、キーチェーンに保存されます。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "[aistudio.google.com](https://aistudio.google.com/apikey)에서 무료 키를 받으세요. 키체인에 저장됩니다."
+            "value": "[aistudio.google.com](https://aistudio.google.com/apikey)에서 무료 키를 받으세요. Google에서 확인한 뒤 키체인에 저장됩니다."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "可在 [aistudio.google.com](https://aistudio.google.com/apikey) 免费获取密钥。保存在你的钥匙串中。"
+            "value": "可在 [aistudio.google.com](https://aistudio.google.com/apikey) 免费获取密钥。经 Google 检查后保存在你的钥匙串中。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "可在 [aistudio.google.com](https://aistudio.google.com/apikey) 免費取得金鑰。儲存在你的鑰匙圈中。"
+            "value": "可在 [aistudio.google.com](https://aistudio.google.com/apikey) 免費取得金鑰。經 Google 檢查後儲存在你的鑰匙圈中。"
           }
         }
       }
@@ -4272,6 +4475,35 @@
         }
       }
     },
+    "Save": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저장"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "儲存"
+          }
+        }
+      }
+    },
     "Save transcripts": {
       "extractionState": "manual",
       "localizations": {
@@ -5227,35 +5459,6 @@
         }
       }
     },
-    "Stored in your Keychain.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "キーチェーンに保存されます。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "키체인에 저장됩니다."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存在你的钥匙串中。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "儲存在你的鑰匙圈中。"
-          }
-        }
-      }
-    },
     "Subtitle preview": {
       "extractionState": "manual",
       "localizations": {
@@ -5815,6 +6018,64 @@
           "stringUnit": {
             "state": "translated",
             "value": "文字大小"
+          }
+        }
+      }
+    },
+    "That isn't a Gemini key. Copy the whole key from aistudio.google.com.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gemini のキーではありません。aistudio.google.com からキー全体をコピーしてください。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gemini 키가 아닙니다. aistudio.google.com에서 키 전체를 복사하세요."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这不是 Gemini 密钥。请从 aistudio.google.com 复制完整的密钥。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這不是 Gemini 金鑰。請從 aistudio.google.com 複製完整的金鑰。"
+          }
+        }
+      }
+    },
+    "That isn't an OpenAI key. They start with sk-.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OpenAI のキーではありません。OpenAI のキーは sk- で始まります。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OpenAI 키가 아닙니다. OpenAI 키는 sk-로 시작합니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这不是 OpenAI 密钥。OpenAI 密钥以 sk- 开头。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這不是 OpenAI 金鑰。OpenAI 金鑰以 sk- 開頭。"
           }
         }
       }

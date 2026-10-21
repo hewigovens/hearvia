@@ -2,10 +2,10 @@ import HearviaCore
 import HearviaEngines
 
 public extension LiveTranslator {
-    /// Known without asking the system; nil while it depends on installed models, which `checkSetup()` looks up.
+    /// Known without asking the system or the network; nil until `checkSetup()` looks up the key, the local server or the installed models.
     var knownSetup: TranslatorSetup? {
-        if engine.isCloud {
-            apiKey.isEmpty ? .needsKey : .ready
+        if engine.isCloud, apiKey.isEmpty {
+            .needsKey
         } else if engine == .local, localModel.isEmpty {
             .needsLocalModel
         } else {
@@ -17,6 +17,23 @@ public extension LiveTranslator {
         if let knownSetup {
             return knownSetup
         }
+        if engine.isCloud {
+            do {
+                try await APIKeyCheck(engine, key: apiKey).verify()
+                return .ready
+            } catch .malformed, .rejected {
+                return .keyRejected
+            } catch {
+                return .unreachable(error.localizedDescription)
+            }
+        }
+        if engine == .local {
+            do {
+                _ = try await localServer.models()
+            } catch {
+                return .unreachable(error.localizedDescription)
+            }
+        }
         let installed = if engine == .onDevice {
             await OnDeviceModels.isReady(from: sourceLanguage, to: targetLanguage)
         } else if sourceLanguage.isEmpty {
@@ -27,9 +44,9 @@ public extension LiveTranslator {
         return installed ? .ready : .needsModels
     }
 
-    /// Changes whenever `checkSetup()` might; use it as a `.task(id:)`.
+    /// Changes whenever `checkSetup()` might; use it as a `.task(id:)`. Keys appear only as hashes.
     var readinessKey: String {
-        "\(engine.rawValue)>\(sourceLanguage)>\(targetLanguage)>\(apiKey.isEmpty)>\(localModel)"
+        "\(engine.rawValue)>\(sourceLanguage)>\(targetLanguage)>\(apiKey.hashValue)>\(localServerURL)>\(localKey.hashValue)>\(localModel)"
     }
 
     var languagePair: String {

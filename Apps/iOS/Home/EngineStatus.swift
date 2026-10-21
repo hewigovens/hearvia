@@ -16,16 +16,26 @@ struct EngineStatus: View {
                     Label("Add a \(translator.engine.title) key in Settings", systemImage: "key")
                 }
                 .font(.footnote)
+            case .keyRejected:
+                Button(action: openSettings) {
+                    Label("The \(translator.engine.title) key was rejected. Check it in Settings.", systemImage: "key")
+                }
+                .font(.footnote).tint(.red)
             case .needsLocalModel:
                 Button(action: openSettings) {
                     Label("Choose a local model in Settings", systemImage: "desktopcomputer")
                 }
                 .font(.footnote)
+            case let .unreachable(reason):
+                Button(action: openSettings) {
+                    Label(reason, systemImage: "wifi.exclamationmark")
+                }
+                .font(.footnote).tint(.red)
             case .ready:
                 Label { Text(readyText) } icon: { Image(systemName: "checkmark.circle.fill").foregroundStyle(Color.hvReady) }
                     .font(.footnote).foregroundStyle(Color.hvMuted)
             case nil:
-                Label("Checking on-device models…", systemImage: "hourglass").font(.footnote).foregroundStyle(Color.hvMuted)
+                Label(checkingText, systemImage: "hourglass").font(.footnote).foregroundStyle(Color.hvMuted)
             case .needsModels:
                 VStack(alignment: .leading, spacing: 8) {
                     OnDeviceModelsView(source: translator.sourceLanguage, target: translator.targetLanguage,
@@ -41,6 +51,14 @@ struct EngineStatus: View {
         .task(id: translator.readinessKey) {
             checked = nil
             checked = await translator.checkSetup()
+        }
+    }
+
+    private var checkingText: LocalizedStringKey {
+        switch translator.engine {
+        case .realtime, .gemini: "Checking your \(translator.engine.title) key…"
+        case .local: "Checking the local model server…"
+        case .onDevice: "Checking on-device models…"
         }
     }
 

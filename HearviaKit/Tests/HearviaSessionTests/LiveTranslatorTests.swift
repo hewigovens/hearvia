@@ -240,11 +240,11 @@ struct LiveTranslatorTests {
         await translator.setEngine(.realtime)
         #expect(await translator.checkSetup() == .needsKey)
         translator.openAIKey = "sk-test"
-        #expect(await translator.checkSetup() == .ready)
+        #expect(translator.knownSetup == nil) // the provider checks the key
         await translator.setEngine(.local)
         #expect(await translator.checkSetup() == .needsLocalModel)
         translator.localModel = "qwen3:8b"
-        #expect(translator.knownSetup == nil) // depends on installed speech models
+        #expect(translator.knownSetup == nil) // the server and installed speech models decide
     }
 
     @Test func savedTranscriptsLeaveOutTheSessionInProgress() async throws {
