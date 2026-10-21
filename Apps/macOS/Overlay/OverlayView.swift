@@ -48,9 +48,11 @@ struct OverlayView: View {
                         .frame(maxHeight: 2 * Self.lineHeight(ofSystemFontSize: originalSize))
                         .layoutPriority(2) // Keeps its two lines when the translation overflows.
                 }
+                let mainLine = Self.lineHeight(ofSystemFontSize: settings.overlayFontSize)
                 tail(Text(lines.main.subtitleTail(400))
                     .font(.system(size: settings.overlayFontSize, weight: .semibold))
-                    .foregroundStyle(.white), lineHeight: Self.lineHeight(ofSystemFontSize: settings.overlayFontSize))
+                    .foregroundStyle(.white), lineHeight: mainLine)
+                    .frame(maxHeight: settings.twoLines ? 2 * mainLine : .infinity)
                     .layoutPriority(1)
             }
         }

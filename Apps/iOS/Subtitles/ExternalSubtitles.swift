@@ -16,7 +16,7 @@ struct ExternalSubtitles: View {
                     newest(second.subtitleTail(300), size: size * 0.6, lineCount: 2)
                         .foregroundStyle(.white.opacity(0.7))
                 }
-                newest(lines.main.isEmpty ? String(localized: "Listening…") : lines.main.subtitleTail(400), size: size, lineCount: 3)
+                newest(lines.main.isEmpty ? String(localized: "Listening…") : lines.main.subtitleTail(400), size: size, lineCount: 2)
                     .fontWeight(.semibold)
                     .foregroundStyle(.white)
             }

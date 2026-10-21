@@ -11,6 +11,7 @@ final class AppSettings {
         static let clickThrough = "hearvia.clickThrough"
         static let showsOriginal = "hearvia.showsOriginal"
         static let originalLarge = "hearvia.originalLarge"
+        static let twoLines = "hearvia.twoLines"
         static let overlayFontSize = "hearvia.overlayFontSize"
         static let overlayOpacity = "hearvia.overlayOpacity"
         static let menuBarOnly = "hearvia.menuBarOnly"
@@ -50,6 +51,11 @@ final class AppSettings {
         showsOriginal || originalLarge
     }
 
+    /// The large text keeps its newest two lines, like film subtitles; off, it fills the overlay with more of what was said.
+    var twoLines: Bool {
+        didSet { defaults.set(twoLines, forKey: Keys.twoLines) }
+    }
+
     var overlayFontSize: Double {
         didSet { defaults.set(overlayFontSize, forKey: Keys.overlayFontSize) }
     }
@@ -81,6 +87,7 @@ final class AppSettings {
         clickThrough = defaults.bool(forKey: Keys.clickThrough)
         showsOriginal = defaults.object(forKey: Keys.showsOriginal) as? Bool ?? true
         originalLarge = defaults.bool(forKey: Keys.originalLarge)
+        twoLines = defaults.object(forKey: Keys.twoLines) as? Bool ?? true
         overlayFontSize = defaults.object(forKey: Keys.overlayFontSize) as? Double ?? 30
         overlayOpacity = defaults.object(forKey: Keys.overlayOpacity) as? Double ?? 0.65
         menuBarOnly = defaults.bool(forKey: Keys.menuBarOnly)

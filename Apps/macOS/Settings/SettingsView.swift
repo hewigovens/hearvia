@@ -104,6 +104,10 @@ private struct OverlaySettings: View {
                 }
                 .pickerStyle(.segmented)
                 Toggle(settings.originalLarge ? "Show translation" : "Show original speech", isOn: $settings.showsOriginal)
+                Toggle(isOn: $settings.twoLines) {
+                    Text("Two lines at most")
+                    Text("Like film subtitles. Turn off to fill the overlay with more of what was said.")
+                }
                 Toggle(isOn: $settings.clickThrough) {
                     Text("Click-through")
                     Text("Clicks reach the app below; the overlay can't be moved.")

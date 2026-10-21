@@ -2820,6 +2820,35 @@
         }
       }
     },
+    "Like film subtitles. Turn off to fill the overlay with more of what was said.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "映画の字幕のように表示します。オフにすると、話した内容をオーバーレイいっぱいに表示します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "영화 자막처럼 표시합니다. 끄면 오버레이를 채워 더 많은 내용을 보여 줍니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "像电影字幕一样显示。关闭后会用更多说过的内容填满浮层。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "像電影字幕一樣顯示。關閉後會用更多說過的內容填滿浮層。"
+          }
+        }
+      }
+    },
     "Listen to": {
       "extractionState": "manual",
       "localizations": {
@@ -6486,6 +6515,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "打開 iCloud 雲碟即可同步。在此之前儲存在這台 %@ 上。"
+          }
+        }
+      }
+    },
+    "Two lines at most": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最大2行"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "최대 두 줄"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最多两行"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最多兩行"
           }
         }
       }
