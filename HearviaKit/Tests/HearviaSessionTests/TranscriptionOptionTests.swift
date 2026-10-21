@@ -42,11 +42,14 @@ struct TranscriptionOptionTests {
         #expect(harness.engines.count == 1)
     }
 
-    @Test func followsTheShowOriginalSetting() async {
+    @Test func followsTheShowOriginalAndSaveSettings() async {
         let harness = Harness()
         let setting = OriginalSetting()
         harness.translator.transcribeSource { [setting] in setting.shown }
         setting.shown = false
+        await harness.settle()
+        #expect(harness.translator.transcribesSource) // saved transcripts keep the original
+        harness.translator.savesTranscripts = false
         await harness.settle()
         #expect(!harness.translator.transcribesSource)
         setting.shown = true

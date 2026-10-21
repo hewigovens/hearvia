@@ -35,7 +35,7 @@ final class AppSettings {
         didSet { defaults.set(originalLarge, forKey: Keys.originalLarge) }
     }
 
-    /// The original is billed separately by OpenAI Realtime, so it's only requested while shown.
+    /// The original is billed separately by OpenAI Realtime, so it's only requested while shown or while transcripts are saved.
     var needsOriginal: Bool {
         showsOriginal || originalLarge
     }

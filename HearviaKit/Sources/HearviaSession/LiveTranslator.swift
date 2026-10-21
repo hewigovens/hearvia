@@ -159,9 +159,9 @@ public final class LiveTranslator {
         }
     }
 
-    /// Keeps `transcribesSource` in step with an observable setting, such as the apps' "show original".
+    /// Keeps `transcribesSource` in step with an observable setting, such as the apps' "show original"; saved transcripts always want the original too.
     public func transcribeSource(following needsSource: @escaping @MainActor @Sendable () -> Bool) {
-        let needs = withObservationTracking(needsSource) { [weak self] in
+        let needs = withObservationTracking { savesTranscripts || needsSource() } onChange: { [weak self] in
             Task { @MainActor in self?.transcribeSource(following: needsSource) }
         }
         Task { await setTranscribesSource(needs) }
