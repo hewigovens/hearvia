@@ -7,6 +7,7 @@ struct HomeView: View {
     @Environment(\.scenePhase) private var phase
     @Environment(\.horizontalSizeClass) private var widthClass
     @Environment(\.verticalSizeClass) private var heightClass
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var presentation: HomePresentation?
 
     var body: some View {
@@ -23,6 +24,8 @@ struct HomeView: View {
                 CaptionMode(model: model)
             } else if widthClass == .regular, heightClass == .regular, !model.listening {
                 wide
+            } else if typeSize.isAccessibilitySize, !model.listening {
+                ScrollView { narrow }
             } else {
                 narrow
             }

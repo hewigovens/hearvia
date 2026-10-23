@@ -22,5 +22,6 @@ struct StartPrompt: View {
         }
         .multilineTextAlignment(.center)
         .fixedSize(horizontal: false, vertical: true)
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
     }
 }

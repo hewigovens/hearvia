@@ -7,6 +7,7 @@ public struct ControlTile: View {
     let value: String
     let ready: Bool?
     let wraps: Bool
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     public init(symbol: String, caption: LocalizedStringKey, value: String, ready: Bool? = nil, wraps: Bool = true) {
         self.symbol = symbol
@@ -21,7 +22,7 @@ public struct ControlTile: View {
         private let symbolFont = Font.system(size: 16, weight: .medium), valueFont = Font.system(size: 14, weight: .semibold)
     #else
         private let height: CGFloat = 104, padding: CGFloat = 14, radius: CGFloat = 18, iconRow: CGFloat = 24
-        private let symbolFont = Font.system(size: 20, weight: .medium), valueFont = Font.system(size: 16, weight: .semibold)
+        private let symbolFont = Font.system(size: 20, weight: .medium), valueFont = Font.system(.callout, weight: .semibold)
     #endif
 
     public var body: some View {
@@ -37,7 +38,8 @@ public struct ControlTile: View {
             .frame(height: iconRow) // Symbols differ in height; keep the captions level across tiles.
             Spacer().frame(height: padding)
             Text(caption).font(.caption).foregroundStyle(Color.hvMuted)
-            Text(value).font(valueFont).foregroundStyle(Color.hvText).lineLimit(wraps ? 2 : 1).minimumScaleFactor(wraps ? 0.8 : 0.6)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility1).lineLimit(1).minimumScaleFactor(0.8)
+            Text(value).font(valueFont).foregroundStyle(Color.hvText).dynamicTypeSize(...DynamicTypeSize.accessibility1).lineLimit(wraps || typeSize.isAccessibilitySize ? 3 : 1).minimumScaleFactor(wraps ? 0.8 : 0.6)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(padding)
