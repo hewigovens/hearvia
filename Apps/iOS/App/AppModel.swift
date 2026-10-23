@@ -92,6 +92,11 @@ final class AppModel {
             logHealth()
         }
         await syncListeningState()
+        if let since = listeningSince, settings.autoStopMinutes > 0, translation.isActive, translation.engine.isCloud,
+           Date().timeIntervalSince(since) >= Double(settings.autoStopMinutes) * 60 {
+            log.event("auto_stopped", ["minutes": "\(settings.autoStopMinutes)"])
+            await stopListening()
+        }
         updateSubtitleVisibility()
         await renderSubtitle()
         pip.finishRestore()

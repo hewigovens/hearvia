@@ -34,7 +34,8 @@ extension AppModel {
             await capture.stop()
         }
         pip.stop()
-        await tick() // Stop translation now rather than on the next timer tick.
+        await syncListeningState() // Inside tick (auto-stop) the tick below returns early, so translation must stop here.
+        await tick()
     }
 
     /// Arming needs an active session, so it waits for listening.

@@ -165,7 +165,8 @@ struct OnDeviceEngineTests {
         }
         #expect(problems == [.problem("Translator unavailable.")]) // Once, not per sentence.
         let cleared = try #require(recorder.updates.lastIndex(of: .status(.translating(onDevice: true))))
-        #expect(cleared > recorder.updates.firstIndex(of: .problem("Translator unavailable."))!)
+        let reported = try #require(recorder.updates.firstIndex(of: .problem("Translator unavailable.")))
+        #expect(cleared > reported)
         await engine.stop()
     }
 

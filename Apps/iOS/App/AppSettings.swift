@@ -12,6 +12,7 @@ final class AppSettings {
         static let originalLarge = "hearvia.originalLarge"
         static let subtitleScale = "hearvia.subtitleScale"
         static let floatsWhenLeaving = "hearvia.floatsWhenLeaving"
+        static let autoStopMinutes = "hearvia.autoStopMinutes"
         static let hasCompletedOnboarding = "hearvia.hasCompletedOnboarding"
     }
 
@@ -49,6 +50,11 @@ final class AppSettings {
         didSet { defaults.set(floatsWhenLeaving, forKey: Keys.floatsWhenLeaving) }
     }
 
+    /// Minutes after which a cloud session stops by itself, since those bill per connected minute; 0 is off.
+    var autoStopMinutes: Int {
+        didSet { defaults.set(autoStopMinutes, forKey: Keys.autoStopMinutes) }
+    }
+
     var hasCompletedOnboarding: Bool {
         didSet { defaults.set(hasCompletedOnboarding, forKey: Keys.hasCompletedOnboarding) }
     }
@@ -62,6 +68,7 @@ final class AppSettings {
         showsOriginal = defaults.object(forKey: Keys.showsOriginal) as? Bool ?? true
         originalLarge = defaults.bool(forKey: Keys.originalLarge)
         subtitleScale = defaults.object(forKey: Keys.subtitleScale) as? Double ?? 1
+        autoStopMinutes = defaults.integer(forKey: Keys.autoStopMinutes)
         floatsWhenLeaving = defaults.object(forKey: Keys.floatsWhenLeaving) as? Bool ?? true
         hasCompletedOnboarding = defaults.bool(forKey: Keys.hasCompletedOnboarding)
     }

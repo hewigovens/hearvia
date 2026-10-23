@@ -18,8 +18,8 @@ struct SettingsIcon: View {
     }
 }
 
-extension Label where Title == Text, Icon == SettingsIcon {
-    @MainActor init(_ title: LocalizedStringKey, icon: String, color: Color) {
+@MainActor extension Label where Title == Text, Icon == SettingsIcon {
+    init(_ title: LocalizedStringKey, icon: String, color: Color) {
         self.init { Text(title) } icon: { SettingsIcon(icon, color) }
     }
 }
