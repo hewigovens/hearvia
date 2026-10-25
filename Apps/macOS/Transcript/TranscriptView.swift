@@ -81,11 +81,15 @@ struct TranscriptView: View {
     /// Keeps the open session when it still matches. Otherwise the first remaining row, or nothing.
     private func reconcileSelection() {
         if needle.isEmpty {
-            if let selection, selectionExists(selection) { return }
+            if let selection, selectionExists(selection) {
+                return
+            }
             selection = translator.transcript.isEmpty ? history.transcripts.first?.id : translator.transcript.id
             return
         }
-        if let selection, selectionMatches(selection) { return }
+        if let selection, selectionMatches(selection) {
+            return
+        }
         if liveMatches {
             selection = translator.transcript.id
         } else {

@@ -72,7 +72,7 @@ public struct TranscriptList: View {
         for range in TranscriptSearch.matchRanges(in: text, query: query) {
             guard let lower = AttributedString.Index(range.lowerBound, within: attributed),
                   let upper = AttributedString.Index(range.upperBound, within: attributed) else { continue }
-            attributed[lower..<upper].setAttributes(mark)
+            attributed[lower ..< upper].setAttributes(mark)
         }
         return attributed
     }
