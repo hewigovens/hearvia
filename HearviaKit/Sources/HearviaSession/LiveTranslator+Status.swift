@@ -63,6 +63,10 @@ public extension LiveTranslator {
         history.transcripts.filter { !isActive || $0.id != transcript.id }
     }
 
+    func transcripts(matching query: String) -> TranscriptMatches {
+        TranscriptMatches(query: query, live: isActive ? transcript : nil, saved: savedTranscripts)
+    }
+
     /// The large subtitle line and, when `showsSecond`, the small one above it: the translation is large unless `originalLarge`.
     func subtitleLines(originalLarge: Bool, showsSecond: Bool) -> (main: String, second: String?) {
         let (main, second) = originalLarge ? (source, translation) : (translation, source)

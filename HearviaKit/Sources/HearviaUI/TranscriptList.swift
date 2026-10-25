@@ -68,7 +68,7 @@ public struct TranscriptList: View {
         attributed.setAttributes(plain)
         var mark = AttributeContainer()
         mark.foregroundColor = Color.hvText
-        mark.backgroundColor = Color.hvSelected
+        mark.backgroundColor = Color.hvMark
         for range in TranscriptSearch.matchRanges(in: text, query: query) {
             guard let lower = AttributedString.Index(range.lowerBound, within: attributed),
                   let upper = AttributedString.Index(range.upperBound, within: attributed) else { continue }

@@ -59,6 +59,28 @@ import Testing
     #expect(transcript.matches("cafe"))
 }
 
+@Test func selectionMovesToASessionThatStartsMatching() {
+    var live = sample([("Hello", "你好")])
+    let before = TranscriptMatches(query: "flour", live: live, saved: [])
+    #expect(before.nothingMatches && before.selection(keeping: nil) == nil)
+    live.append(source: "Ajoutez deux tasses de farine.", translation: "Add two cups of flour.")
+    let after = TranscriptMatches(query: "flour", live: live, saved: [])
+    #expect(!after.nothingMatches && after.selection(keeping: nil) == live.id)
+}
+
+@Test func selectionStaysOnAListedRowAndOtherwiseTakesTheFirst() {
+    let live = sample([("Il treno per Firenze parte.", "The train to Florence leaves.")])
+    let flour = sample([("Ajoutez deux tasses de farine.", "Add two cups of flour.")])
+    let bread = sample([("Le pain est chaud.", "The bread, made with flour, is warm.")])
+    let search = TranscriptMatches(query: "flour", live: live, saved: [flour, bread])
+    #expect(search.ids == [flour.id, bread.id])
+    #expect(search.selection(keeping: bread.id) == bread.id)
+    #expect(search.selection(keeping: live.id) == flour.id)
+    let everything = TranscriptMatches(query: " ", live: live, saved: [flour, bread])
+    #expect(!everything.isSearching && everything.ids == [live.id, flour.id, bread.id])
+    #expect(everything.selection(keeping: UUID()) == live.id)
+}
+
 private func sample(_ lines: [(String, String)]) -> Transcript {
     var transcript = Transcript()
     for line in lines {
