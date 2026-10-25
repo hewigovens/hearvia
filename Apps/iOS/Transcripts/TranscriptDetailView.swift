@@ -7,13 +7,14 @@ struct TranscriptDetailView: View {
     let delete: (() -> Void)?
     /// Pops back to the list after a delete; a split view's detail column has nothing to pop to.
     var closesOnDelete = true
+    var query: String = ""
     @Environment(\.dismiss) private var dismiss
     @State private var confirmingDelete = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(transcript.summary).font(.footnote).foregroundStyle(Color.hvMuted)
-            TranscriptList(lines: transcript.lines, translationFont: .body)
+            TranscriptList(lines: transcript.lines, translationFont: .body, query: query)
         }
         .padding(.horizontal, 20)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)

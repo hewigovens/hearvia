@@ -6,9 +6,26 @@ import SwiftUI
 struct TranscriptView: View {
     let translator: LiveTranslator
     @State private var selection: UUID?
+    @State private var query = ""
 
     private var history: TranscriptHistory {
         translator.history
+    }
+
+    private var needle: String {
+        TranscriptSearch.needle(query)
+    }
+
+    private var filteredSaved: [Transcript] {
+        translator.savedTranscripts.filter { $0.matches(query) }
+    }
+
+    private var liveMatches: Bool {
+        translator.isActive && translator.transcript.matches(query)
+    }
+
+    private var nothingMatches: Bool {
+        !needle.isEmpty && !liveMatches && filteredSaved.isEmpty
     }
 
     private var shown: Transcript? {
@@ -19,21 +36,27 @@ struct TranscriptView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $selection) {
-                if translator.isActive {
+                if liveMatches {
                     Section("Now") { row(translator.transcript) }
                 }
-                Section("Earlier") {
-                    ForEach(translator.savedTranscripts) { transcript in
-                        row(transcript).contextMenu {
-                            Button("Delete", role: .destructive) { history.delete(transcript) }
+                if !filteredSaved.isEmpty {
+                    Section("Earlier") {
+                        ForEach(filteredSaved) { transcript in
+                            row(transcript).contextMenu {
+                                Button("Delete", role: .destructive) { history.delete(transcript) }
+                            }
                         }
                     }
                 }
             }
+            .searchable(text: $query, placement: .sidebar, prompt: Text("Search transcripts"))
             .navigationSplitViewColumnWidth(min: 200, ideal: 240)
         } detail: {
-            if let shown {
-                TranscriptList(lines: shown.lines, originalFont: .callout, translationFont: .title3)
+            if nothingMatches {
+                ContentUnavailableView("No Matches", systemImage: "magnifyingglass",
+                                       description: Text("No transcript has those words."))
+            } else if let shown {
+                TranscriptList(lines: shown.lines, originalFont: .callout, translationFont: .title3, query: query)
                     .id(shown.id) // A fresh scroll position per transcript; a long one's offset left a short one blank.
                     .padding(20)
                     .navigationTitle(shown.title)
@@ -49,6 +72,33 @@ struct TranscriptView: View {
         .foregroundStyle(Color.hvText)
         .frame(minWidth: 620, minHeight: 360)
         .onAppear { selection = selection ?? (translator.transcript.isEmpty ? history.transcripts.first?.id : translator.transcript.id) }
+        .onChange(of: query) { old, new in
+            guard TranscriptSearch.needle(old) != TranscriptSearch.needle(new) else { return }
+            reconcileSelection()
+        }
+    }
+
+    /// Keeps the open session when it still matches. Otherwise the first remaining row, or nothing.
+    private func reconcileSelection() {
+        if needle.isEmpty {
+            if let selection, selectionExists(selection) { return }
+            selection = translator.transcript.isEmpty ? history.transcripts.first?.id : translator.transcript.id
+            return
+        }
+        if let selection, selectionMatches(selection) { return }
+        if liveMatches {
+            selection = translator.transcript.id
+        } else {
+            selection = filteredSaved.first?.id
+        }
+    }
+
+    private func selectionExists(_ id: UUID) -> Bool {
+        (translator.isActive && translator.transcript.id == id) || history.transcripts.contains { $0.id == id }
+    }
+
+    private func selectionMatches(_ id: UUID) -> Bool {
+        (liveMatches && translator.transcript.id == id) || filteredSaved.contains { $0.id == id }
     }
 
     private func row(_ transcript: Transcript) -> some View {
