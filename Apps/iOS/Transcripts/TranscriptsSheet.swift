@@ -110,11 +110,15 @@ struct TranscriptsSheet: View {
 
     private func reconcileSelection() {
         if needle.isEmpty {
-            if let selection, selectionExists(selection) { return }
+            if let selection, selectionExists(selection) {
+                return
+            }
             selection = translator.isActive ? translator.transcript.id : saved.first?.id
             return
         }
-        if let selection, selectionMatches(selection) { return }
+        if let selection, selectionMatches(selection) {
+            return
+        }
         if liveMatches {
             selection = translator.transcript.id
         } else {

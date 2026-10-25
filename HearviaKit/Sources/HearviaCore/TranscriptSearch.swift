@@ -13,10 +13,12 @@ public enum TranscriptSearch {
         var found: [Range<String.Index>] = []
         var start = text.startIndex
         let options: String.CompareOptions = [.caseInsensitive, .diacriticInsensitive]
-        while start < text.endIndex, let range = text.range(of: needle, options: options, range: start..<text.endIndex, locale: locale) {
+        while start < text.endIndex, let range = text.range(of: needle, options: options, range: start ..< text.endIndex, locale: locale) {
             found.append(range)
             // A zero-length match would otherwise spin.
-            if range.upperBound <= start { break }
+            if range.upperBound <= start {
+                break
+            }
             start = range.upperBound
         }
         return found
