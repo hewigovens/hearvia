@@ -3358,6 +3358,35 @@
         }
       }
     },
+    "No Matches": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一致なし"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "일치 없음"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有匹配"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "沒有相符"
+          }
+        }
+      }
+    },
     "No Transcript": {
       "extractionState": "manual",
       "localizations": {
@@ -3412,6 +3441,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "沒有記錄"
+          }
+        }
+      }
+    },
+    "No transcript has those words.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "その言葉を含む記録はありません。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "그 단어가 포함된 기록이 없습니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有任何记录包含这些词。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "沒有任何記錄包含這些詞。"
           }
         }
       }
@@ -4641,6 +4699,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "這台裝置無法使用或限制了螢幕錄製。"
+          }
+        }
+      }
+    },
+    "Search transcripts": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記録を検索"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기록 검색"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搜索记录"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搜尋記錄"
           }
         }
       }
