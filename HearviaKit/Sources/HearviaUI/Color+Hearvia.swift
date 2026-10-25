@@ -10,6 +10,7 @@ public extension Color {
     static let hvSurface = Color(light: 0xFFFFFF, dark: 0x191C33)
     static let hvSurfaceRaised = Color(light: 0xE9ECF8, dark: 0x262A47)
     static let hvSelected = Color(light: 0xE9ECF8, dark: 0x3E4570)
+    static let hvMark = Color(light: 0xC8D3FF, dark: 0x3E4570)
     static let hvLine = Color(light: 0xDADDE6, dark: 0x2C3150)
     static let hvText = Color(light: 0x15171D, dark: 0xF3F4F6)
     static let hvMuted = Color(light: 0x5B616E, dark: 0xA6ABC8)

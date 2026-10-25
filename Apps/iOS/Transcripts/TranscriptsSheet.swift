@@ -5,133 +5,82 @@ import SwiftUI
 
 struct TranscriptsSheet: View {
     let translator: LiveTranslator
-    private var saved: [Transcript] {
-        translator.savedTranscripts
-    }
 
     @Environment(\.horizontalSizeClass) private var widthClass
     @State private var selection: UUID?
     @State private var query = ""
 
-    private var needle: String {
-        TranscriptSearch.needle(query)
-    }
-
-    private var filteredSaved: [Transcript] {
-        saved.filter { $0.matches(query) }
-    }
-
-    private var liveMatches: Bool {
-        translator.isActive && translator.transcript.matches(query)
-    }
-
-    private var nothingMatches: Bool {
-        !needle.isEmpty && !liveMatches && filteredSaved.isEmpty
-    }
-
-    private var emptyLibrary: Bool {
-        needle.isEmpty && saved.isEmpty && !translator.isActive
-    }
-
     var body: some View {
+        let matches = translator.transcripts(matching: query)
         if widthClass == .regular {
-            split
+            split(matches)
         } else {
-            stack
+            stack(matches)
         }
     }
 
-    private var stack: some View {
+    private func stack(_ matches: TranscriptMatches) -> some View {
         NavigationStack {
             List {
-                if liveMatches {
+                if let live = matches.live {
                     Section("Now") {
-                        NavigationLink { LiveTranscriptDetail(translator: translator, query: query) } label: { TranscriptRow(transcript: translator.transcript) }
+                        NavigationLink { LiveTranscriptDetail(translator: translator, query: query) } label: { TranscriptRow(transcript: live) }
                     }
                 }
-                if !filteredSaved.isEmpty {
+                if !matches.saved.isEmpty {
                     Section("Earlier") {
-                        ForEach(filteredSaved) { transcript in
+                        ForEach(matches.saved) { transcript in
                             NavigationLink {
                                 TranscriptDetailView(transcript: transcript, delete: { translator.history.delete(transcript) }, query: query)
                             } label: {
                                 TranscriptRow(transcript: transcript)
                             }
                         }
-                        .onDelete { offsets in offsets.map { filteredSaved[$0] }.forEach(translator.history.delete) }
+                        .onDelete { offsets in offsets.map { matches.saved[$0] }.forEach(translator.history.delete) }
                     }
                 }
             }
-            .modifier(TranscriptListStyle(translator: translator, emptyLibrary: emptyLibrary, noMatches: nothingMatches))
+            .modifier(TranscriptListStyle(translator: translator, emptyLibrary: !matches.isSearching && matches.isEmpty,
+                                          noMatches: matches.nothingMatches))
             .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Search transcripts"))
         }
         .presentationDetents([.medium, .large])
     }
 
     /// Wide screens (the open iPhone Duo, iPad): the list beside the transcript, like the Mac window.
-    private var split: some View {
+    private func split(_ matches: TranscriptMatches) -> some View {
         NavigationSplitView {
             List(selection: $selection) {
-                if liveMatches {
-                    Section("Now") { TranscriptRow(transcript: translator.transcript).tag(translator.transcript.id) }
+                if let live = matches.live {
+                    Section("Now") { TranscriptRow(transcript: live).tag(live.id) }
                 }
-                if !filteredSaved.isEmpty {
+                if !matches.saved.isEmpty {
                     Section("Earlier") {
-                        ForEach(filteredSaved) { TranscriptRow(transcript: $0).tag($0.id) }
-                            .onDelete { offsets in offsets.map { filteredSaved[$0] }.forEach(translator.history.delete) }
+                        ForEach(matches.saved) { TranscriptRow(transcript: $0).tag($0.id) }
+                            .onDelete { offsets in offsets.map { matches.saved[$0] }.forEach(translator.history.delete) }
                     }
                 }
             }
-            .modifier(TranscriptListStyle(translator: translator, emptyLibrary: emptyLibrary, noMatches: false))
+            .modifier(TranscriptListStyle(translator: translator, emptyLibrary: !matches.isSearching && matches.isEmpty, noMatches: false))
             .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Search transcripts"))
         } detail: {
-            if nothingMatches {
+            if matches.nothingMatches {
                 ContentUnavailableView("No Matches", systemImage: "magnifyingglass",
                                        description: Text("No transcript has those words."))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.hvGround)
-            } else if translator.isActive, selection == translator.transcript.id {
+            } else if let live = matches.live, selection == live.id {
                 LiveTranscriptDetail(translator: translator, query: query)
-            } else if let transcript = saved.first(where: { $0.id == selection }) {
-                TranscriptDetailView(transcript: transcript, delete: {
-                    translator.history.delete(transcript)
-                    selection = nil
-                }, closesOnDelete: false, query: query)
+            } else if let transcript = matches.saved.first(where: { $0.id == selection }) {
+                TranscriptDetailView(transcript: transcript, delete: { translator.history.delete(transcript) }, closesOnDelete: false,
+                                     query: query)
                     .id(transcript.id)
             }
         }
-        .onAppear { selection = selection ?? (translator.isActive ? translator.transcript.id : saved.first?.id) }
-        .onChange(of: query) { old, new in
-            guard TranscriptSearch.needle(old) != TranscriptSearch.needle(new) else { return }
-            reconcileSelection()
-        }
+        .onAppear { selection = matches.selection(keeping: selection) }
+        // Rows come and go with the search, the session in progress and deletes, not only when the query changes.
+        .onChange(of: matches.ids) { selection = matches.selection(keeping: selection) }
         .presentationSizing(.page)
-    }
-
-    private func reconcileSelection() {
-        if needle.isEmpty {
-            if let selection, selectionExists(selection) {
-                return
-            }
-            selection = translator.isActive ? translator.transcript.id : saved.first?.id
-            return
-        }
-        if let selection, selectionMatches(selection) {
-            return
-        }
-        if liveMatches {
-            selection = translator.transcript.id
-        } else {
-            selection = filteredSaved.first?.id
-        }
-    }
-
-    private func selectionExists(_ id: UUID) -> Bool {
-        (translator.isActive && translator.transcript.id == id) || saved.contains { $0.id == id }
-    }
-
-    private func selectionMatches(_ id: UUID) -> Bool {
-        (liveMatches && translator.transcript.id == id) || filteredSaved.contains { $0.id == id }
     }
 }
 
