@@ -58,11 +58,15 @@ struct TranscriptView: View {
         .frame(minWidth: 620, minHeight: 360)
         .onAppear { selection = selection ?? (translator.transcript.isEmpty ? history.transcripts.first?.id : translator.transcript.id) }
         // Rows come and go with the search, the session in progress and deletes, not only when the query changes.
-        .onChange(of: matches.ids) {
-            // Without a search, a finished session that wasn't saved stays open although it has no row.
-            if matches.isSearching || selection != translator.transcript.id || translator.transcript.isEmpty {
-                selection = matches.selection(keeping: selection)
-            }
+        .onChange(of: matches.ids) { followRows(of: matches) }
+        // Starting a search can leave the rows unchanged and still hide an open unsaved session.
+        .onChange(of: matches.isSearching) { followRows(of: matches) }
+    }
+
+    private func followRows(of matches: TranscriptMatches) {
+        // Without a search, a finished session that wasn't saved stays open although it has no row.
+        if matches.isSearching || selection != translator.transcript.id || translator.transcript.isEmpty {
+            selection = matches.selection(keeping: selection)
         }
     }
 
