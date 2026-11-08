@@ -133,17 +133,23 @@ read_archive_build_metadata() {
   build_number=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$info_plist")
 }
 
-# Counts up within each version, shared by iOS and Mac so one number names one release; a new MARKETING_VERSION starts again at 1.
+# Counts up, shared by iOS and Mac so one number names one release. The Mac App Store rejects a build number at or below
+# the previous version's, so a new MARKETING_VERSION continues after the latest processed build rather than restarting
+# at 1; that build, not the highest number ever uploaded, because version 0.1 used timestamps.
 next_build_number() {
   require_non_empty "$selected_app_id" "ASC_APP_ID"
   local version highest=0 platform next
   version=$(awk -F'"' '/MARKETING_VERSION:/ { print $2; exit }' "$repo_root/project.yml")
   for platform in IOS MAC_OS; do
-    next=$(run_asc builds next-build-number --app "$selected_app_id" --version "$version" --platform "$platform" --output json \
-      | python3 -c 'import json, sys; print(json.load(sys.stdin)["nextBuildNumber"])')
-    if (( next > highest )); then
-      highest=$next
-    fi
+    for next in \
+      "$(run_asc builds next-build-number --app "$selected_app_id" --version "$version" --platform "$platform" --output json \
+        | python3 -c 'import json, sys; print(json.load(sys.stdin)["nextBuildNumber"])')" \
+      "$(run_asc builds next-build-number --app "$selected_app_id" --platform "$platform" --output json \
+        | python3 -c 'import json, sys; print(int(json.load(sys.stdin)["latestProcessedBuildNumber"] or 0) + 1)')"; do
+      if (( next > highest )); then
+        highest=$next
+      fi
+    done
   done
   echo "$highest"
 }

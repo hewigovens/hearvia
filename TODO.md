@@ -1,18 +1,18 @@
 # TODO
 
-Open work, grouped by what it needs. Finished work lives in `jj log`. State as of 2026-10-19.
+Open work, grouped by what it needs. Finished work lives in `jj log`. State as of 2026-11-08.
 
 ## Handoff
 
 - Version control: jj only, in the default workspace (no sibling workspaces); `git` only for gaps jj doesn't cover, never index-writing commands. See `agents/version-control.md`. Codex sometimes works in the same checkout: check `jj op log` and `jj diff --stat` for edits you didn't make before describing or pushing.
 - `main` on `origin` (github.com/hewigovens/hearvia): `jj log -r 'main@origin..@'` shows what isn't pushed yet; publish with `jj bookmark set main -r <rev>` and `jj git push --bookmark main`.
 - Checks: `just format lint build test` locally; CI (`.github/workflows/ci.yml`, GitHub's `xcode-27` image with its Xcode 27.1) runs the kit tests, SwiftFormat, SwiftLint and unsigned builds of both apps on every push and pull request.
-- Releases: `just testflight` / `just testflight-macos` upload to TestFlight (`docs/release.md`). Internal testers get every build; the external "Public Beta" group (public link, up to 1,000 testers) gets a build once it's added to the group, and the first build of each version needs Beta App Review. Latest: 1.0 (11) iOS and (12) Mac, built with Xcode 27.1, 2026-10-21.
+- Releases: `just testflight` / `just testflight-macos` upload to TestFlight (`docs/release.md`). Internal testers get every build; the external "Public Beta" group (public link, up to 1,000 testers) gets a build once it's added to the group, and the first build of each version needs Beta App Review. Latest: 1.0.1 (1) iOS and (13) Mac, built with Xcode 27.2, 2026-11-08.
 
-## Next: TestFlight
+## Next: App Store
 
-- [ ] Public Beta: 1.0 passed Beta App Review (2026-10-19); iOS 1.0 (7) is approved for the group and Mac 1.0 (8) is waiting for its review. The public link is in the Public Beta group in App Store Connect.
-- [ ] App Store 1.0 in review (submitted 2026-10-19: iOS 1.0 (7), Mac 1.0 (8), with iPhone Duo screenshots); it goes live automatically once approved. Watch for reviewer questions in App Store Connect.
+- 1.0 is on the App Store: iOS 1.0 (11) and Mac 1.0 (8).
+- [ ] App Store 1.0.1 in review (submitted 2026-11-08: iOS 1.0.1 (1), Mac 1.0.1 (13)); it goes live automatically once approved. Watch for reviewer questions in App Store Connect.
 
 ## Check on iPhone
 

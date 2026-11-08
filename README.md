@@ -26,9 +26,10 @@
 
 ## Get Hearvia
 
+<a href="https://apps.apple.com/us/app/hearvia/id6823200947"><img src="https://toolbox.marketingtools.apple.com/api/badges/download-on-the-app-store/black/en-us?size=250x83" alt="Download on the App Store" height="54"></a>
 <a href="https://apps.apple.com/us/app/hearvia/id6823200947?mt=12"><img src="https://toolbox.marketingtools.apple.com/api/badges/download-on-the-mac-app-store/black/en-us?size=250x83" alt="Download on the Mac App Store" height="54"></a>
 
-Download Hearvia for Mac from the [Mac App Store](https://apps.apple.com/us/app/hearvia/id6823200947?mt=12); it needs macOS 26.4. The iPhone app (iOS 27) is in App Store review; until it's out, join the public beta on [TestFlight](https://testflight.apple.com/join/GZddk344) for iPhone and Mac. Updates are on the [website](https://hearvia.hewig.dev/).
+Hearvia is free on the [App Store](https://apps.apple.com/us/app/hearvia/id6823200947) for iPhone and iPad (iOS 27) and on the [Mac App Store](https://apps.apple.com/us/app/hearvia/id6823200947?mt=12) (macOS 26.4). To try new versions early, join the public beta on [TestFlight](https://testflight.apple.com/join/GZddk344). Updates are on the [website](https://hearvia.hewig.dev/).
 
 To build it yourself, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
