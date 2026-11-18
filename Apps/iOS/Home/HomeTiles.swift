@@ -15,7 +15,7 @@ struct HomeTiles: View {
     var body: some View {
         HStack(spacing: 10) {
             Button { present(.source) } label: {
-                ControlTile(symbol: settings.input.symbol, caption: "Listen to", value: settings.input.title)
+                ControlTile(symbol: settings.input.symbol, caption: "Listen to", value: settings.input.title, wraps: false)
             }
             .disabled(model.busy)
             Button { present(.languages) } label: {
