@@ -12,7 +12,7 @@ final class AppModel {
         didSet { settings.warmSource = source.savedSelection }
     }
     var processes: [AudioProcess] = []
-    var warmSession: WarmSession?
+    var warmSession: CaptionStandby<WarmRequest>?
     var warmStatus = ""
     var starting = false
     var capturing = false

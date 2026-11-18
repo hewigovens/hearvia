@@ -49,8 +49,12 @@ public extension LiveTranslator {
         "\(engine.rawValue)>\(sourceLanguage)>\(targetLanguage)>\(apiKey.hashValue)>\(localServerURL)>\(localKey.hashValue)>\(localModel)"
     }
 
+    var effectiveSourceLanguage: String {
+        engine.detectsSpokenLanguage ? "" : sourceLanguage
+    }
+
     var languagePair: String {
-        LanguageName.pair(source: engine.detectsSpokenLanguage ? "" : sourceLanguage, target: targetLanguage)
+        LanguageName.pair(source: effectiveSourceLanguage, target: targetLanguage)
     }
 
     /// One line for while listening; each app names its own audio source.
@@ -69,7 +73,7 @@ public extension LiveTranslator {
 
     /// The large subtitle line and, when `showsSecond`, the small one above it: the translation is large unless `originalLarge`.
     func subtitleLines(originalLarge: Bool, showsSecond: Bool) -> (main: String, second: String?) {
-        let japaneseSource = sourceLanguage == "ja" || sourceLanguage.isEmpty || engine.detectsSpokenLanguage
+        let japaneseSource = effectiveSourceLanguage == "ja" || effectiveSourceLanguage.isEmpty
         let spoken = japaneseSource && (originalLarge || showsSecond) ? source.spacedJapaneseSubtitle : source
         let translated = targetLanguage == "ja" && (!originalLarge || showsSecond) ? translation.spacedJapaneseSubtitle : translation
         let (main, second) = originalLarge ? (spoken, translated) : (translated, spoken)

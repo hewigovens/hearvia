@@ -24,7 +24,7 @@ final class AppModel {
     var micStarting = false
     var micError = ""
     var warmStatus = ""
-    var warmMicrophone: StandbyMicrophone?
+    var warmMicrophone: CaptionStandby<String>?
     @ObservationIgnored var micStartCancelled = false
     @ObservationIgnored var firstCaptionSession: UUID?
     let levels = LevelHistory()

@@ -22,7 +22,7 @@ public extension LiveTranslator {
         error = ""
         source = initialSource
         translation = ""
-        transcript = Transcript(engine: engine, sourceLanguage: engine.detectsSpokenLanguage ? "" : sourceLanguage, targetLanguage: targetLanguage)
+        transcript = Transcript(engine: engine, sourceLanguage: effectiveSourceLanguage, targetLanguage: targetLanguage)
         transcript.append(source: initialSource, translation: "")
         stats = TranslatorStats()
         if !initialSource.isEmpty {

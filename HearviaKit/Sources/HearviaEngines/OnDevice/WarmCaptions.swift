@@ -12,7 +12,12 @@ public final class WarmCaptions {
     private var window = WarmCaptionWindow()
     private let clock = ContinuousClock.now
 
-    public init(language: String) async throws {
+    public let language: String
+
+    public init(language request: String) async throws {
+        let language = request.isEmpty ? await OnDeviceModels.autoCandidates().first : request
+        guard let language else { throw OnDeviceError.noSpeechModels }
+        self.language = language
         let speech = try await OnDeviceModels.transcriber(language, timed: true)
         if let request = try await AssetInventory.assetInstallationRequest(supporting: [speech]) {
             try await request.downloadAndInstall()

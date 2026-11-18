@@ -77,7 +77,7 @@ extension AppModel {
 
     private func startMicrophone() async {
         guard !micRunning, !micStarting else { return }
-        let initialSource = warmMicrophone?.languageRequest == standbyLanguage ? warmMicrophone?.captions?.snapshot() ?? "" : ""
+        let initialSource = warmMicrophone?.snapshot(for: standbyLanguage) ?? ""
         stopStandby()
         micStarting = true
         micStartCancelled = false

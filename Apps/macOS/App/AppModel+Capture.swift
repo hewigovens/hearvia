@@ -3,12 +3,10 @@ import AVFoundation
 extension AppModel {
     func start() async {
         guard !capturing, !starting else { return }
-        let initialSource = warmSession?.request == warmRequest ? warmSession?.captions?.snapshot() ?? "" : ""
+        let initialSource = warmSession?.snapshot(for: warmRequest) ?? ""
         starting = true
         defer { starting = false }
-        warmSession?.stop()
-        warmSession = nil
-        warmStatus = ""
+        stopWarmCaptions()
         captureError = ""
         let feed = translator.feed
         let meter = levels.meter

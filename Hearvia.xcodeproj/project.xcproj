@@ -82,6 +82,12 @@
       "path": "Apps/Shared",
       "children": [
         {
+          "path": "CaptionStandby.swift",
+          "target-membership": [
+            "Hearvia/compile-sources",
+            "HearviaMac/compile-sources",
+          ],
+        }, {
           "path": "Localizable.xcstrings",
           "target-membership": [
             "Hearvia/resources",
