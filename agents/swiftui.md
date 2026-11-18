@@ -18,9 +18,9 @@ Apps/iOS/
 │                 AudioMetrics, PCMDecoder, AudioSessionController, SessionMode
 ├── Subtitles/    PiPController, SubtitleRenderer (+Drawing), SubtitlePreview, ExternalSubtitles (external display / AirPlay)
 ├── Developer/    DeveloperView, DiagnosticsPanel, DiagnosticLog (PoC diagnostics)
-├── QuickStart/   StartListeningIntent (+ QuickStart request, InputSource as AppEnum), HearviaShortcuts,
-│                 QuickActionSceneDelegate (Home Screen quick actions, installed by HearviaApp)
-├── Tests/
+└── QuickStart/   StartListeningIntent (+ QuickStart request, InputSource as AppEnum), HearviaShortcuts,
+                  QuickActionSceneDelegate (Home Screen quick actions, installed by HearviaApp)
+Apps/iOSTests/    AudioAnalysisTests
 Apps/iOSWidgets/  HearviaWidgets extension: QuickStartWidget (Home/Lock Screen), QuickStartControl (Control Center).
                   Also compiles QuickStart/StartListeningIntent.swift and App/InputSource.swift; the intent runs in the app
 Apps/macOS/
@@ -33,10 +33,10 @@ Apps/macOS/
 ├── Settings/     SettingsView (tabs: General, Translators, Overlay, Diagnostics)
 ├── Transcript/   TranscriptView (Transcripts window: sidebar of sessions, export/copy/delete)
 └── MenuBar/      MenuBarLabel, MenuBarMenu
-Apps/Shared/      Localizable.xcstrings (all three targets), DevSecrets.generated.swift (generated, optional in project.yml)
+Apps/Shared/      Localizable.xcstrings (all three targets)
 ```
 
-`project.yml` globs `Apps/iOS` and `Apps/macOS`, so moves need no project edits. `Hearvia.xcodeproj` is generated (`just generate`) and not checked in.
+The checked-in `Hearvia.xcodeproj/project.xcproj` uses synchronized folders for the apps, widget and iOS tests. When moving a source shared with the widget, update its target membership in the project.
 
 ## Conventions
 

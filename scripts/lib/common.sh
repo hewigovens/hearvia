@@ -137,16 +137,3 @@ run_xcodebuild() {
 
   return "$status"
 }
-
-generate_xcode_project() {
-  local repo_root="$1"
-
-  cd "$repo_root"
-  log "Generating Xcode project..."
-  sh scripts/gen_dev_secrets.sh
-  if [[ -f project.local.yml ]]; then
-    INCLUDE_LOCAL_PROJECT_YML=YES xcodegen generate
-  else
-    INCLUDE_LOCAL_PROJECT_YML=NO xcodegen generate
-  fi
-}

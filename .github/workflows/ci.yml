@@ -51,12 +51,6 @@ jobs:
             action: build
     steps:
       - uses: actions/checkout@v4
-      - name: Install XcodeGen
-        run: brew install xcodegen
-      - name: Generate project
-        run: |
-          sh scripts/gen_dev_secrets.sh
-          INCLUDE_LOCAL_PROJECT_YML=NO xcodegen generate
       - name: Build
         run: >
           xcodebuild ${{ matrix.action }}

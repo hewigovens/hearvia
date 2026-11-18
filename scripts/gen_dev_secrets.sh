@@ -1,9 +1,9 @@
 #!/bin/sh
-# Writes Apps/Shared/DevSecrets.generated.swift (gitignored) from .env for Debug device testing.
+# Writes DevSecrets.generated.swift in the target’s derived sources from .env for Debug device testing.
 # The keys end up in the Debug binary only: Release builds write empty keys, and the generated
 # file also compiles the keys out of non-Debug builds in case a stale Debug file is ever compiled for Release.
 root="$(cd "$(dirname "$0")/.." && pwd)"
-out="$root/Apps/Shared/DevSecrets.generated.swift"
+out="${SCRIPT_OUTPUT_FILE_0:?Missing Xcode script output path}"
 openai=""
 gemini=""
 if [ "${CONFIGURATION:-Debug}" = "Debug" ] && [ -f "$root/.env" ]; then

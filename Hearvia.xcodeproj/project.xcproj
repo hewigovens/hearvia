@@ -1,0 +1,342 @@
+{
+  "default-configuration": "Debug",
+  "configurations": [
+    { "name": "Debug", "file": "Config/Project.xcconfig" },
+    { "name": "Release", "file": "Config/Project.xcconfig" },
+  ],
+  "localizations": {
+    "development": "en",
+    "supported": [
+      "Base",
+      "ja",
+      "ko",
+      "zh-Hans",
+      "zh-Hant",
+    ],
+  },
+  "packages": [
+    {
+      "kind": "local",
+      "path": "HearviaKit",
+    },
+  ],
+  "files": [
+    {
+      "path": "<USER:DERIVED_FILE_DIR>/DevSecrets.generated.swift",
+      "target-membership": [
+        "Hearvia/compile-sources",
+        "HearviaMac/compile-sources",
+      ],
+    },
+    { "kind": "folder", "path": "Apps/iOSTests", "target-membership": [ "HearviaTests" ] },
+    {
+      "kind": "folder",
+      "path": "Apps/iOS",
+      "target-membership": [
+        "Hearvia",
+      ],
+      "membership-exceptions": [
+        {
+          "target": "Hearvia",
+          "exclusions": [
+            "Info.plist",
+          ],
+        }, {
+          "target": "HearviaWidgets",
+          "inclusions": [
+            "App/InputSource.swift",
+            "QuickStart/StartListeningIntent.swift",
+          ],
+        },
+      ],
+    }, {
+      "kind": "folder",
+      "path": "Apps/iOSWidgets",
+      "target-membership": [
+        "HearviaWidgets",
+      ],
+      "membership-exceptions": [
+        {
+          "target": "HearviaWidgets",
+          "exclusions": [
+            "Info.plist",
+          ],
+        },
+      ],
+    }, {
+      "kind": "folder",
+      "path": "Apps/macOS",
+      "target-membership": [
+        "HearviaMac",
+      ],
+      "membership-exceptions": [
+        {
+          "target": "HearviaMac",
+          "exclusions": [
+            "Info.plist",
+          ],
+        },
+      ],
+    }, {
+      "kind": "group",
+      "path": "Apps/Shared",
+      "children": [
+        {
+          "path": "Localizable.xcstrings",
+          "target-membership": [
+            "Hearvia/resources",
+            "HearviaWidgets/resources",
+            "HearviaMac/resources",
+          ],
+        },
+      ],
+    }, {
+      "kind": "group",
+      "path": "Config",
+      "children": [
+        { "path": "Project.xcconfig" },
+      ],
+    }, {
+      "kind": "group",
+      "name": "Packages",
+      "children": [
+        { "path": "<PROJECT>/HearviaKit" },
+      ],
+    }, {
+      "kind": "group",
+      "name": "Products",
+      "children": [
+        { "path": "<PRODUCTS>/Hearvia.app", "id": "746C50086245709FC4BB9B2E", "type": "wrapper.application", "index": false },
+        { "path": "<PRODUCTS>/Hearvia.app", "id": "83006C08AFC68FCF3E0EBC04", "type": "wrapper.application", "index": false },
+        { "path": "<PRODUCTS>/HearviaTests.xctest", "id": "0A73450B0F52F6C4BC8E9EE7", "type": "wrapper.cfbundle", "index": false },
+        { "path": "<PRODUCTS>/HearviaWidgets.appex", "id": "7BBAAE1575A03FEBCB33A668", "type": "wrapper.app-extension", "index": false, "target-membership": [ { "build-phase": "Hearvia/copy/Embed Foundation Extensions", "header-preservation": "remove-on-copy" } ] },
+      ],
+    },
+  ],
+  "targets": [
+    {
+      "name": "Hearvia",
+      "id": "7C84F2CF7B2BFF114D472E9A",
+      "product": "id:746C50086245709FC4BB9B2E",
+      "product-type": "application",
+      "legacy-provisioning-style": "automatic",
+      "dependencies": [
+        "HearviaWidgets",
+      ],
+      "build-phases": [
+        {
+          "kind": "script",
+          "name": "Generate dev secrets",
+          "output-paths": [
+            "$(DERIVED_FILE_DIR)/DevSecrets.generated.swift",
+          ],
+          "run-on-every-build": true,
+          "shell": "/bin/sh",
+          "script": "sh \"$SRCROOT/scripts/gen_dev_secrets.sh\"",
+        },
+        "compile-sources",
+        "resources",
+        "frameworks",
+        {
+          "kind": "copy",
+          "name": "Embed Foundation Extensions",
+          "bundle-base-path": "plugins-directory",
+        }, {
+          "kind": "script",
+          "name": "Strip developer Info.plist keys from Release",
+          "log-environment-variables": true,
+          "run-on-every-build": true,
+          "shell": "/bin/sh",
+          "script": "sh \"$SRCROOT/scripts/strip_release_plist.sh\"",
+        },
+      ],
+      "package-product-members": [
+        {
+          "product-name": "HearviaKit",
+          "build-phase": { "build-phase": "frameworks" },
+        },
+      ],
+      "build-settings": {
+        "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon",
+        "CODE_SIGN_ENTITLEMENTS": "Apps/iOS/Hearvia.entitlements",
+        "CODE_SIGN_IDENTITY": "iPhone Developer",
+        "GENERATE_INFOPLIST_FILE": "NO",
+        "INFOPLIST_FILE": "Apps/iOS/Info.plist",
+        "LD_RUNPATH_SEARCH_PATHS": [
+          "$(inherited)",
+          "@executable_path/Frameworks",
+        ],
+        "PRODUCT_BUNDLE_IDENTIFIER": "dev.hewig.hearvia",
+        "SDKROOT": "iphoneos",
+        "TARGETED_DEVICE_FAMILY": "1,2",
+      },
+    }, {
+      "name": "HearviaWidgets",
+      "id": "04600ED5BEB5A6E9B8CFCB1C",
+      "product": "Products/HearviaWidgets.appex",
+      "product-type": "app-extension",
+      "legacy-provisioning-style": "automatic",
+      "build-phases": [
+        "compile-sources",
+        "resources",
+        "frameworks",
+      ],
+      "package-product-members": [
+        {
+          "product-name": "HearviaKit",
+          "build-phase": { "build-phase": "frameworks" },
+        },
+      ],
+      "build-settings": {
+        "GENERATE_INFOPLIST_FILE": "NO",
+        "INFOPLIST_FILE": "Apps/iOSWidgets/Info.plist",
+        "LD_RUNPATH_SEARCH_PATHS": [
+          "$(inherited)",
+          "@executable_path/Frameworks",
+          "@executable_path/../../Frameworks",
+        ],
+        "PRODUCT_BUNDLE_IDENTIFIER": "dev.hewig.hearvia.widgets",
+        "SDKROOT": "iphoneos",
+        "TARGETED_DEVICE_FAMILY": "1,2",
+      },
+    }, {
+      "name": "HearviaMac",
+      "id": "741C10E94B62F249543F0CE1",
+      "product": "id:83006C08AFC68FCF3E0EBC04",
+      "product-type": "application",
+      "legacy-provisioning-style": "automatic",
+      "build-phases": [
+        {
+          "kind": "script",
+          "name": "Generate dev secrets",
+          "output-paths": [
+            "$(DERIVED_FILE_DIR)/DevSecrets.generated.swift",
+          ],
+          "run-on-every-build": true,
+          "shell": "/bin/sh",
+          "script": "sh \"$SRCROOT/scripts/gen_dev_secrets.sh\"",
+        },
+        "compile-sources",
+        "resources",
+        "frameworks",
+      ],
+      "package-product-members": [
+        {
+          "product-name": "HearviaKit",
+          "build-phase": { "build-phase": "frameworks" },
+        },
+      ],
+      "build-settings": {
+        "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon",
+        "CODE_SIGN_ENTITLEMENTS": "Apps/macOS/Hearvia.entitlements",
+        "CODE_SIGN_IDENTITY": "Apple Development",
+        "COMBINE_HIDPI_IMAGES": "YES",
+        "ENABLE_HARDENED_RUNTIME": "YES",
+        "GENERATE_INFOPLIST_FILE": "NO",
+        "INFOPLIST_FILE": "Apps/macOS/Info.plist",
+        "LD_RUNPATH_SEARCH_PATHS": [
+          "$(inherited)",
+          "@executable_path/../Frameworks",
+        ],
+        "PRODUCT_BUNDLE_IDENTIFIER": "dev.hewig.hearvia",
+        "PRODUCT_NAME": "Hearvia",
+        "SDKROOT": "macosx",
+      },
+    }, {
+      "name": "HearviaTests",
+      "id": "D26CD38D9171FD3FD5D31621",
+      "product": "Products/HearviaTests.xctest",
+      "product-type": "bundle.unit-test",
+      "legacy-provisioning-style": "automatic",
+      "dependencies": [
+        "Hearvia",
+      ],
+      "build-phases": [
+        "compile-sources",
+      ],
+      "build-settings": {
+        "BUNDLE_LOADER": "$(TEST_HOST)",
+        "GENERATE_INFOPLIST_FILE": "YES",
+        "LD_RUNPATH_SEARCH_PATHS": [
+          "$(inherited)",
+          "@executable_path/Frameworks",
+          "@loader_path/Frameworks",
+        ],
+        "PRODUCT_BUNDLE_IDENTIFIER": "dev.hewig.HearviaTests",
+        "SDKROOT": "iphoneos",
+        "TARGETED_DEVICE_FAMILY": "1,2",
+        "TEST_HOST": "$(BUILT_PRODUCTS_DIR)/Hearvia.app/Hearvia",
+      },
+    },
+  ],
+  "build-settings": {
+    "ALWAYS_SEARCH_USER_PATHS": "NO",
+    "CLANG_ANALYZER_NONNULL": "YES",
+    "CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION": "YES_AGGRESSIVE",
+    "CLANG_CXX_LANGUAGE_STANDARD": "gnu++14",
+    "CLANG_CXX_LIBRARY": "libc++",
+    "CLANG_ENABLE_MODULES": "YES",
+    "CLANG_ENABLE_OBJC_ARC": "YES",
+    "CLANG_ENABLE_OBJC_WEAK": "YES",
+    "CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING": "YES",
+    "CLANG_WARN_BOOL_CONVERSION": "YES",
+    "CLANG_WARN_COMMA": "YES",
+    "CLANG_WARN_CONSTANT_CONVERSION": "YES",
+    "CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS": "YES",
+    "CLANG_WARN_DIRECT_OBJC_ISA_USAGE": "YES_ERROR",
+    "CLANG_WARN_DOCUMENTATION_COMMENTS": "YES",
+    "CLANG_WARN_EMPTY_BODY": "YES",
+    "CLANG_WARN_ENUM_CONVERSION": "YES",
+    "CLANG_WARN_INFINITE_RECURSION": "YES",
+    "CLANG_WARN_INT_CONVERSION": "YES",
+    "CLANG_WARN_NON_LITERAL_NULL_CONVERSION": "YES",
+    "CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF": "YES",
+    "CLANG_WARN_OBJC_LITERAL_CONVERSION": "YES",
+    "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
+    "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "YES",
+    "CLANG_WARN_RANGE_LOOP_ANALYSIS": "YES",
+    "CLANG_WARN_STRICT_PROTOTYPES": "YES",
+    "CLANG_WARN_SUSPICIOUS_MOVE": "YES",
+    "CLANG_WARN_UNGUARDED_AVAILABILITY": "YES_AGGRESSIVE",
+    "CLANG_WARN_UNREACHABLE_CODE": "YES",
+    "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
+    "CODE_SIGN_STYLE": "Automatic",
+    "COPY_PHASE_STRIP": "NO",
+    "CURRENT_PROJECT_VERSION": "1",
+    "DEBUG_INFORMATION_FORMAT[config=Debug]": "dwarf",
+    "DEBUG_INFORMATION_FORMAT[config=Release]": "dwarf-with-dsym",
+    "ENABLE_NS_ASSERTIONS[config=Release]": "NO",
+    "ENABLE_STRICT_OBJC_MSGSEND": "YES",
+    "ENABLE_TESTABILITY[config=Debug]": "YES",
+    "GCC_C_LANGUAGE_STANDARD": "gnu11",
+    "GCC_DYNAMIC_NO_PIC[config=Debug]": "NO",
+    "GCC_NO_COMMON_BLOCKS": "YES",
+    "GCC_OPTIMIZATION_LEVEL[config=Debug]": "0",
+    "GCC_PREPROCESSOR_DEFINITIONS[config=Debug]": [
+      "$(inherited)",
+      "DEBUG=1",
+    ],
+    "GCC_WARN_64_TO_32_BIT_CONVERSION": "YES",
+    "GCC_WARN_ABOUT_RETURN_TYPE": "YES_ERROR",
+    "GCC_WARN_UNDECLARED_SELECTOR": "YES",
+    "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
+    "GCC_WARN_UNUSED_FUNCTION": "YES",
+    "GCC_WARN_UNUSED_VARIABLE": "YES",
+    "IPHONEOS_DEPLOYMENT_TARGET": "27.0",
+    "MACOSX_DEPLOYMENT_TARGET": "26.4",
+    "MARKETING_VERSION": "1.0.1",
+    "MTL_ENABLE_DEBUG_INFO[config=Debug]": "INCLUDE_SOURCE",
+    "MTL_ENABLE_DEBUG_INFO[config=Release]": "NO",
+    "MTL_FAST_MATH": "YES",
+    "ONLY_ACTIVE_ARCH[config=Debug]": "YES",
+    "PRODUCT_NAME": "$(TARGET_NAME)",
+    "SWIFT_ACTIVE_COMPILATION_CONDITIONS[config=Debug]": "DEBUG",
+    "SWIFT_COMPILATION_MODE[config=Release]": "wholemodule",
+    "SWIFT_OPTIMIZATION_LEVEL[config=Debug]": "-Onone",
+    "SWIFT_OPTIMIZATION_LEVEL[config=Release]": "-O",
+    "SWIFT_STRICT_CONCURRENCY": "complete",
+    "SWIFT_VERSION": "6.0",
+    "TARGETED_DEVICE_FAMILY": "1,2",
+  },
+  "last-upgrade": "14.3",
+}

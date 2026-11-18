@@ -5,18 +5,13 @@ device := env_var_or_default("HEARVIA_DEVICE", "")
 default:
   @just --list
 
-# Generate Hearvia.xcodeproj from project.yml
-generate:
-  sh scripts/gen_dev_secrets.sh # The project lists its output, which a fresh clone doesn't have yet.
-  if [ -f project.local.yml ]; then INCLUDE_LOCAL_PROJECT_YML=YES xcodegen generate; else INCLUDE_LOCAL_PROJECT_YML=NO xcodegen generate; fi
-
 # Build both apps
-build: generate
+build:
   xcodebuild -project Hearvia.xcodeproj -scheme Hearvia -destination 'generic/platform=iOS' -quiet build
   xcodebuild -project Hearvia.xcodeproj -scheme HearviaMac -destination 'platform=macOS' -quiet build
 
 # Compile the iOS test targets (run them on a device)
-build-tests: generate
+build-tests:
   xcodebuild -project Hearvia.xcodeproj -scheme Hearvia -destination 'generic/platform=iOS' -quiet build-for-testing
 
 # HearviaKit unit tests
@@ -24,7 +19,7 @@ test:
   cd HearviaKit && swift test
 
 # Build, install and launch on the paired iPhone
-install-ios: generate
+install-ios:
   @test -n "{{device}}" || { echo "Set HEARVIA_DEVICE to the iPhone's UDID (xcrun devicectl list devices)."; exit 1; }
   xcodebuild -project Hearvia.xcodeproj -scheme Hearvia -destination 'generic/platform=iOS' -quiet build
   xcrun devicectl device install app --device {{device}} "$(xcodebuild -project Hearvia.xcodeproj -scheme Hearvia -destination 'generic/platform=iOS' -showBuildSettings 2>/dev/null | awk '/ BUILT_PRODUCTS_DIR/{print $3}')/Hearvia.app"
@@ -52,7 +47,7 @@ site-deploy:
   cd cloudflare && wrangler deploy
 
 # Build and launch the Mac app with JSON event logging
-run-mac *args: generate
+run-mac *args:
   xcodebuild -project Hearvia.xcodeproj -scheme HearviaMac -destination 'platform=macOS' -quiet build
   "$(xcodebuild -project Hearvia.xcodeproj -scheme HearviaMac -showBuildSettings 2>/dev/null | awk '/ BUILT_PRODUCTS_DIR/{print $3}')/Hearvia.app/Contents/MacOS/Hearvia" --verbose {{args}}
 

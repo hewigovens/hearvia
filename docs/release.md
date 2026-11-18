@@ -99,13 +99,12 @@ The only sandbox denials logged were disk-space probes (`system-info vfs.disk-sp
 
 Credentials needed:
 
-- A **Developer ID Application** certificate for the team in `project.local.yml` in the login keychain (the project currently signs with Apple Development).
+- A **Developer ID Application** certificate for the team in `Config/Local.xcconfig` in the login keychain (the project currently signs with Apple Development).
 - An app-specific password for the Apple ID, or an App Store Connect API key (key ID, issuer ID, `.p8` file), stored once with `xcrun notarytool store-credentials hearvia-notary ...`.
 
 Steps:
 
 ```sh
-xcodegen generate
 xcodebuild -project Hearvia.xcodeproj -scheme HearviaMac -configuration Release \
   -archivePath build/HearviaMac.xcarchive archive
 # ExportOptions.plist: method developer-id, teamID <your team>, signingStyle automatic

@@ -139,7 +139,9 @@ read_archive_build_metadata() {
 next_build_number() {
   require_non_empty "$selected_app_id" "ASC_APP_ID"
   local version highest=0 platform next
-  version=$(awk -F'"' '/MARKETING_VERSION:/ { print $2; exit }' "$repo_root/project.yml")
+  version=$(xcodebuild -project "$project_path" -scheme "$scheme" -configuration "$configuration" \
+    -destination "$archive_destination" -showBuildSettings -json \
+    | python3 -c 'import json, sys; print(next(t["buildSettings"]["MARKETING_VERSION"] for t in json.load(sys.stdin) if t["target"] == sys.argv[1]))' "$scheme")
   for platform in IOS MAC_OS; do
     for next in \
       "$(run_asc builds next-build-number --app "$selected_app_id" --version "$version" --platform "$platform" --output json \
@@ -157,13 +159,10 @@ next_build_number() {
 archive_build() {
   local artifact_path
 
-  require_command xcodegen
   require_command xcodebuild
   build_xcode_auth_args
 
   cd "$repo_root"
-
-  generate_xcode_project "$repo_root"
 
   mkdir -p "$release_root"
   rm -rf "$archive_path" "$export_path" "$derived_data_path"

@@ -2,7 +2,7 @@
 DerivedData/
 .build/
 build/
-*.xcodeproj/
+*.xcodeproj/project.xcworkspace/
 *.xcuserstate
 xcuserdata/
 
@@ -12,6 +12,7 @@ xcuserdata/
 Apps/Shared/DevSecrets.generated.swift
 .asc/
 project.local.yml
+Config/Local.xcconfig
 
 # Local-only material: PoC device logs, recordings and screenshots
 Archive/

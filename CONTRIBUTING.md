@@ -9,13 +9,13 @@ Hearvia uses [Jujutsu](https://github.com/jj-vcs/jj) for version control, not gi
 
 ## Setup
 
-Needs macOS 27, Xcode 27.1 (its SDK has the iPhone Duo APIs), [XcodeGen](https://github.com/yonaskolb/XcodeGen), [just](https://github.com/casey/just), SwiftFormat and SwiftLint:
+Needs macOS 27, Xcode 27.1 or later (for the iPhone Duo APIs), [just](https://github.com/casey/just), SwiftFormat and SwiftLint:
 
 ```sh
-brew install xcodegen just swiftformat swiftlint
+brew install just swiftformat swiftlint
 ```
 
-To sign, copy `project.local.yml.example` to `project.local.yml` (gitignored) and set your team ID; `just generate` picks it up. Without it the apps still build unsigned (as in CI).
+Open the checked-in `Hearvia.xcodeproj` directly. For signing, copy `Config/Local.xcconfig.example` to `Config/Local.xcconfig` (gitignored) and set `DEVELOPMENT_TEAM` to your team ID. CI builds with `CODE_SIGNING_ALLOWED=NO`.
 
 ## Layout
 
@@ -43,7 +43,6 @@ Architecture and conventions: [AGENTS.md](AGENTS.md) and the guides in `agents/`
 ## Development
 
 ```sh
-just generate      # Hearvia.xcodeproj from project.yml (not checked in); schemes Hearvia (iOS) and HearviaMac
 just build         # both apps
 just test          # HearviaKit unit tests
 just run-mac       # launch the Mac app with JSON event logging
@@ -56,7 +55,7 @@ Run `just` for the full list. CI (`.github/workflows/ci.yml`, GitHub's `xcode-27
 
 ### Development API keys
 
-Put `OPENAI_API_KEY=sk-…` and/or `GEMINI_API_KEY=AIza…` (free from [Google AI Studio](https://aistudio.google.com/apikey)) in `.env` (gitignored). The pre-build script `scripts/gen_dev_secrets.sh` writes them into `Apps/Shared/DevSecrets.generated.swift` for **Debug builds only**, as fallbacks when no key is saved in the Keychain. Never ship a build with them, and never paste or commit a key.
+Put `OPENAI_API_KEY=sk-…` and/or `GEMINI_API_KEY=AIza…` (free from [Google AI Studio](https://aistudio.google.com/apikey)) in `.env` (gitignored). The pre-build script `scripts/gen_dev_secrets.sh` writes them into `DevSecrets.generated.swift` in each app target’s derived sources for **Debug builds only**, as fallbacks when no key is saved in the Keychain. Never ship a build with them, and never paste or commit a key.
 
 ### Try the engines without the apps
 
