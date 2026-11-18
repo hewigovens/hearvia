@@ -15,6 +15,7 @@ public struct LocalModelServer: Sendable, Equatable {
         ("Ollama", "http://localhost:11434/v1"),
         ("LM Studio", "http://localhost:1234/v1"),
         ("Unsloth Studio", "http://localhost:8888/v1"),
+        ("mlx-serve", "http://localhost:11234/v1"),
         ("llama.cpp server", "http://localhost:8080/v1")
     ]
 

@@ -5,6 +5,7 @@ import HearviaEngines
 
 // Streams an audio file through an engine at real-time pace and prints the text as it arrives.
 // Usage: hearvia-translate <audio-file> [target-lang=zh] [--fast] [--far-field] [--gemini | --on-device=<spoken-lang or auto>]
+// With --on-device, --local=<server address> [--model=<id>] translates through a local model server.
 // OpenAI Realtime by default (it also reports lag); --fast sends the audio as quickly as possible.
 
 /// `name` from the environment, else from the nearest `.env` up to four directories above.
@@ -127,7 +128,7 @@ await receiver.value
 timeout.cancel()
 
 @MainActor func runOnDevice(path: String, spoken: String, target: String) async throws {
-    let engine = OnDeviceEngine(sourceLanguage: spoken, targetLanguage: target)
+    let engine = try await onDeviceEngine(spoken: spoken, target: target)
     let feed = AudioFeed()
     let start = Date()
     func stamp() -> String {
@@ -171,6 +172,20 @@ timeout.cancel()
     await engine.stop()
     await printer.value
     print("\n--- source ---\n\(source)\n--- translation ---\n\(translation)\nerror: \(failure)")
+}
+
+/// Apple's translator, or the `--local` server's `--model` (its first model when not given).
+@MainActor func onDeviceEngine(spoken: String, target: String) async throws -> OnDeviceEngine {
+    guard let address = option("--local") else { return OnDeviceEngine(sourceLanguage: spoken, targetLanguage: target) }
+    let server = LocalModelServer(baseURL: address)
+    let listed = try await server.models().first
+    guard let model = option("--model") ?? listed else { throw LocalModelError.noModel }
+    print("local model: \(model) at \(address)")
+    return .localModel(sourceLanguage: spoken, targetLanguage: target, server: server, model: model)
+}
+
+func option(_ name: String) -> String? {
+    CommandLine.arguments.first { $0.hasPrefix("\(name)=") }.map { String($0.dropFirst(name.count + 1)) }
 }
 
 /// Pushes the file and 3 s of silence (so the last segment finalizes) into `feed` at real-time pace; returns the seconds sent.
