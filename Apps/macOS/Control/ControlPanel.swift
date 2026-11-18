@@ -67,6 +67,7 @@ struct ControlPanel: View {
     private var footer: some View {
         HStack(spacing: 14) {
             Button("Transcripts") { show("transcript") }
+                .focusEffectDisabled(!inMenuBar)
             if inMenuBar {
                 Button("Open Window") { show("main") }
                 Spacer()

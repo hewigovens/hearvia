@@ -4,7 +4,7 @@ import HearviaEngines
 
 /// Updates from an engine that is no longer running are ignored.
 public extension LiveTranslator {
-    func start() async {
+    func start(initialSource: String = "") async {
         guard !isActive else { return }
         switch knownSetup {
         case .needsKey:
@@ -18,9 +18,10 @@ public extension LiveTranslator {
         }
         isActive = true
         error = ""
-        source = ""
+        source = initialSource
         translation = ""
         transcript = Transcript(engine: engine, sourceLanguage: engine.detectsSpokenLanguage ? "" : sourceLanguage, targetLanguage: targetLanguage)
+        transcript.append(source: initialSource, translation: "")
         stats = TranslatorStats()
         let request = EngineRequest(sourceLanguage: sourceLanguage, targetLanguage: targetLanguage, apiKey: apiKey,
                                     transcribesSource: transcribesSource, listensToMicrophone: listensToMicrophone,

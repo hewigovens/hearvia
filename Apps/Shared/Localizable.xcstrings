@@ -2642,6 +2642,35 @@
         }
       }
     },
+    "Keep captions ready": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字幕を待機させる"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "자막 미리 준비"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提前准备字幕"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "預先準備字幕"
+          }
+        }
+      }
+    },
     "Kept on this %@ only.": {
       "extractionState": "manual",
       "localizations": {
@@ -4430,6 +4459,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "就緒"
+          }
+        }
+      }
+    },
+    "Ready · %@ on this Mac": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "待機中 · このMacで%@を認識"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "준비됨 · 이 Mac에서 %@ 인식"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已就绪 · 在这台 Mac 上识别%@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已就緒 · 在這台 Mac 上辨識%@"
           }
         }
       }
@@ -6776,6 +6834,93 @@
         }
       }
     },
+    "Warming on this Mac…": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このMacで準備中…"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 Mac에서 준비 중…"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在这台 Mac 上准备…"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在這台 Mac 上準備…"
+          }
+        }
+      }
+    },
+    "Warm captions unavailable: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字幕を待機できません：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "자막을 미리 준비할 수 없음: %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法提前准备字幕：%@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法預先準備字幕：%@"
+          }
+        }
+      }
+    },
+    "Warm captions stopped": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字幕の待機を停止しました"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "자막 대기 중지됨"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字幕待机已停止"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字幕待機已停止"
+          }
+        }
+      }
+    },
     "What was audible? Any interruption?": {
       "extractionState": "manual",
       "shouldTranslate": false
@@ -6805,6 +6950,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "正在看的內容會繼續播放。"
+          }
+        }
+      }
+    },
+    "While idle, transcribe the selected source on this Mac. Keep the last five seconds in memory for when you press Listen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "待機中も選択した音源をこのMacで文字起こしします。直近5秒分をメモリに保持し、開始時に表示します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "대기 중에 선택한 소스를 이 Mac에서 받아씁니다. 최근 5초 분량을 메모리에 보관했다가 듣기를 시작하면 표시합니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "待机时，在这台 Mac 上转写所选音源。仅在内存中保留最近五秒的内容，开始聆听时即可查看。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "待機時，在這台 Mac 上轉錄所選音源。僅在記憶體中保留最近五秒的內容，開始聆聽時即可查看。"
           }
         }
       }

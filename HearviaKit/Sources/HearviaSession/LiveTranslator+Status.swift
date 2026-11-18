@@ -73,6 +73,9 @@ public extension LiveTranslator {
         let spoken = japaneseSource && (originalLarge || showsSecond) ? source.spacedJapaneseSubtitle : source
         let translated = targetLanguage == "ja" && (!originalLarge || showsSecond) ? translation.spacedJapaneseSubtitle : translation
         let (main, second) = originalLarge ? (spoken, translated) : (translated, spoken)
+        if main.isEmpty, isActive, let opening = transcript.lines.first, opening.translation.isEmpty {
+            return (opening.source, nil)
+        }
         return (main, showsSecond && !main.isEmpty && !second.isEmpty ? second : nil)
     }
 }

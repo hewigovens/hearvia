@@ -47,6 +47,10 @@ private struct GeneralSettings: View {
                 }
             }
             Section {
+                Toggle(isOn: $settings.warmCaptions) {
+                    Text("Keep captions ready")
+                    Text("While idle, transcribe the selected source on this Mac. Keep the last five seconds in memory for when you press Listen.")
+                }
                 Toggle(isOn: $translator.savesTranscripts) {
                     Text("Save transcripts")
                 }

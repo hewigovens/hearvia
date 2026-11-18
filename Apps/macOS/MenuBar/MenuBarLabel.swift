@@ -8,6 +8,7 @@ struct MenuBarLabel: View {
 
     var body: some View {
         Image(systemName: model.capturing ? "captions.bubble.fill" : "captions.bubble")
+            .task(id: model.warmRequest) { await model.warmIfNeeded() }
             .accessibilityLabel("Hearvia")
             .task {
                 guard delegate.model == nil else { return }

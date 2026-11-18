@@ -8,8 +8,13 @@ import Observation
 final class AppModel {
     let settings: AppSettings
     let translator = LiveTranslator(fallbackKeys: AppModel.developmentKeys)
-    var source = CaptureSource.allApps
+    var source = CaptureSource.allApps {
+        didSet { settings.warmSource = source.savedSelection }
+    }
     var processes: [AudioProcess] = []
+    var warmSession: WarmSession?
+    var warmStatus = ""
+    var starting = false
     var capturing = false
     var capturingSince: Date?
     var captureError = ""
@@ -26,7 +31,17 @@ final class AppModel {
         self.settings = settings
         RetiredFiles.remove()
         refreshProcesses()
-        source = CaptureSource(launchArguments: CommandLine.arguments, processes: processes) ?? source
+        if let requested = CaptureSource(launchArguments: CommandLine.arguments, processes: processes) {
+            source = requested
+        } else if settings.warmCaptions {
+            if let saved = settings.warmSource, let restored = CaptureSource(selection: saved, processes: processes) {
+                source = restored
+            } else {
+                // An unavailable app must never widen standby capture to all system audio.
+                settings.warmCaptions = false
+            }
+        }
+        settings.warmSource = source.savedSelection
         translator.transcribeSource { [settings] in settings.needsOriginal }
         translator.onLog = { [verbose] name, fields in
             guard verbose else { return }

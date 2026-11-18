@@ -6,6 +6,8 @@ import Observation
 @MainActor @Observable
 final class AppSettings {
     private enum Keys {
+        static let warmSource = "hearvia.warmSource"
+        static let warmCaptions = "hearvia.warmCaptions"
         static let appearance = "hearvia.appearance"
         static let overlayVisible = "hearvia.overlayVisible"
         static let clickThrough = "hearvia.clickThrough"
@@ -19,6 +21,15 @@ final class AppSettings {
     }
 
     static let overlayFontSizeRange: ClosedRange<Double> = 16 ... 64
+
+    var warmSource: String? {
+        get { defaults.string(forKey: Keys.warmSource) }
+        set { defaults.set(newValue, forKey: Keys.warmSource) }
+    }
+
+    var warmCaptions: Bool {
+        didSet { defaults.set(warmCaptions, forKey: Keys.warmCaptions) }
+    }
 
     var appearance: Appearance {
         didSet {
@@ -82,6 +93,7 @@ final class AppSettings {
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
+        warmCaptions = defaults.bool(forKey: Keys.warmCaptions)
         appearance = defaults.string(forKey: Keys.appearance).flatMap(Appearance.init) ?? .dark
         overlayVisible = defaults.object(forKey: Keys.overlayVisible) as? Bool ?? true
         clickThrough = defaults.bool(forKey: Keys.clickThrough)

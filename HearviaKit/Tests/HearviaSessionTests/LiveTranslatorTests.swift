@@ -117,6 +117,19 @@ struct LiveTranslatorTests {
         #expect(translator.subtitleLines(originalLarge: false, showsSecond: false).main == translator.translation)
     }
 
+    @Test func warmStartMakesLocalSpeechAvailableBeforeTheEngineResponds() async {
+        let harness = Harness(apiKey: nil)
+        let translator = harness.translator
+        await translator.start(initialSource: "Already spoken")
+        #expect(translator.subtitleLines(originalLarge: false, showsSecond: false).main == "Already spoken")
+        #expect(translator.transcript.lines.map(\.source) == ["Already spoken"])
+        #expect(translator.translation.isEmpty)
+        await translator.stop()
+        await translator.start()
+        #expect(translator.source.isEmpty && translator.transcript.isEmpty)
+        await translator.stop()
+    }
+
     @Test func realtimeNeedsAnAPIKey() async {
         let harness = Harness(apiKey: nil)
         let translator = harness.translator

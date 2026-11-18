@@ -22,6 +22,8 @@ struct ListenHero: View {
                         TimelineView(.periodic(from: since, by: 1)) { context in
                             Text("\(Duration.seconds(context.date.timeIntervalSince(since).rounded(.down)), format: .time(pattern: .minuteSecond)) · ⌘↩ to stop")
                         }
+                    } else if !model.warmStatus.isEmpty {
+                        Text(model.warmStatus)
                     } else {
                         Text("⌘↩ · other apps keep playing")
                     }

@@ -2,7 +2,13 @@ import AVFoundation
 
 extension AppModel {
     func start() async {
-        guard !capturing else { return }
+        guard !capturing, !starting else { return }
+        let initialSource = warmSession?.request == warmRequest ? warmSession?.captions?.snapshot() ?? "" : ""
+        starting = true
+        defer { starting = false }
+        warmSession?.stop()
+        warmSession = nil
+        warmStatus = ""
         captureError = ""
         let feed = translator.feed
         let meter = levels.meter
@@ -11,11 +17,7 @@ extension AppModel {
             feed.push(buffer)
         }
         do {
-            switch source {
-            case .allApps: try tap.start(processes: nil, onBuffer: sink)
-            case let .process(p): try tap.start(processes: [p.id], onBuffer: sink)
-            case .microphone: try await microphone.start(onBuffer: sink)
-            }
+            try await source.start(tap: tap, microphone: microphone, sink: sink)
         } catch {
             captureError = error.localizedDescription
             Self.emit("capture_error", ["error": captureError])
@@ -26,7 +28,7 @@ extension AppModel {
         Self.emit("capture_started", ["source": source.label, "format": tap.format.map { "\($0)" } ?? "mic"])
         levels.start()
         translator.listensToMicrophone = source == .microphone
-        await translator.start()
+        await translator.start(initialSource: initialSource)
     }
 
     func stop() async {

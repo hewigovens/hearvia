@@ -10,6 +10,9 @@ struct MenuBarMenu: View {
         Button(model.capturing ? "Stop Listening" : "Start Listening") {
             Task { await model.toggleListening() }
         }
+        if !model.warmStatus.isEmpty {
+            Text(model.warmStatus)
+        }
         Text(model.translator.summary(listeningTo: model.source.label))
         Divider()
         Toggle("Show Subtitle Overlay", isOn: $settings.overlayVisible)

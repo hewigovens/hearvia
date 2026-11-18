@@ -48,14 +48,14 @@ public enum OnDeviceModels {
         Locale.Language(identifier: Languages.qualified(code))
     }
 
-    static func transcriber(_ code: String, confidence: Bool = false) async throws -> SpeechTranscriber {
+    static func transcriber(_ code: String, confidence: Bool = false, timed: Bool = false) async throws -> SpeechTranscriber {
         var locale = await SpeechTranscriber.supportedLocale(equivalentTo: speechLocale(code))
         if locale == nil { // Languages outside the region map: take any supported variant.
             locale = await SpeechTranscriber.supportedLocales.first { $0.language.languageCode?.identifier == code }
         }
         guard let locale else { throw OnDeviceError.speechUnsupported(code) }
         return SpeechTranscriber(locale: locale, transcriptionOptions: [],
-                                 reportingOptions: [.volatileResults, .fastResults], attributeOptions: confidence ? [.transcriptionConfidence] : [])
+                                 reportingOptions: [.volatileResults, .fastResults], attributeOptions: timed ? [.audioTimeRange] : (confidence ? [.transcriptionConfidence] : []))
     }
 
     /// Every recognizer runs at once until one wins, and iOS fails a third (SFSpeechErrorDomain 16), so Auto tries two installed languages, the user's own first.
