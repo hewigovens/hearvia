@@ -78,6 +78,7 @@ final class AudioSessionController {
             case .playbackExclusive: try session.setCategory(.playback, mode: .default)
             }
             guard try await session.activate(options: []) else { throw NSError(domain: "Hearvia", code: 2, userInfo: [NSLocalizedDescriptionKey: "Audio session activation was declined."]) }
+            systemInterrupted = false
             status = requestedMode.rawValue
             error = ""
             updateRoute()

@@ -1,6 +1,35 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ is unavailable": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ は利用できません"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@을(를) 사용할 수 없습니다"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 不可用"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 無法使用"
+          }
+        }
+      }
+    },
     "\"%@\" isn't a server address. Use one like http://localhost:11434/v1.": {
       "extractionState": "manual",
       "localizations": {

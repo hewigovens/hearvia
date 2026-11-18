@@ -20,6 +20,7 @@ public extension LiveTranslator {
         }
         isActive = true
         error = ""
+        showingOpeningCaption = !initialSource.isEmpty
         source = initialSource
         translation = ""
         transcript = Transcript(engine: engine, sourceLanguage: effectiveSourceLanguage, targetLanguage: targetLanguage)
@@ -72,6 +73,7 @@ public extension LiveTranslator {
                 stats.deltas += 1
                 stats.lastDeltaUptime = ProcessInfo.processInfo.systemUptime
             }
+            showingOpeningCaption = showingOpeningCaption && source.isEmpty && translation.isEmpty
             self.source = source
             self.translation = translation
             onTextChange?()

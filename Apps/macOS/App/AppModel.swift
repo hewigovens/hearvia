@@ -8,9 +8,7 @@ import Observation
 final class AppModel {
     let settings: AppSettings
     let translator = LiveTranslator(fallbackKeys: AppModel.developmentKeys)
-    var source = CaptureSource.allApps {
-        didSet { settings.warmSource = source.savedSelection }
-    }
+    private(set) var source = CaptureSource.allApps
     var processes: [AudioProcess] = []
     var warmSession: CaptionStandby<WarmRequest>?
     var warmStatus = ""
@@ -34,14 +32,13 @@ final class AppModel {
         if let requested = CaptureSource(launchArguments: CommandLine.arguments, processes: processes) {
             source = requested
         } else if settings.warmCaptions {
-            if let saved = settings.warmSource, let restored = CaptureSource(selection: saved, processes: processes) {
-                source = restored
+            if let saved = settings.warmSource {
+                source = CaptureSource(savedSelection: saved, processes: processes)
             } else {
                 // An unavailable app must never widen standby capture to all system audio.
                 settings.warmCaptions = false
             }
         }
-        settings.warmSource = source.savedSelection
         translator.transcribeSource { [settings] in settings.needsOriginal }
         translator.onLog = { [verbose] name, fields in
             guard verbose else { return }
@@ -91,8 +88,16 @@ final class AppModel {
         #endif
     }
 
+    func selectSource(_ selection: CaptureSource) {
+        source = selection
+        settings.warmSource = selection.savedSelection
+    }
+
     func refreshProcesses() {
         processes = AudioProcesses.list()
+        if case let .unavailable(bundleID) = source {
+            source = CaptureSource(savedSelection: bundleID, processes: processes)
+        }
     }
 
     nonisolated static func emit(_ name: String, _ fields: [String: String]) {

@@ -7,7 +7,7 @@ struct SettingsView: View {
 
     var body: some View {
         TabView {
-            Tab("General", systemImage: "gearshape") { GeneralSettings(translator: model.translator) }
+            Tab("General", systemImage: "gearshape") { GeneralSettings(model: model, translator: model.translator) }
             Tab("Translators", systemImage: "character.bubble") { TranslatorSettings(translator: model.translator) }
             Tab("Overlay", systemImage: "captions.bubble") { OverlaySettings() }
             Tab("Diagnostics", systemImage: "stethoscope") { DiagnosticsSettings(translator: model.translator) }
@@ -30,6 +30,7 @@ private struct SettingsPane<Content: View>: View {
 }
 
 private struct GeneralSettings: View {
+    let model: AppModel
     @Bindable var translator: LiveTranslator
     @Environment(AppSettings.self) private var settings
 
@@ -47,7 +48,12 @@ private struct GeneralSettings: View {
                 }
             }
             Section {
-                Toggle(isOn: $settings.warmCaptions) {
+                Toggle(isOn: Binding(get: { settings.warmCaptions }, set: { enabled in
+                    if enabled {
+                        settings.warmSource = model.source.savedSelection
+                    }
+                    settings.warmCaptions = enabled
+                })) {
                     Label("Keep captions ready", systemImage: "waveform")
                     Text("Keeps the last 5 seconds on device.")
                 }

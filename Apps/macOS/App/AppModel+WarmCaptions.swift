@@ -10,6 +10,9 @@ extension AppModel {
 
     var warmRequest: WarmRequest? {
         guard settings.warmCaptions, !capturing, !starting else { return nil }
+        if case .unavailable = source {
+            return nil
+        }
         return WarmRequest(source: source, language: translator.effectiveSourceLanguage)
     }
 

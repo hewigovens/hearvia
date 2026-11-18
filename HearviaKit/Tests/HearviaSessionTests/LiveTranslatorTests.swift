@@ -117,13 +117,18 @@ struct LiveTranslatorTests {
         #expect(translator.subtitleLines(originalLarge: false, showsSecond: false).main == translator.translation)
     }
 
-    @Test func warmStartMakesLocalSpeechAvailableBeforeTheEngineResponds() async {
+    @Test func warmStartMakesLocalSpeechAvailableBeforeTheEngineResponds() async throws {
         let harness = Harness(apiKey: nil)
         let translator = harness.translator
         await translator.start(initialSource: "Already spoken")
         #expect(translator.subtitleLines(originalLarge: false, showsSecond: false).main == "Already spoken")
         #expect(translator.transcript.lines.map(\.source) == ["Already spoken"])
         #expect(translator.translation.isEmpty)
+        let engine = try #require(harness.engines.first)
+        translator.apply(.text(source: "Live speech", translation: ""), from: engine)
+        #expect(translator.subtitleLines(originalLarge: false, showsSecond: false).main.isEmpty)
+        translator.apply(.text(source: "", translation: ""), from: engine)
+        #expect(translator.subtitleLines(originalLarge: false, showsSecond: false).main.isEmpty)
         await translator.stop()
         await translator.start()
         #expect(translator.source.isEmpty && translator.transcript.isEmpty)

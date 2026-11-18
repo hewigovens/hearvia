@@ -55,6 +55,7 @@ public final class LiveTranslator {
     public internal(set) var isActive = false
     public internal(set) var status = TranslatorStatus.idle
     public internal(set) var error = ""
+    var showingOpeningCaption = false
     public internal(set) var source = ""
     public internal(set) var translation = ""
     public internal(set) var transcript = Transcript()

@@ -20,7 +20,7 @@ Apps/iOS/
 ├── Developer/    DeveloperView, DiagnosticsPanel, DiagnosticLog (PoC diagnostics)
 └── QuickStart/   StartListeningIntent (+ QuickStart request, InputSource as AppEnum), HearviaShortcuts,
                   QuickActionSceneDelegate (Home Screen quick actions, installed by HearviaApp)
-Apps/iOSTests/    AudioAnalysisTests
+Apps/iOSTests/    AudioAnalysisTests, MicrophoneStandbyTests
 Apps/iOSWidgets/  HearviaWidgets extension: QuickStartWidget (Home/Lock Screen), QuickStartControl (Control Center).
                   Also compiles QuickStart/StartListeningIntent.swift and App/InputSource.swift; the intent runs in the app
 Apps/macOS/
@@ -33,7 +33,7 @@ Apps/macOS/
 ├── Settings/     SettingsView (tabs: General, Translators, Overlay, Diagnostics)
 ├── Transcript/   TranscriptView (Transcripts window: sidebar of sessions, export/copy/delete)
 └── MenuBar/      MenuBarLabel, MenuBarMenu
-Apps/Shared/      Localizable.xcstrings (all three targets)
+Apps/Shared/      CaptionStandby (iPhone and Mac), Localizable.xcstrings (all three targets)
 ```
 
 The checked-in `Hearvia.xcodeproj/project.xcproj` uses synchronized folders for the apps, widget and iOS tests. When moving a source shared with the widget, update its target membership in the project.

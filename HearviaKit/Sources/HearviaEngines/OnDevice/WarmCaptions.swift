@@ -94,17 +94,16 @@ struct WarmCaptionWindow {
 
 /// Each capture source invokes its sink on one serial queue. Convert before the capture buffer is reused.
 private final class WarmAudioInput: @unchecked Sendable {
-    let format: AVAudioFormat
-    let input: AsyncThrowingStream<AnalyzerInput, Error>.Continuation
-    private var converter: AVAudioConverter?
-    private var nextTime: CMTime?
-
+    private let format: AVAudioFormat
+    private let input: AsyncThrowingStream<AnalyzerInput, Error>.Continuation
     private let clock: ContinuousClock.Instant
+    private var converter: AVAudioConverter?
+    private var timeline = WarmAudioTimeline()
 
     init(format: AVAudioFormat, input: AsyncThrowingStream<AnalyzerInput, Error>.Continuation, clock: ContinuousClock.Instant) {
-        self.clock = clock
         self.format = format
         self.input = input
+        self.clock = clock
     }
 
     func push(_ buffer: AVAudioPCMBuffer) {
@@ -117,10 +116,23 @@ private final class WarmAudioInput: @unchecked Sendable {
             guard output.frameLength > 0 else { return }
             let duration = CMTime(value: Int64(output.frameLength), timescale: Int32(format.sampleRate))
             let measured = max(.zero, CMTime(seconds: clock.elapsedSeconds, preferredTimescale: 48000) - duration)
-            let start = nextTime.flatMap { abs(($0 - measured).seconds) < 0.1 ? $0 : nil } ?? measured
-            nextTime = start + duration
+            guard let start = timeline.append(measured: measured, duration: duration) else { return }
             input.yield(AnalyzerInput(buffer: output, bufferStartTime: start))
         } catch { input.finish(throwing: error) }
+    }
+}
+
+struct WarmAudioTimeline {
+    private var end: CMTime?
+
+    mutating func append(measured: CMTime, duration: CMTime) -> CMTime? {
+        // Drop a burst buffer if it would start at or after its arrival time.
+        if let end, end >= measured + duration {
+            return nil
+        }
+        let start = end.flatMap { (measured - $0).seconds < 0.1 ? $0 : nil } ?? measured
+        end = start + duration
+        return start
     }
 }
 

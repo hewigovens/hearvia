@@ -4,6 +4,14 @@ import XCTest
 
 @MainActor
 final class MicrophoneStandbyTests: XCTestCase {
+    func testSuccessfulActivationRecoversFromInterruptionWithoutResumeNotification() async throws {
+        let session = AudioSessionController(log: DiagnosticLog())
+        session.systemInterrupted = true
+        try await session.acquire("interruption-test")
+        defer { session.release("interruption-test") }
+        XCTAssertFalse(session.systemInterrupted)
+    }
+
     func testStandbyRequiresForegroundMicrophoneOptIn() throws {
         let defaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
         let settings = AppSettings(defaults: defaults)

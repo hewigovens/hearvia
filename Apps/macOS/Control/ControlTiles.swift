@@ -30,7 +30,10 @@ struct ControlTiles: View {
     }
 
     @ViewBuilder private var sourceChoices: some View {
-        Picker("Listen to", selection: $model.source) {
+        Picker("Listen to", selection: Binding(get: { model.source }, set: model.selectSource)) {
+            if case .unavailable = model.source {
+                Text(model.source.label).tag(model.source)
+            }
             Label("All system audio", systemImage: "speaker.wave.2").tag(CaptureSource.allApps)
             Section("Apps") {
                 ForEach(model.processes.sorted { $0.isOutputting && !$1.isOutputting }) { process in
