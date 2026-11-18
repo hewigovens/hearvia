@@ -1984,31 +1984,31 @@
       "extractionState": "manual",
       "shouldTranslate": false
     },
-    "Experimental · your Ollama, LM Studio or Unsloth": {
+    "Your Ollama, LM Studio or Unsloth": {
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "実験的 · お使いの Ollama、LM Studio、Unsloth"
+            "value": "お使いの Ollama、LM Studio、Unsloth"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "실험적 · 내 Ollama, LM Studio, Unsloth 사용"
+            "value": "내 Ollama, LM Studio, Unsloth 사용"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "实验性 · 使用你的 Ollama、LM Studio 或 Unsloth"
+            "value": "使用你的 Ollama、LM Studio 或 Unsloth"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "實驗性 · 使用你的 Ollama、LM Studio 或 Unsloth"
+            "value": "使用你的 Ollama、LM Studio 或 Unsloth"
           }
         }
       }
@@ -3110,35 +3110,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "本機大型模型"
-          }
-        }
-      }
-    },
-    "Local LLM (experimental)": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ローカル LLM（実験的）"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "로컬 LLM(실험적)"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "本地大模型（实验性）"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "本機大型模型（實驗性）"
           }
         }
       }

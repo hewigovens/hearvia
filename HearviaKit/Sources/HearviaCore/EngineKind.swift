@@ -30,7 +30,7 @@ public enum EngineKind: String, CaseIterable, Identifiable, Sendable, Codable {
         case .onDevice: String(localized: "Free · private · works offline")
         case .realtime: String(localized: "Fastest · best quality · ~$2/hour")
         case .gemini: String(localized: "Free to try · ~$2.20/hour after")
-        case .local: String(localized: "Experimental · your Ollama, LM Studio or Unsloth")
+        case .local: String(localized: "Your Ollama, LM Studio or Unsloth")
         }
     }
     public var isCloud: Bool {

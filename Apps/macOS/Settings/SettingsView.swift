@@ -37,28 +37,28 @@ private struct GeneralSettings: View {
         @Bindable var settings = settings
         SettingsPane {
             Section {
-                Picker("Theme", selection: $settings.appearance) {
-                    ForEach(Appearance.allCases) { Text($0.title).tag($0) }
-                }
-                .pickerStyle(.segmented)
+                LabeledContent {
+                    ThemePicker(selection: $settings.appearance)
+                        .fixedSize()
+                } label: { Label("Theme", systemImage: "paintpalette") }
                 Toggle(isOn: $settings.menuBarOnly) {
-                    Text("Show in menu bar only")
+                    Label("Show in menu bar only", systemImage: "menubar.rectangle")
                     Text("Open Hearvia from the menu bar icon.")
                 }
             }
             Section {
                 Toggle(isOn: $settings.warmCaptions) {
-                    Text("Keep captions ready")
+                    Label("Keep captions ready", systemImage: "waveform")
                     Text("While idle, transcribe the selected source on this Mac. Keep the last five seconds in memory for when you press Listen.")
                 }
                 Toggle(isOn: $translator.savesTranscripts) {
-                    Text("Save transcripts")
+                    Label("Save transcripts", systemImage: "doc.text")
                 }
                 Toggle(isOn: Bindable(translator.history).syncsWithICloud) {
-                    Text("Sync with iCloud")
+                    Label("Sync with iCloud", systemImage: "icloud")
                     Text(translator.history.storageNote(device: "Mac"))
                 }
-                Button("Delete All Transcripts", role: .destructive) { translator.history.deleteAll() }
+                Button("Delete All Transcripts", systemImage: "trash", role: .destructive) { translator.history.deleteAll() }
                     .disabled(translator.history.transcripts.isEmpty)
             }
         }
@@ -86,7 +86,7 @@ private struct TranslatorSettings: View {
             }
             Section {
                 LocalModelSettingsView(translator: translator)
-            } header: { Text("Local LLM (experimental)") } footer: {
+            } header: { Text("Local LLM") } footer: {
                 Text("Sends each finished sentence to your OpenAI-compatible server: Ollama, LM Studio, Unsloth Studio and others.")
                     .foregroundStyle(Color.hvMuted)
             }
@@ -101,25 +101,25 @@ private struct OverlaySettings: View {
         @Bindable var settings = settings
         SettingsPane {
             Section {
-                Toggle("Show the subtitle overlay", isOn: $settings.overlayVisible)
-                Picker("Large text", selection: $settings.originalLarge) {
+                Toggle("Show the subtitle overlay", systemImage: "captions.bubble", isOn: $settings.overlayVisible)
+                Picker("Large text", systemImage: "textformat.size.larger", selection: $settings.originalLarge) {
                     Text("Translation").tag(false)
                     Text("Original speech").tag(true)
                 }
                 .pickerStyle(.segmented)
-                Toggle(settings.originalLarge ? "Show translation" : "Show original speech", isOn: $settings.showsOriginal)
+                Toggle(settings.originalLarge ? "Show translation" : "Show original speech", systemImage: "character.bubble", isOn: $settings.showsOriginal)
                 Toggle(isOn: $settings.twoLines) {
-                    Text("Two lines at most")
+                    Label("Two lines at most", systemImage: "text.alignleft")
                     Text("Like film subtitles. Turn off to fill the overlay with more of what was said.")
                 }
                 Toggle(isOn: $settings.clickThrough) {
-                    Text("Click-through")
+                    Label("Click-through", systemImage: "cursorarrow.rays")
                     Text("Clicks reach the app below; the overlay can't be moved.")
                 }
             }
             Section {
-                Slider(value: $settings.overlayFontSize, in: AppSettings.overlayFontSizeRange) { Text("Text size") }
-                Slider(value: $settings.overlayOpacity, in: 0 ... 1) { Text("Background") }
+                Slider(value: $settings.overlayFontSize, in: AppSettings.overlayFontSizeRange) { Label("Text size", systemImage: "textformat.size") }
+                Slider(value: $settings.overlayOpacity, in: 0 ... 1) { Label("Background", systemImage: "circle.lefthalf.filled") }
             }
         }
     }

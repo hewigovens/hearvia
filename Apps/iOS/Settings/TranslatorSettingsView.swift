@@ -34,7 +34,7 @@ struct TranslatorSettingsView: View {
 
             Section {
                 LocalModelSettingsView(translator: translator)
-            } header: { Text("Local LLM (experimental)") } footer: {
+            } header: { Text("Local LLM") } footer: {
                 Text("Sends each finished sentence to your OpenAI-compatible server on the same network, such as http://my-mac.local:11434/v1.")
             }
             .listRowBackground(Color.hvSurface)
