@@ -69,7 +69,10 @@ public extension LiveTranslator {
 
     /// The large subtitle line and, when `showsSecond`, the small one above it: the translation is large unless `originalLarge`.
     func subtitleLines(originalLarge: Bool, showsSecond: Bool) -> (main: String, second: String?) {
-        let (main, second) = originalLarge ? (source, translation) : (translation, source)
+        let japaneseSource = sourceLanguage == "ja" || sourceLanguage.isEmpty || engine.detectsSpokenLanguage
+        let spoken = japaneseSource && (originalLarge || showsSecond) ? source.spacedJapaneseSubtitle : source
+        let translated = targetLanguage == "ja" && (!originalLarge || showsSecond) ? translation.spacedJapaneseSubtitle : translation
+        let (main, second) = originalLarge ? (spoken, translated) : (translated, spoken)
         return (main, showsSecond && !main.isEmpty && !second.isEmpty ? second : nil)
     }
 }

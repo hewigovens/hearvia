@@ -106,6 +106,17 @@ struct LiveTranslatorTests {
         #expect(translator.subtitleLines(originalLarge: true, showsSecond: false) == ("hello", nil))
     }
 
+    @Test func japaneseSubtitlesSeparatePhrasesWhilePreservingTheTranscriptText() async {
+        let translator = Harness(apiKey: nil).translator
+        await translator.setTargetLanguage("ja")
+        translator.translation = "風となり雨を呼び咲いたのは三振の花秋"
+        let lines = translator.subtitleLines(originalLarge: false, showsSecond: false)
+        #expect(lines.main == "風となり 雨を呼び 咲いたのは 三振の 花秋")
+        #expect(lines.main.replacingOccurrences(of: " ", with: "") == translator.translation)
+        translator.translation = "取り戻す、取り戻す。"
+        #expect(translator.subtitleLines(originalLarge: false, showsSecond: false).main == translator.translation)
+    }
+
     @Test func realtimeNeedsAnAPIKey() async {
         let harness = Harness(apiKey: nil)
         let translator = harness.translator
