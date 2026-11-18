@@ -19,7 +19,7 @@
   - **On-device:** Apple's speech recognition and translation. Free, private, and offline once the languages are downloaded. The spoken language can be detected automatically among the ones you've downloaded.
   - **OpenAI Realtime** and **Gemini Live:** cloud translators with the lowest lag, using your own API key.
   - **Local model:** Apple speech recognition, then each sentence goes to a model you run yourself with Ollama, LM Studio, Unsloth Studio or another OpenAI-compatible server, on your Mac or your network.
-- **Keep captions ready on Mac:** optionally transcribe the selected source on-device while idle. Press Listen to see the last five seconds of recognized speech while your translator starts.
+- **Keep captions ready:** optionally transcribe the selected source on Mac, or the microphone while Hearvia is open on iPhone. Standby runs on-device. Press Listen to see the last five seconds of recognized speech while your translator starts.
 - **Transcripts** of each session stay on your device, or sync through your own iCloud to your other devices if you turn it on.
 - **Quick start** on iPhone from a widget, Control Center, Shortcuts or the app icon.
 - **In your language:** English, 简体中文, 繁體中文, 日本語 and 한국어. Subtitles can also be in Traditional Chinese.

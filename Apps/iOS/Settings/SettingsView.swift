@@ -25,7 +25,7 @@ struct SettingsView: View {
                         }
                     } else {
                         Picker(selection: $settings.appearance) {
-                            ForEach(Appearance.allCases) { Text($0.title).tag($0) }
+                            ForEach(Appearance.allCases) { Label($0.title, systemImage: $0.symbol).tag($0) }
                         } label: {
                             Label("Appearance", icon: "circle.lefthalf.filled", color: .purple)
                         }
@@ -52,6 +52,10 @@ struct SettingsView: View {
                         Label(settings.originalLarge ? "Also show translation" : "Also show original speech", icon: "text.bubble", color: .teal)
                     }
                     Toggle(isOn: $settings.floatsWhenLeaving) { Label("Float when I leave Hearvia", icon: "pip", color: .indigo) }
+                    Toggle(isOn: $settings.warmMicrophone) {
+                        Label("Keep microphone captions ready", icon: "waveform", color: .teal)
+                        Text("Keeps the last 5 seconds on device.")
+                    }
                 }
                 .listRowBackground(Color.hvSurface)
 

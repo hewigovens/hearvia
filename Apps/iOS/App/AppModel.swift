@@ -12,7 +12,7 @@ final class AppModel {
     let pip: PiPController
     let translation: LiveTranslator
     var audio = ProbeSnapshot()
-    var scene = "active"
+    var scene = "inactive"
     var tickCount = 0
     var listening: Bool {
         capture.running || micRunning || demo
@@ -23,6 +23,10 @@ final class AppModel {
     var micRunning = false
     var micStarting = false
     var micError = ""
+    var warmStatus = ""
+    var warmMicrophone: StandbyMicrophone?
+    @ObservationIgnored var micStartCancelled = false
+    @ObservationIgnored var firstCaptionSession: UUID?
     let levels = LevelHistory()
 
     // MARK: Developer tools
@@ -55,7 +59,18 @@ final class AppModel {
         if let label = ProcessInfo.processInfo.environment["HEARVIA_EXPERIMENT"] {
             observationSource = label
         }
-        session.onInterruption = { [weak pip] began, resume in
+        capture.captureWillStart = { [weak self] in self?.prepareCaptureAudio() }
+        capture.runningChanged = { [weak self] in
+            guard let self else { return }
+            if !capture.running {
+                translation.feed.discardOpeningAudio()
+            }
+            await syncListeningState()
+        }
+        session.onInterruption = { [weak self, weak pip] began, resume in
+            if self?.session.systemInterrupted == true {
+                self?.stopStandby()
+            }
             pip?.handleInterruption(began: began, mayResume: resume)
         }
         log.event("environment", ["device": UIDevice.current.model, "os": UIDevice.current.systemVersion,
@@ -106,6 +121,9 @@ final class AppModel {
         UIApplication.shared.isIdleTimerDisabled = phase == .active
         scene = phase == .active ? "active" : phase == .background ? "background" : "inactive"
         log.event("scene", ["phase": scene, "pip_active": "\(pip.active)", "capture_running": "\(capture.running)"])
+        if phase != .active {
+            stopStandby()
+        }
         if phase == .background {
             capture.probe.markBackground(true)
             translation.saveTranscript() // iOS may end a backgrounded app without warning.

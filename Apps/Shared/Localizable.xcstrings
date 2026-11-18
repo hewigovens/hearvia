@@ -1984,6 +1984,122 @@
       "extractionState": "manual",
       "shouldTranslate": false
     },
+    "Keep microphone captions ready": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マイク字幕を待機させる"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마이크 자막 미리 준비"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提前准备麦克风字幕"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "預先準備麥克風字幕"
+          }
+        }
+      }
+    },
+    "Microphone ready · %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マイク待機中 · %@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마이크 준비됨 · %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "麦克风已就绪 · %@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "麥克風已就緒 · %@"
+          }
+        }
+      }
+    },
+    "Preparing microphone captions…": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マイク字幕を準備中…"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마이크 자막 준비 중…"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在准备麦克风字幕…"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在準備麥克風字幕…"
+          }
+        }
+      }
+    },
+    "Keeps the last 5 seconds on device.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "直近5秒分を端末上に保持します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "최근 5초를 기기에 보관합니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在设备上保留最近五秒的字幕。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在裝置上保留最近五秒的字幕。"
+          }
+        }
+      }
+    },
     "Your Ollama, LM Studio or Unsloth": {
       "extractionState": "manual",
       "localizations": {
@@ -6921,35 +7037,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "正在看的內容會繼續播放。"
-          }
-        }
-      }
-    },
-    "While idle, transcribe the selected source on this Mac. Keep the last five seconds in memory for when you press Listen.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "待機中も選択した音源をこのMacで文字起こしします。直近5秒分をメモリに保持し、開始時に表示します。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "대기 중에 선택한 소스를 이 Mac에서 받아씁니다. 최근 5초 분량을 메모리에 보관했다가 듣기를 시작하면 표시합니다."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "待机时，在这台 Mac 上转写所选音源。仅在内存中保留最近五秒的内容，开始聆听时即可查看。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "待機時，在這台 Mac 上轉錄所選音源。僅在記憶體中保留最近五秒的內容，開始聆聽時即可查看。"
           }
         }
       }

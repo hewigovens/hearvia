@@ -9,6 +9,7 @@ final class AudioSessionController {
     var tonePlaying = false
     var toneStarting = false
     var error = ""
+    var systemInterrupted = false
     var onInterruption: ((Bool, Bool) -> Void)?
     private let log: DiagnosticLog
     private var tokens: [NSObjectProtocol] = []
@@ -33,8 +34,12 @@ final class AudioSessionController {
                     self.updateRoute()
                     if name == AVAudioSession.didBecomeInactiveNotification {
                         self.status = deactivation?.source == .system ? "Interrupted by system" : "Inactive"
+                        if deactivation?.source == .system {
+                            self.systemInterrupted = true
+                        }
                         self.onInterruption?(true, false)
                     } else if name == AVAudioSession.resumptionRecommendationNotification {
+                        self.systemInterrupted = false
                         let resume = resumption?.recommendation == .shouldResume
                         if resume, !self.owners.isEmpty {
                             try? await self.activate()

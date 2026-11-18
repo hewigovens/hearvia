@@ -4,6 +4,8 @@
     /// Stands in for the ScreenCaptureKit capture, which the Simulator SDK lacks, so the app runs there (layouts, UI tests); the microphone still works.
     @MainActor @Observable
     final class CaptureController {
+        var captureWillStart: (() -> Void)?
+        var runningChanged: (() async -> Void)?
         var state = "Idle"
         var error = ""
         var excludeOwnAudio = true

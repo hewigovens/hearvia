@@ -1,13 +1,6 @@
 import Foundation
 
 extension AppModel {
-    private func startListening() {
-        switch settings.input {
-        case .otherApps: capture.start()
-        case .microphone: Task { await startMicrophone() }
-        }
-    }
-
     var busy: Bool {
         capture.pending || micStarting
     }
@@ -16,7 +9,10 @@ extension AppModel {
         if listening || busy {
             await stopListening()
         } else {
-            startListening()
+            switch settings.input {
+            case .otherApps: capture.start()
+            case .microphone: await startMicrophone()
+            }
         }
     }
 
@@ -26,6 +22,8 @@ extension AppModel {
 
     func stopListening() async {
         if micRunning || micStarting {
+            micStartCancelled = true
+            translation.feed.discardOpeningAudio()
             microphone.stop()
             micRunning = false
             session.release("mic-input")
@@ -47,7 +45,13 @@ extension AppModel {
         }
     }
 
-    func syncListeningState() async {
+    func prepareCaptureAudio() {
+        if translationEnabled, !translation.isActive {
+            translation.feed.prepareForCapture()
+        }
+    }
+
+    func syncListeningState(initialSource: String = "") async {
         guard listening != wasListening else { return }
         wasListening = listening
         listeningSince = listening ? Date() : nil
@@ -55,13 +59,14 @@ extension AppModel {
             if subtitlesVisible {
                 levels.start()
             }
-            if settings.floatsWhenLeaving {
-                await pip.armAutoStart()
-            }
+            async let floating: Void = updateFloating()
             if translationEnabled {
                 translation.listensToMicrophone = micRunning
-                await translation.start()
+                await translation.start(initialSource: initialSource)
+            } else {
+                translation.feed.discardOpeningAudio()
             }
+            await floating
         } else {
             levels.stop()
             lastHealth = nil // The next session's first CPU reading starts fresh.
@@ -72,20 +77,30 @@ extension AppModel {
 
     private func startMicrophone() async {
         guard !micRunning, !micStarting else { return }
+        let initialSource = warmMicrophone?.languageRequest == standbyLanguage ? warmMicrophone?.captions?.snapshot() ?? "" : ""
+        stopStandby()
         micStarting = true
+        micStartCancelled = false
         micError = ""
         defer { micStarting = false }
         let feed = translation.feed, meter = levels.meter
         do {
             try await session.acquire("mic-input", microphone: true)
+            guard !micStartCancelled else { return }
+            prepareCaptureAudio()
             try await microphone.start { buffer in
                 meter.measure(buffer)
                 feed.push(buffer)
             }
+            guard !micStartCancelled else {
+                microphone.stop()
+                return
+            }
             micRunning = true
             log.event("mic_started", ["route": session.route])
-            await tick()
+            await syncListeningState(initialSource: initialSource)
         } catch {
+            translation.feed.discardOpeningAudio()
             micError = error.localizedDescription
             session.release("mic-input")
             log.event("mic_error", ["error": "\(error)"])

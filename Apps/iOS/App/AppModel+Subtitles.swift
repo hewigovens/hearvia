@@ -2,6 +2,12 @@ import UIKit
 
 extension AppModel {
     func scheduleRender() {
+        if subtitlesVisible, translation.isActive, firstCaptionSession != translation.transcript.id,
+           !translation.subtitleLines(originalLarge: settings.originalLarge, showsSecond: false).main.isEmpty {
+            firstCaptionSession = translation.transcript.id
+            Task { await renderSubtitle() }
+            return
+        }
         guard !renderQueued else { return }
         renderQueued = true
         Task { @MainActor in

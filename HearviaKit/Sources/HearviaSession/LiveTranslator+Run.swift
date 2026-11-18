@@ -8,10 +8,12 @@ public extension LiveTranslator {
         guard !isActive else { return }
         switch knownSetup {
         case .needsKey:
+            feed.discardOpeningAudio()
             status = .needsAPIKey
             error = String(localized: "Add an API key for \(engine.title) in Settings, or switch to on-device translation.")
             return
         case .needsLocalModel:
+            feed.discardOpeningAudio()
             error = LocalModelError.noModel.localizedDescription
             return
         default: break
@@ -23,6 +25,9 @@ public extension LiveTranslator {
         transcript = Transcript(engine: engine, sourceLanguage: engine.detectsSpokenLanguage ? "" : sourceLanguage, targetLanguage: targetLanguage)
         transcript.append(source: initialSource, translation: "")
         stats = TranslatorStats()
+        if !initialSource.isEmpty {
+            onTextChange?()
+        }
         let request = EngineRequest(sourceLanguage: sourceLanguage, targetLanguage: targetLanguage, apiKey: apiKey,
                                     transcribesSource: transcribesSource, listensToMicrophone: listensToMicrophone,
                                     localServer: localServer, localModel: localModel)

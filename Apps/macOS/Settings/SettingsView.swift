@@ -49,7 +49,7 @@ private struct GeneralSettings: View {
             Section {
                 Toggle(isOn: $settings.warmCaptions) {
                     Label("Keep captions ready", systemImage: "waveform")
-                    Text("While idle, transcribe the selected source on this Mac. Keep the last five seconds in memory for when you press Listen.")
+                    Text("Keeps the last 5 seconds on device.")
                 }
                 Toggle(isOn: $translator.savesTranscripts) {
                     Label("Save transcripts", systemImage: "doc.text")

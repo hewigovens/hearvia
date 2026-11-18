@@ -7,6 +7,7 @@ import Observation
 final class AppSettings {
     private enum Keys {
         static let appearance = "hearvia.appearance"
+        static let warmMicrophone = "hearvia.warmMicrophone"
         static let input = "hearvia.input"
         static let showsOriginal = "hearvia.showsOriginal"
         static let originalLarge = "hearvia.originalLarge"
@@ -20,6 +21,10 @@ final class AppSettings {
 
     var appearance: Appearance {
         didSet { defaults.set(appearance.rawValue, forKey: Keys.appearance) }
+    }
+
+    var warmMicrophone: Bool {
+        didSet { defaults.set(warmMicrophone, forKey: Keys.warmMicrophone) }
     }
 
     var input: InputSource {
@@ -64,6 +69,7 @@ final class AppSettings {
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         appearance = defaults.string(forKey: Keys.appearance).flatMap(Appearance.init) ?? .dark
+        warmMicrophone = defaults.bool(forKey: Keys.warmMicrophone)
         input = defaults.string(forKey: Keys.input).flatMap(InputSource.init) ?? .otherApps
         showsOriginal = defaults.object(forKey: Keys.showsOriginal) as? Bool ?? true
         originalLarge = defaults.bool(forKey: Keys.originalLarge)

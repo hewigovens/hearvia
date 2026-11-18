@@ -61,7 +61,8 @@ struct HomeView: View {
                 }
             #endif
         }
-        .onChange(of: phase) { _, value in
+        .task(id: model.standbyLanguage) { await model.runStandby() }
+        .onChange(of: phase, initial: true) { _, value in
             model.sceneChanged(value)
             startIfRequested()
         }

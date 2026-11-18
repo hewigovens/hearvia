@@ -39,13 +39,3 @@ struct ThemePicker: NSViewRepresentable {
         }
     }
 }
-
-private extension Appearance {
-    var symbol: String {
-        switch self {
-        case .dark: "moon.fill"
-        case .light: "sun.max.fill"
-        case .system: "circle.lefthalf.filled"
-        }
-    }
-}

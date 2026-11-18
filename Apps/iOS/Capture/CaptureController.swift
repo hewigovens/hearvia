@@ -5,6 +5,8 @@
 
     @MainActor @Observable
     final class CaptureController: NSObject, SCContentSharingPickerObserver, SCStreamDelegate {
+        var captureWillStart: (() -> Void)?
+        var runningChanged: (() async -> Void)?
         var state = "Idle"
         var error = ""
         var excludeOwnAudio = true
@@ -70,6 +72,7 @@
             session.release("microphone")
             state = "Stopped"
             log.event("capture_stopped")
+            await runningChanged?()
         }
 
         private func configuration() -> SCStreamConfiguration {
@@ -117,6 +120,7 @@
                     return
                 }
                 stream = candidate
+                captureWillStart?()
                 try await candidate.startCapture()
                 guard attempt == generation, stream === candidate else { try? await candidate.stopCapture()
                     return
@@ -126,6 +130,7 @@
                 captureStart = ProcessInfo.processInfo.systemUptime
                 state = "Capturing full display"
                 log.event("capture_started", ["requested_rate": "48000", "requested_channels": "2", "exclude_own_audio": "\(excludeOwnAudio)"])
+                await runningChanged?()
             } catch {
                 guard attempt == generation else { return }
                 self.error = error.localizedDescription
@@ -137,6 +142,7 @@
                 session.release("microphone")
                 probe.unbind()
                 log.event("capture_error", ["error": "\(error)"])
+                await runningChanged?()
             }
         }
 
@@ -181,6 +187,7 @@
                 self.probe.finishRecording()
                 self.session.release("microphone")
                 self.log.event("stream_ended", ["error": message])
+                await self.runningChanged?()
             }
         }
     }

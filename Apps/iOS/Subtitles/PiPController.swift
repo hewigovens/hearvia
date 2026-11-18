@@ -14,6 +14,7 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
     var renderSize = "Not reported"
     var restoreRequested = false
     private(set) var autoStartArmed = false
+    private var armRequest: UUID?
     var onClose: (() -> Void)?
     let previewView = SubtitlePreviewView()
     var fontScale = 1.0 {
@@ -110,10 +111,18 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
 
     /// Playback + mix never interrupts the audio the user is listening to.
     func armAutoStart() async {
-        guard let controller, !autoStartArmed else { return }
+        guard let controller, !autoStartArmed, armRequest == nil else { return }
+        let request = UUID()
+        armRequest = request
+        defer {
+            if armRequest == request {
+                armRequest = nil
+            }
+        }
         do { try await session.acquire("pip") } catch { fail(error)
             return
         }
+        guard armRequest == request else { return }
         autoStartArmed = true
         playing = true
         playbackFlag.set(true)
@@ -124,7 +133,8 @@ final class PiPController: NSObject, AVPictureInPictureControllerDelegate, AVPic
     }
 
     func disarmAutoStart() {
-        guard autoStartArmed else { return }
+        guard autoStartArmed || armRequest != nil else { return }
+        armRequest = nil
         autoStartArmed = false
         controller?.canStartPictureInPictureAutomaticallyFromInline = false
         if !active {

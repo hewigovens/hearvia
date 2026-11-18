@@ -13,7 +13,7 @@ struct StartPrompt: View {
                 Text("Starting the microphone…").font(.subheadline)
             } else {
                 Text("Tap to start").font(.title3.weight(.semibold))
-                Text("Other apps keep playing. Hearvia never plays sound.")
+                Text(model.warmStatus.isEmpty ? String(localized: "Other apps keep playing. Hearvia never plays sound.") : model.warmStatus)
                     .font(.footnote).foregroundStyle(Color.hvMuted)
             }
             if !model.errorMessage.isEmpty {

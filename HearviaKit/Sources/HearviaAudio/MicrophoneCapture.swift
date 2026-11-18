@@ -7,9 +7,10 @@ public final class MicrophoneCapture: @unchecked Sendable {
 
     public init() {}
 
-    public func start(onBuffer: @escaping @Sendable (AVAudioPCMBuffer) -> Void) async throws {
+    @MainActor public func start(onBuffer: @escaping @Sendable (AVAudioPCMBuffer) -> Void) async throws {
         guard !running else { return }
         guard await AVAudioApplication.requestRecordPermission() else { throw MicrophoneError() }
+        try Task.checkCancellation()
         let input = engine.inputNode
         let format = input.outputFormat(forBus: 0)
         // Tap buffers are only valid inside the callback, so the feed and level meter get a copy.

@@ -20,4 +20,11 @@ public enum Appearance: String, CaseIterable, Identifiable, Sendable {
         case .system: nil
         }
     }
+    public var symbol: String {
+        switch self {
+        case .dark: "moon.fill"
+        case .light: "sun.max.fill"
+        case .system: "circle.lefthalf.filled"
+        }
+    }
 }
